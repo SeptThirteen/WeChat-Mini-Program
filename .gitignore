@@ -1,0 +1,18 @@
+# Temp files created by Claude Code
+tmpclaude-*
+
+# Frontend dependencies & build output
+wechat-elderly-mini/node_modules/
+wechat-elderly-mini/dist/
+wechat-elderly-mini/unpackage/
+
+# Backend build output
+wechat-elderly-service/target/
+
+# IDE
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
