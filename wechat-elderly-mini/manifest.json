@@ -1,18 +1,18 @@
 {
-  "name": "wechat-elderly-mini",
-  "appid": "",
-  "description": "社区适老化服务小程序",
-  "versionName": "0.1.0",
-  "versionCode": "100",
-  "vueVersion": "3",
-  "transformPx": false,
-  "uniStatistics": {
-    "enable": false
-  },
-  "mp-weixin": {
-    "appid": "",
-    "setting": {
-      "urlCheck": false
+    "name" : "wechat-elderly-mini",
+    "appid" : "__UNI__F1AB596",
+    "description" : "社区适老化服务小程序",
+    "versionName" : "0.1.0",
+    "versionCode" : "100",
+    "vueVersion" : "3",
+    "transformPx" : false,
+    "uniStatistics" : {
+        "enable" : false
+    },
+    "mp-weixin" : {
+        "appid" : "wx3624940e3fc07095",
+        "setting" : {
+            "urlCheck" : false
+        }
     }
-  }
 }
