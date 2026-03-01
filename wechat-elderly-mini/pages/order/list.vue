@@ -10,46 +10,60 @@
       <view class="action-btn" @click="goLogin">去登录</view>
     </view>
 
-    <!-- Loading -->
-    <view class="state-box" v-else-if="loading">
-      <text class="state-text">加载中…</text>
-    </view>
-
-    <!-- Error -->
-    <view class="state-box" v-else-if="error">
-      <text class="state-text">{{ error }}</text>
-      <view class="action-btn" @click="load">重新加载</view>
-    </view>
-
-    <!-- Empty -->
-    <view class="state-box" v-else-if="orders.length === 0">
-      <text class="state-text">暂无订单</text>
-    </view>
-
-    <!-- List -->
-    <view v-else>
-      <view class="list">
-        <OrderCard
-          v-for="item in pagedOrders"
-          :key="item.orderId"
-          :orderId="item.orderId"
-          :serviceId="item.serviceId"
-          :status="item.status"
-          :createdTime="item.createdTime"
-          class="list-item"
-          @click-detail="goDetail(item.orderId)"
-          @cancel="handleCancel(item)"
-          @rate="handleRate(item)"
-        />
+    <template v-else>
+      <!-- Status Tabs -->
+      <view class="filter-tabs">
+        <view
+          v-for="tab in tabs"
+          :key="tab.key"
+          class="tab"
+          :class="{ active: activeTab === tab.key }"
+          @click="switchTab(tab.key)"
+        >{{ tab.label }}</view>
       </view>
 
-      <!-- Pagination -->
-      <view class="pagination" v-if="totalPages > 1">
-        <view class="page-btn" :class="{ disabled: currentPage === 1 }" @click="prevPage">上一页</view>
-        <text class="page-info">{{ currentPage }} / {{ totalPages }}</text>
-        <view class="page-btn" :class="{ disabled: currentPage === totalPages }" @click="nextPage">下一页</view>
+      <!-- Loading -->
+      <view class="state-box" v-if="loading">
+        <text class="state-text">加载中…</text>
       </view>
-    </view>
+
+      <!-- Error -->
+      <view class="state-box" v-else-if="error">
+        <text class="state-text">{{ error }}</text>
+        <view class="action-btn" @click="load">重新加载</view>
+      </view>
+
+      <!-- Empty -->
+      <view class="state-box" v-else-if="orders.length === 0">
+        <text class="state-text">暂无订单</text>
+      </view>
+
+      <!-- List -->
+      <view v-else>
+        <view class="list">
+          <OrderCard
+            v-for="item in pagedOrders"
+            :key="item.orderId"
+            :orderId="item.orderId"
+            :serviceId="item.serviceId"
+            :serviceName="item.serviceName"
+            :status="item.status"
+            :createdTime="item.createdTime"
+            class="list-item"
+            @click-detail="goDetail(item.orderId)"
+            @cancel="handleCancel(item)"
+            @rate="handleRate(item)"
+          />
+        </view>
+
+        <!-- Pagination -->
+        <view class="pagination" v-if="totalPages > 1">
+          <view class="page-btn" :class="{ disabled: currentPage === 1 }" @click="prevPage">上一页</view>
+          <text class="page-info">{{ currentPage }} / {{ totalPages }}</text>
+          <view class="page-btn" :class="{ disabled: currentPage === totalPages }" @click="nextPage">下一页</view>
+        </view>
+      </view>
+    </template>
   </view>
 </template>
 
@@ -66,6 +80,14 @@ const userStore = useUserStore();
 const userId = computed(() => userStore.userId);
 const currentPage = ref(1);
 const pageSize = 5;
+const activeTab = ref('ALL');
+
+const tabs = [
+  { key: 'ALL',       label: '全部' },
+  { key: 'CREATED',   label: '进行中' },
+  { key: 'COMPLETED', label: '已完成' },
+  { key: 'CANCELLED', label: '已取消' },
+];
 
 const totalPages = computed(() => Math.max(1, Math.ceil(orders.value.length / pageSize)));
 const pagedOrders = computed(() => {
@@ -76,13 +98,19 @@ const pagedOrders = computed(() => {
 const prevPage = () => { if (currentPage.value > 1) currentPage.value -= 1; };
 const nextPage = () => { if (currentPage.value < totalPages.value) currentPage.value += 1; };
 
+const switchTab = (key) => {
+  activeTab.value = key;
+  load();
+};
+
 const load = async () => {
   if (!userStore.userId) return;
   loading.value = true;
   error.value = '';
   currentPage.value = 1;
   try {
-    const res = await getOrderList(userStore.userId);
+    const status = activeTab.value === 'ALL' ? undefined : activeTab.value;
+    const res = await getOrderList(userStore.userId, status);
     orders.value = res.data || [];
   } catch (e) {
     error.value = '订单加载失败，请重试';
@@ -147,6 +175,29 @@ onMounted(load);
 .title {
   font-size: 22px;
   font-weight: 600;
+}
+
+.filter-tabs {
+  display: flex;
+  background: $color-card;
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 10px 4px;
+  border-radius: 10px;
+  font-size: 15px;
+  color: $color-muted;
+}
+
+.tab.active {
+  background: $color-primary;
+  color: #fff;
 }
 
 .state-box {

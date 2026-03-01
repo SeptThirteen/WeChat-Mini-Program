@@ -52,8 +52,8 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
-import { queryBill } from '../../api/bill';
+import { computed, onMounted, ref } from 'vue';
+import { queryBill, getBillHistory } from '../../api/bill';
 import { useUserStore } from '../../store/user';
 
 const userStore = useUserStore();
@@ -87,6 +87,21 @@ const records = computed(() => {
 
 const typeLabelMap = { ELECTRICITY: '电费', WATER: '水费', TV: '有线/燃气' };
 
+const loadHistory = async () => {
+  if (!userStore.userId) return;
+  try {
+    const res = await getBillHistory(userStore.userId);
+    const list = res.data || [];
+    allRecords.value = list.map(item => ({
+      type: item.queryType,
+      typeLabel: typeLabelMap[item.queryType] || item.queryType,
+      date: item.createdTime ? item.createdTime.slice(0, 10) : '',
+      amount: parseFloat(item.resultSnapshot?.match(/amount=([\\d.]+)/)?.[1] || '0'),
+    }));
+    if (list.length > 0) queried.value = true;
+  } catch { /* ignore */ }
+};
+
 const doQuery = async () => {
   if (!queryParams.value.trim()) {
     uni.showToast({ title: queryPlaceholder.value, icon: 'none' });
@@ -116,6 +131,8 @@ const doQuery = async () => {
     querying.value = false;
   }
 };
+
+onMounted(loadHistory);
 </script>
 
 <style lang="scss" scoped>

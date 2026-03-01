@@ -1,7 +1,9 @@
 import { request } from './request';
 
-export function getOrderList(userId) {
-  return request({ url: '/api/order/list', data: { userId } });
+export function getOrderList(userId, status) {
+  const data = { userId };
+  if (status) data.status = status;
+  return request({ url: '/api/order/list', data });
 }
 
 export function getOrderDetail(orderId) {

@@ -4,7 +4,7 @@
       <text class="name">订单 #{{ orderId }}</text>
       <text class="status" :class="statusClass">{{ statusLabel }}</text>
     </view>
-    <text class="desc">服务ID：{{ serviceId }}</text>
+    <text class="desc">服务：{{ serviceName || ('服务ID：' + serviceId) }}</text>
     <text class="desc" v-if="createdTime">下单时间：{{ createdTime }}</text>
 
     <view class="actions" v-if="status === 'CREATED' || status === 'COMPLETED'">
@@ -28,6 +28,7 @@ import { computed } from 'vue';
 const props = defineProps({
   orderId: Number,
   serviceId: Number,
+  serviceName: String,
   status: String,
   createdTime: String
 });

@@ -58,6 +58,9 @@ public class UserServiceImpl implements UserService {
         if (request.getAddress() != null) {
             user.setAddress(request.getAddress());
         }
+        if (request.getCommunity() != null) {
+            user.setCommunity(request.getCommunity());
+        }
         userMapper.updateById(user);
     }
 

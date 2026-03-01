@@ -14,6 +14,12 @@ public class Order {
     private Long orderId;
     private Long userId;
     private Long serviceId;
+    private String serviceName;
+    private String scheduledDate;
+    private String scheduledSlot;
+    private String address;
+    private String remark;
+    private Integer rating;
     private String status;
     private LocalDateTime createdTime;
 }

@@ -21,12 +21,28 @@
         <text class="value">#{{ order.orderId }}</text>
       </view>
       <view class="row">
-        <text class="label">服务ID</text>
-        <text class="value">{{ order.serviceId }}</text>
+        <text class="label">服务类型</text>
+        <text class="value">{{ order.serviceName || ('服务ID：' + order.serviceId) }}</text>
       </view>
       <view class="row">
         <text class="label">状态</text>
         <text class="value status" :class="statusClass">{{ statusLabel }}</text>
+      </view>
+      <view class="row" v-if="order.scheduledDate">
+        <text class="label">预约时间</text>
+        <text class="value">{{ order.scheduledDate }} {{ order.scheduledSlot || '' }}</text>
+      </view>
+      <view class="row" v-if="order.address">
+        <text class="label">服务地址</text>
+        <text class="value">{{ order.address }}</text>
+      </view>
+      <view class="row" v-if="order.remark">
+        <text class="label">备注</text>
+        <text class="value">{{ order.remark }}</text>
+      </view>
+      <view class="row" v-if="order.rating">
+        <text class="label">评分</text>
+        <text class="value rating-stars">{{ '★'.repeat(order.rating) }}{{ '☆'.repeat(5 - order.rating) }}</text>
       </view>
       <view class="row" v-if="order.createdTime">
         <text class="label">下单时间</text>

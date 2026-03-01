@@ -8,14 +8,14 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@TableName("users")
-public class User {
+@TableName("government_tasks")
+public class GovTask {
     @TableId(type = IdType.AUTO)
+    private Long taskId;
     private Long userId;
-    private String phone;
-    private String name;
-    private Integer age;
-    private String address;
-    private String community;
-    private LocalDateTime createdTime;
+    private String taskType;
+    private String taskDesc;
+    private String status;
+    private LocalDateTime submittedTime;
+    private LocalDateTime updatedTime;
 }

@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
   name VARCHAR(50) NOT NULL,
   age INT,
   address VARCHAR(255),
+  community VARCHAR(100) DEFAULT NULL COMMENT '绑定社区',
   created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -22,6 +23,12 @@ CREATE TABLE IF NOT EXISTS orders (
   order_id BIGINT PRIMARY KEY AUTO_INCREMENT,
   user_id BIGINT NOT NULL,
   service_id BIGINT NOT NULL,
+  service_name VARCHAR(100) DEFAULT NULL COMMENT '冗余服务名称',
+  scheduled_date VARCHAR(20) DEFAULT NULL COMMENT '预约日期',
+  scheduled_slot VARCHAR(30) DEFAULT NULL COMMENT '预约时段',
+  address VARCHAR(255) DEFAULT NULL COMMENT '服务地址',
+  remark VARCHAR(500) DEFAULT NULL COMMENT '备注',
+  rating INT DEFAULT NULL COMMENT '评分1-5',
   status VARCHAR(20) NOT NULL,
   created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_orders_user FOREIGN KEY (user_id) REFERENCES users(user_id),
@@ -38,9 +45,30 @@ CREATE TABLE IF NOT EXISTS bill_queries (
   CONSTRAINT fk_bill_queries_user FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-INSERT INTO users (phone, name, age, address) VALUES
-('13800000000', '张三', 68, '示例小区 1 号楼'),
-('13900000000', '李四', 72, '示例小区 2 号楼');
+CREATE TABLE IF NOT EXISTS government_tasks (
+  task_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  user_id BIGINT NOT NULL,
+  task_type VARCHAR(50) NOT NULL COMMENT '申办类型：养老补贴/医保备案等',
+  task_desc VARCHAR(255) DEFAULT NULL COMMENT '申办描述',
+  status VARCHAR(20) NOT NULL DEFAULT 'SUBMITTED' COMMENT 'SUBMITTED/PROCESSING/COMPLETED/REJECTED',
+  submitted_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_gov_tasks_user FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE IF NOT EXISTS emergency_contacts (
+  contact_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  user_id BIGINT NOT NULL,
+  name VARCHAR(50) NOT NULL,
+  phone VARCHAR(20) NOT NULL,
+  relation VARCHAR(30) DEFAULT NULL COMMENT '关系：家属/社区服务等',
+  created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_contacts_user FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+INSERT INTO users (phone, name, age, address, community) VALUES
+('13800000000', '张三', 68, '示例小区 1 号楼', '阳光社区居委会'),
+('13900000000', '李四', 72, '示例小区 2 号楼', '幸福社区居委会');
 
 INSERT INTO services (category, description, price) VALUES
 ('家务帮助', '上门打扫、整理房间', 39.90),

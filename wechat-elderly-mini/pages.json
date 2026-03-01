@@ -59,6 +59,10 @@
     {
       "path": "pages/user/emergency",
       "style": { "navigationBarTitleText": "紧急联系人" }
+    },
+    {
+      "path": "pages/user/gov-tasks",
+      "style": { "navigationBarTitleText": "政务代办进度" }
     }
   ],
   "tabBar": {

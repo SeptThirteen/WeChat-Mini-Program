@@ -37,16 +37,24 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order();
         order.setUserId(request.getUserId());
         order.setServiceId(request.getServiceId());
+        order.setServiceName(item.getCategory() + " - " + item.getDescription());
+        order.setScheduledDate(request.getScheduledDate());
+        order.setScheduledSlot(request.getScheduledSlot());
+        order.setAddress(request.getAddress());
+        order.setRemark(request.getRemark());
         order.setStatus("CREATED");
         orderMapper.insert(order);
         return order;
     }
 
     @Override
-    public List<Order> listOrders(Long userId) {
+    public List<Order> listOrders(Long userId, String status) {
         QueryWrapper<Order> wrapper = new QueryWrapper<>();
         if (userId != null) {
             wrapper.eq("user_id", userId);
+        }
+        if (status != null && !status.trim().isEmpty()) {
+            wrapper.eq("status", status);
         }
         wrapper.orderByDesc("created_time");
         return orderMapper.selectList(wrapper);
@@ -65,6 +73,16 @@ public class OrderServiceImpl implements OrderService {
     public void updateStatus(Long orderId, String status) {
         Order order = getById(orderId);
         order.setStatus(status);
+        orderMapper.updateById(order);
+    }
+
+    @Override
+    public void rateOrder(Long orderId, Integer rating) {
+        Order order = getById(orderId);
+        order.setStatus("RATED");
+        if (rating != null) {
+            order.setRating(rating);
+        }
         orderMapper.updateById(order);
     }
 

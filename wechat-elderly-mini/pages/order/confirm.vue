@@ -60,6 +60,10 @@ const handleConfirm = async () => {
     const res = await createOrder({
       userId: userStore.userId,
       serviceId: params.value.serviceId,
+      scheduledDate: params.value.dateStr || '',
+      scheduledSlot: params.value.slotStr || '',
+      address: params.value.address || '',
+      remark: params.value.remark || '',
     });
     const orderId = res.data?.orderId || '';
     uni.redirectTo({

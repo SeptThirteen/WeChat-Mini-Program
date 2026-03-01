@@ -8,14 +8,13 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@TableName("users")
-public class User {
+@TableName("emergency_contacts")
+public class EmergencyContact {
     @TableId(type = IdType.AUTO)
+    private Long contactId;
     private Long userId;
-    private String phone;
     private String name;
-    private Integer age;
-    private String address;
-    private String community;
+    private String phone;
+    private String relation;
     private LocalDateTime createdTime;
 }

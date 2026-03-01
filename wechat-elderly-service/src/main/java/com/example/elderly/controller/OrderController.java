@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,8 +32,10 @@ public class OrderController {
     }
 
     @GetMapping("/api/order/list")
-    public ApiResponse<List<Order>> list(@RequestParam(value = "userId", required = false) Long userId) {
-        return ApiResponse.success(orderService.listOrders(userId));
+    public ApiResponse<List<Order>> list(
+            @RequestParam(value = "userId", required = false) Long userId,
+            @RequestParam(value = "status", required = false) String status) {
+        return ApiResponse.success(orderService.listOrders(userId, status));
     }
 
     @GetMapping("/api/order/{id}")
@@ -43,19 +46,29 @@ public class OrderController {
     @PostMapping("/api/order/{id}/cancel")
     public ApiResponse<Map<String, Object>> cancel(@PathVariable("id") Long id) {
         orderService.updateStatus(id, "CANCELLED");
-        return ApiResponse.success(Map.of("orderId", id, "status", "CANCELLED"));
+        Map<String, Object> result = new HashMap<>();
+        result.put("orderId", id);
+        result.put("status", "CANCELLED");
+        return ApiResponse.success(result);
     }
 
     @PostMapping("/api/order/{id}/rate")
-    public ApiResponse<Map<String, Object>> rate(@PathVariable("id") Long id) {
-        orderService.updateStatus(id, "RATED");
-        return ApiResponse.success(Map.of("orderId", id, "status", "RATED"));
+    public ApiResponse<Map<String, Object>> rate(@PathVariable("id") Long id, @RequestBody Map<String, Object> body) {
+        Integer rating = body.get("rating") != null ? Integer.parseInt(body.get("rating").toString()) : null;
+        orderService.rateOrder(id, rating);
+        Map<String, Object> result = new HashMap<>();
+        result.put("orderId", id);
+        result.put("status", "RATED");
+        return ApiResponse.success(result);
     }
 
     @PutMapping("/api/order/{id}/status")
     public ApiResponse<Map<String, Object>> updateStatus(@PathVariable("id") Long id, @Valid @RequestBody OrderStatusRequest request) {
         orderService.updateStatus(id, request.getStatus());
-        return ApiResponse.success(Map.of("orderId", id, "status", request.getStatus()));
+        Map<String, Object> result = new HashMap<>();
+        result.put("orderId", id);
+        result.put("status", request.getStatus());
+        return ApiResponse.success(result);
     }
 
     @DeleteMapping("/api/order/{id}")

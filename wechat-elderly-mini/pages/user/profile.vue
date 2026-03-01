@@ -27,7 +27,7 @@
           <text class="profile-name">{{ profile.name || '未设置姓名' }}</text>
           <text class="profile-meta" v-if="profile.age">{{ profile.age }}岁{{ profile.address ? ' · ' + profile.address : '' }}</text>
           <text class="profile-meta">手机：{{ phone || '未绑定' }}</text>
-          <text class="profile-meta">绑定社区：社区居委会</text>
+          <text class="profile-meta">绑定社区：{{ profile.community || '未绑定社区' }}</text>
         </view>
       </view>
     </view>
@@ -43,7 +43,7 @@
         <text class="func-arrow">▶</text>
       </view>
 
-      <view class="func-card" @click="showWip('政务代办进度')">
+      <view class="func-card" @click="go('/pages/user/gov-tasks')">
         <text class="func-icon">📋</text>
         <view class="func-text">
           <text class="func-title">政务代办进度</text>

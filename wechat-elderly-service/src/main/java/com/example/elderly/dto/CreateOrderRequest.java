@@ -10,4 +10,9 @@ public class CreateOrderRequest {
 
     @NotNull(message = "服务ID不能为空")
     private Long serviceId;
+
+    private String scheduledDate;
+    private String scheduledSlot;
+    private String address;
+    private String remark;
 }
