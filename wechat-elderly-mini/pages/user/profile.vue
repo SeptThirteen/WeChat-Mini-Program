@@ -1,81 +1,88 @@
 <template>
   <view class="page">
-    <view class="header">
-      <text class="title">我的</text>
-    </view>
-
-    <!-- Not logged in -->
-    <view class="card" v-if="!userId">
-      <text class="desc">您还未登录</text>
-      <view class="btn" @click="goLogin">登录</view>
-    </view>
-
-    <!-- Loading -->
-    <view class="card" v-else-if="loading">
-      <text class="desc">加载中…</text>
-    </view>
-
-    <!-- Profile -->
-    <view class="card" v-else>
-      <!-- View mode -->
-      <view v-if="!editing">
-        <text class="name">用户ID：{{ userId }}</text>
-        <text class="desc">姓名：{{ profile.name || '未填写' }}</text>
-        <text class="desc">年龄：{{ profile.age ?? '未填写' }}</text>
-        <text class="desc">手机号：{{ phone || '未绑定' }}</text>
-        <view class="btn-row">
-          <view class="btn edit-btn" @click="startEdit">编辑资料</view>
-          <view class="btn logout-btn" @click="handleLogout">退出登录</view>
-        </view>
+    <view class="top-bar">
+      <text class="time">{{ currentTime }}</text>
+      <view class="voice-btn" @click="handleVoice">
+        <text class="voice-text">语音说需求 🔊</text>
       </view>
+    </view>
 
-      <!-- Edit mode -->
-      <view v-else>
-        <text class="edit-label">姓名</text>
-        <input class="edit-input" v-model="editForm.name" placeholder="请输入姓名" />
-        <text class="edit-label">年龄</text>
-        <input class="edit-input" v-model="editForm.age" type="number" placeholder="请输入年龄" />
-        <view class="btn-row">
-          <view class="btn save-btn" :class="{ disabled: saving }" @click="handleSave">
-            {{ saving ? '保存中…' : '保存' }}
-          </view>
-          <view class="btn cancel-edit-btn" @click="editing = false">取消</view>
+    <view class="page-title-row">
+      <text class="page-title">我的</text>
+    </view>
+
+    <!-- 未登录 -->
+    <view class="login-card" v-if="!userId">
+      <text class="login-tip">您还未登录</text>
+      <view class="login-btn" @click="goLogin">立即登录</view>
+    </view>
+
+    <!-- 已登录：头像 + 信息 -->
+    <view class="profile-card" v-else>
+      <view class="avatar-row">
+        <view class="avatar">
+          <text class="avatar-text">{{ profile.name ? profile.name.charAt(0) : '用' }}</text>
+        </view>
+        <view class="profile-info">
+          <text class="profile-name">{{ profile.name || '未设置姓名' }}</text>
+          <text class="profile-meta" v-if="profile.age">{{ profile.age }}岁{{ profile.address ? ' · ' + profile.address : '' }}</text>
+          <text class="profile-meta">手机：{{ phone || '未绑定' }}</text>
+          <text class="profile-meta">绑定社区：社区居委会</text>
         </view>
       </view>
     </view>
 
-    <view class="card stats" v-if="userId && !loading">
-      <text class="stats-title">我的统计</text>
-      <view class="stats-row">
-        <view class="stats-item">
-          <text class="stats-value">{{ stats.total }}</text>
-          <text class="stats-label">总订单</text>
+    <!-- 功能入口 -->
+    <view class="func-list" v-if="userId && !loading">
+      <view class="func-card" @click="go('/pages/user/bills')">
+        <text class="func-icon">💰</text>
+        <view class="func-text">
+          <text class="func-title">缴费记录</text>
+          <text class="func-desc">查看水电费缴费历史</text>
         </view>
-        <view class="stats-item">
-          <text class="stats-value">{{ stats.created }}</text>
-          <text class="stats-label">待处理</text>
+        <text class="func-arrow">▶</text>
+      </view>
+
+      <view class="func-card" @click="showWip('政务代办进度')">
+        <text class="func-icon">📋</text>
+        <view class="func-text">
+          <text class="func-title">政务代办进度</text>
+          <text class="func-desc">查看申请办理进度</text>
         </view>
-        <view class="stats-item">
-          <text class="stats-value">{{ stats.completed }}</text>
-          <text class="stats-label">已完成</text>
+        <text class="func-arrow">▶</text>
+      </view>
+
+      <view class="func-card" @click="go('/pages/order/list')">
+        <text class="func-icon">🚗</text>
+        <view class="func-text">
+          <text class="func-title">滴滴摇人订单</text>
+          <text class="func-desc">查看全部帮扶服务订单</text>
         </view>
-        <view class="stats-item">
-          <text class="stats-value">{{ stats.rated }}</text>
-          <text class="stats-label">已评价</text>
+        <text class="func-arrow">▶</text>
+      </view>
+
+      <view class="func-card" @click="go('/pages/user/emergency')">
+        <text class="func-icon">🆘</text>
+        <view class="func-text">
+          <text class="func-title">紧急联系人设置</text>
+          <text class="func-desc">设置紧急求助联系人</text>
         </view>
-        <view class="stats-item">
-          <text class="stats-value">{{ stats.cancelled }}</text>
-          <text class="stats-label">已取消</text>
-        </view>
+        <text class="func-arrow">▶</text>
       </view>
     </view>
+
+    <view class="loading-box" v-if="userId && loading">
+      <text class="loading-text">加载中…</text>
+    </view>
+
+    <!-- 退出登录 -->
+    <view class="logout-btn" v-if="userId" @click="handleLogout">退出登录</view>
   </view>
 </template>
 
 <script setup>
 import { computed, onMounted, ref } from 'vue';
-import { getUserProfile, updateUserProfile } from '../../api/user';
-import { getOrderList } from '../../api/order';
+import { getUserProfile } from '../../api/user';
 import { useUserStore } from '../../store/user';
 
 const userStore = useUserStore();
@@ -83,41 +90,23 @@ const userId = computed(() => userStore.userId);
 const phone = computed(() => userStore.phone);
 const profile = ref({});
 const loading = ref(false);
-const editing = ref(false);
-const saving = ref(false);
-const editForm = ref({ name: '', age: '' });
-const stats = ref({ total: 0, created: 0, completed: 0, rated: 0, cancelled: 0 });
+const currentTime = ref('');
 
-const loadProfile = async () => {
-  if (!userStore.userId) {
-    profile.value = {};
-    stats.value = { total: 0, created: 0, completed: 0, rated: 0, cancelled: 0 };
-    return;
-  }
-  loading.value = true;
-  try {
-    const res = await getUserProfile(userStore.userId);
-    profile.value = res.data || {};
-    const ordersRes = await getOrderList(userStore.userId);
-    const list = ordersRes.data || [];
-    const next = { total: list.length, created: 0, completed: 0, rated: 0, cancelled: 0 };
-    list.forEach((item) => {
-      if (item.status === 'CREATED') next.created += 1;
-      if (item.status === 'COMPLETED') next.completed += 1;
-      if (item.status === 'RATED') next.rated += 1;
-      if (item.status === 'CANCELLED') next.cancelled += 1;
-    });
-    stats.value = next;
-  } catch (e) {
-    profile.value = {};
-    stats.value = { total: 0, created: 0, completed: 0, rated: 0, cancelled: 0 };
-  } finally {
-    loading.value = false;
-  }
+const updateTime = () => {
+  const now = new Date();
+  currentTime.value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 };
 
-const goLogin = () => {
-  uni.navigateTo({ url: '/pages/login/login' });
+const go = (url) => uni.navigateTo({ url });
+const goLogin = () => uni.navigateTo({ url: '/pages/login/login' });
+const handleVoice = () => uni.showToast({ title: '语音功能开发中', icon: 'none' });
+
+const showWip = (name) => {
+  uni.showModal({
+    title: '功能建设中',
+    content: `「${name}」功能正在建设，敬请期待`,
+    showCancel: false
+  });
 };
 
 const handleLogout = () => {
@@ -128,172 +117,208 @@ const handleLogout = () => {
       if (res.confirm) {
         userStore.logout();
         profile.value = {};
-        stats.value = { total: 0, created: 0, completed: 0, rated: 0, cancelled: 0 };
       }
     }
   });
 };
 
-const startEdit = () => {
-  editForm.value = { name: profile.value.name || '', age: profile.value.age ?? '' };
-  editing.value = true;
-};
-
-const handleSave = async () => {
-  if (saving.value) return;
-  const name = String(editForm.value.name).trim();
-  const age = editForm.value.age !== '' ? Number(editForm.value.age) : null;
-  if (!name) {
-    uni.showToast({ title: '姓名不能为空', icon: 'none' });
-    return;
-  }
-  if (age !== null && (isNaN(age) || age < 0 || age > 150)) {
-    uni.showToast({ title: '请输入有效年龄', icon: 'none' });
-    return;
-  }
-  saving.value = true;
+const loadProfile = async () => {
+  if (!userStore.userId) return;
+  loading.value = true;
   try {
-    await updateUserProfile(userStore.userId, { name, age });
-    profile.value = { ...profile.value, name, age };
-    editing.value = false;
-    uni.showToast({ title: '保存成功' });
-  } catch (e) {
-    uni.showToast({ title: e.message || '保存失败', icon: 'none' });
+    const res = await getUserProfile(userStore.userId);
+    profile.value = res.data || {};
+  } catch {
+    profile.value = {};
   } finally {
-    saving.value = false;
+    loading.value = false;
   }
 };
 
-onMounted(loadProfile);
+onMounted(() => {
+  updateTime();
+  setInterval(updateTime, 30000);
+  loadProfile();
+});
 </script>
 
 <style lang="scss" scoped>
 .page {
-  padding: 16px;
+  min-height: 100vh;
+  background: $color-bg;
+  padding-bottom: 32px;
 }
 
-.header {
-  margin-bottom: 12px;
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px 10px;
 }
 
-.title {
-  font-size: 22px;
+.time {
+  font-size: $fontSize-md;
+  color: $color-muted;
+  font-weight: 500;
+}
+
+.voice-btn {
+  background: $color-primary;
+  border-radius: 22px;
+  padding: 10px 20px;
+}
+
+.voice-text {
+  color: #fff;
+  font-size: $fontSize-base;
+}
+
+.page-title-row {
+  padding: 0 20px 16px;
+}
+
+.page-title {
+  font-size: $fontSize-title;
+  color: $color-text;
+  font-weight: 700;
+}
+
+.login-card {
+  background: $color-card;
+  border-radius: 16px;
+  margin: 0 16px 16px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.login-tip {
+  font-size: $fontSize-md;
+  color: $color-muted;
+}
+
+.login-btn {
+  background: $color-primary;
+  color: #fff;
+  border-radius: 12px;
+  padding: 14px 48px;
+  font-size: $fontSize-md;
   font-weight: 600;
 }
 
-.card {
+.profile-card {
   background: $color-card;
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 12px;
+  border-radius: 16px;
+  margin: 0 16px 16px;
+  padding: 20px;
 }
 
-.name {
-  font-size: 20px;
-  margin-bottom: 8px;
-  display: block;
+.avatar-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
-.desc {
-  color: $color-muted;
-  margin-bottom: 12px;
-  display: block;
-}
-
-.btn {
+.avatar {
+  width: 68px;
+  height: 68px;
+  border-radius: 34px;
   background: $color-primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.avatar-text {
   color: #fff;
-  border-radius: 10px;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.profile-name {
+  font-size: $fontSize-lg;
+  color: $color-text;
+  font-weight: 700;
+}
+
+.profile-meta {
+  font-size: $fontSize-sm;
+  color: $color-muted;
+}
+
+.func-list {
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.func-card {
+  background: $color-card;
+  border-radius: 14px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.func-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.func-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.func-title {
+  font-size: $fontSize-md;
+  color: $color-text;
+  font-weight: 600;
+}
+
+.func-desc {
+  font-size: $fontSize-sm;
+  color: $color-muted;
+}
+
+.func-arrow {
+  font-size: $fontSize-base;
+  color: $color-muted;
+  flex-shrink: 0;
+}
+
+.loading-box {
+  padding: 32px;
   text-align: center;
-  padding: 10px 0;
+}
+
+.loading-text {
+  font-size: $fontSize-base;
+  color: $color-muted;
 }
 
 .logout-btn {
+  margin: 0 16px;
   background: #f5f5f5;
-  color: #666;
-  margin-top: 4px;
-}
-
-.btn-row {
-  display: flex;
-  gap: 10px;
-  margin-top: 8px;
-}
-
-.btn-row .btn {
-  flex: 1;
-}
-
-.edit-btn {
-  background: $color-accent;
-}
-
-.save-btn {
-  background: $color-primary;
-}
-
-.save-btn.disabled {
-  opacity: 0.6;
-}
-
-.cancel-edit-btn {
-  background: #f5f5f5;
-  color: #666;
-}
-
-.edit-label {
-  display: block;
-  font-size: 15px;
-  color: $color-muted;
-  margin-bottom: 6px;
-}
-
-.edit-input {
-  background: #fff;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  padding: 10px 12px;
-  margin-bottom: 12px;
-  width: 100%;
-  box-sizing: border-box;
-  font-size: 16px;
-}
-
-.stats {
-  background: #fff8f4;
-  border: 1px solid #f3ddd2;
-}
-
-.stats-title {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 10px;
-  display: block;
-}
-
-.stats-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.stats-item {
-  flex: 1 1 45%;
-  background: #ffffff;
-  border-radius: 10px;
-  padding: 10px;
+  color: #999;
+  border-radius: 14px;
   text-align: center;
-}
-
-.stats-value {
-  font-size: 22px;
-  font-weight: 700;
-  color: $color-primary;
-  display: block;
-}
-
-.stats-label {
-  color: $color-muted;
-  font-size: 14px;
+  padding: 16px 0;
+  font-size: $fontSize-base;
 }
 </style>

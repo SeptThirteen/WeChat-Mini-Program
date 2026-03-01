@@ -2,45 +2,63 @@
   "pages": [
     {
       "path": "pages/index/index",
-      "style": {
-        "navigationBarTitleText": "服务"
-      }
-    },
-    {
-      "path": "pages/order/list",
-      "style": {
-        "navigationBarTitleText": "订单"
-      }
+      "style": { "navigationBarTitleText": "首页", "navigationBarBackgroundColor": "#fff7f3", "navigationBarTextStyle": "black" }
     },
     {
       "path": "pages/user/profile",
-      "style": {
-        "navigationBarTitleText": "我的"
-      }
+      "style": { "navigationBarTitleText": "我的", "navigationBarBackgroundColor": "#fff7f3", "navigationBarTextStyle": "black" }
     },
     {
       "path": "pages/login/login",
-      "style": {
-        "navigationBarTitleText": "登录"
-      }
+      "style": { "navigationBarTitleText": "登录" }
     },
     {
-      "path": "pages/service/detail",
-      "style": {
-        "navigationBarTitleText": "服务详情"
-      }
+      "path": "pages/home/didi",
+      "style": { "navigationBarTitleText": "滴滴摇人", "navigationBarBackgroundColor": "#7B3F1F", "navigationBarTextStyle": "white" }
     },
     {
-      "path": "pages/query/index",
-      "style": {
-        "navigationBarTitleText": "便民查询"
-      }
+      "path": "pages/home/public-service",
+      "style": { "navigationBarTitleText": "公共服务", "navigationBarBackgroundColor": "#8B6914", "navigationBarTextStyle": "white" }
+    },
+    {
+      "path": "pages/home/ai-chat",
+      "style": { "navigationBarTitleText": "AI问答", "navigationBarBackgroundColor": "#C85A3A", "navigationBarTextStyle": "white" }
+    },
+    {
+      "path": "pages/order/create",
+      "style": { "navigationBarTitleText": "服务下单" }
+    },
+    {
+      "path": "pages/order/confirm",
+      "style": { "navigationBarTitleText": "确认订单" }
+    },
+    {
+      "path": "pages/order/success",
+      "style": { "navigationBarTitleText": "下单成功" }
+    },
+    {
+      "path": "pages/order/list",
+      "style": { "navigationBarTitleText": "我的订单" }
     },
     {
       "path": "pages/order/detail",
-      "style": {
-        "navigationBarTitleText": "订单详情"
-      }
+      "style": { "navigationBarTitleText": "订单详情" }
+    },
+    {
+      "path": "pages/query/index",
+      "style": { "navigationBarTitleText": "便民查询" }
+    },
+    {
+      "path": "pages/service/detail",
+      "style": { "navigationBarTitleText": "服务详情" }
+    },
+    {
+      "path": "pages/user/bills",
+      "style": { "navigationBarTitleText": "缴费记录" }
+    },
+    {
+      "path": "pages/user/emergency",
+      "style": { "navigationBarTitleText": "紧急联系人" }
     }
   ],
   "tabBar": {
@@ -50,15 +68,7 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "服务"
-      },
-      {
-        "pagePath": "pages/order/list",
-        "text": "订单"
-      },
-      {
-        "pagePath": "pages/query/index",
-        "text": "查询"
+        "text": "首页"
       },
       {
         "pagePath": "pages/user/profile",
