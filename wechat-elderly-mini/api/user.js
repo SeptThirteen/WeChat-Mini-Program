@@ -5,5 +5,5 @@ export function getUserProfile(userId) {
 }
 
 export function updateUserProfile(userId, data) {
-  return request({ url: '/api/user/profile', method: 'PUT', data: { userId, ...data } });
+  return request({ url: '/api/user/update', method: 'PUT', data: { userId, ...data } });
 }

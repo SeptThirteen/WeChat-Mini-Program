@@ -54,6 +54,7 @@
 
 <script setup>
 import { ref } from 'vue';
+import { onLoad } from '@dcloudio/uni-app';
 import { queryBill } from '../../api/bill';
 import { useUserStore } from '../../store/user';
 
@@ -71,6 +72,12 @@ const submitting = ref(false);
 const result = ref('');
 const errorMsg = ref('');
 const history = ref([]);
+
+onLoad((query) => {
+  if (query?.type && types.some(t => t.value === query.type)) {
+    queryType.value = query.type;
+  }
+});
 
 const handleQuery = async () => {
   if (submitting.value) return;

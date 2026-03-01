@@ -57,7 +57,7 @@ const handleCreateOrder = async () => {
   try {
     await createOrder({ userId: userStore.userId, serviceId: detail.value.serviceId });
     uni.showToast({ title: '下单成功' });
-    uni.switchTab({ url: '/pages/order/list' });
+    uni.navigateTo({ url: '/pages/order/list' });
   } catch (e) {
     uni.showToast({ title: e.message || '下单失败', icon: 'none' });
   }
