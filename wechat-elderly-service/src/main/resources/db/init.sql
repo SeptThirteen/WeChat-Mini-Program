@@ -19,6 +19,14 @@ CREATE TABLE IF NOT EXISTS services (
   created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS workers (
+  worker_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  phone VARCHAR(20) NOT NULL UNIQUE,
+  name VARCHAR(50) NOT NULL,
+  password VARCHAR(100) NOT NULL,
+  created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS orders (
   order_id BIGINT PRIMARY KEY AUTO_INCREMENT,
   user_id BIGINT NOT NULL,
@@ -29,10 +37,13 @@ CREATE TABLE IF NOT EXISTS orders (
   address VARCHAR(255) DEFAULT NULL COMMENT '服务地址',
   remark VARCHAR(500) DEFAULT NULL COMMENT '备注',
   rating INT DEFAULT NULL COMMENT '评分1-5',
+  worker_id BIGINT DEFAULT NULL COMMENT '接单服务人员ID',
+  assigned_time TIMESTAMP NULL DEFAULT NULL COMMENT '接单时间',
   status VARCHAR(20) NOT NULL,
   created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_orders_user FOREIGN KEY (user_id) REFERENCES users(user_id),
-  CONSTRAINT fk_orders_service FOREIGN KEY (service_id) REFERENCES services(service_id)
+  CONSTRAINT fk_orders_service FOREIGN KEY (service_id) REFERENCES services(service_id),
+  CONSTRAINT fk_orders_worker FOREIGN KEY (worker_id) REFERENCES workers(worker_id)
 );
 
 CREATE TABLE IF NOT EXISTS bill_queries (
@@ -78,3 +89,7 @@ INSERT INTO services (category, description, price) VALUES
 ('外出陪同', '陪同外出就医、购物、办事', 59.90),
 ('代购', '代为购买日用品、药品等', 29.90),
 ('维修', '上门水电维修、家电简单维护', 39.90);
+
+INSERT INTO workers (phone, name, password) VALUES
+('18000000001', '王师傅', '123456'),
+('18000000002', '赵师傅', '123456');

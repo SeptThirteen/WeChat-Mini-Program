@@ -20,6 +20,8 @@ public class Order {
     private String address;
     private String remark;
     private Integer rating;
+    private Long workerId;
+    private LocalDateTime assignedTime;
     private String status;
     private LocalDateTime createdTime;
 }
