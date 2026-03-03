@@ -6,9 +6,11 @@ import com.example.elderly.dto.CreateOrderRequest;
 import com.example.elderly.entity.Order;
 import com.example.elderly.entity.ServiceItem;
 import com.example.elderly.entity.User;
+import com.example.elderly.entity.Worker;
 import com.example.elderly.mapper.OrderMapper;
 import com.example.elderly.mapper.ServiceItemMapper;
 import com.example.elderly.mapper.UserMapper;
+import com.example.elderly.mapper.WorkerMapper;
 import com.example.elderly.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final UserMapper userMapper;
     private final ServiceItemMapper serviceItemMapper;
+    private final WorkerMapper workerMapper;
 
     @Override
     public Order createOrder(CreateOrderRequest request) {
@@ -66,6 +69,14 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderMapper.selectById(orderId);
         if (order == null) {
             throw new BusinessException(404, "订单不存在");
+        }
+        // 关联查询接单服务人员信息
+        if (order.getWorkerId() != null) {
+            Worker worker = workerMapper.selectById(order.getWorkerId());
+            if (worker != null) {
+                order.setWorkerName(worker.getName());
+                order.setWorkerPhone(worker.getPhone());
+            }
         }
         return order;
     }

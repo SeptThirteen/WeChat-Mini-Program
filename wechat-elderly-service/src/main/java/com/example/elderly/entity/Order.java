@@ -1,6 +1,7 @@
 package com.example.elderly.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -25,4 +26,11 @@ public class Order {
     private LocalDateTime assignedTime;
     private String status;
     private LocalDateTime createdTime;
+
+    /** 非持久化字段：接单服务人员信息（关联查询填充） */
+    @TableField(exist = false)
+    private String workerName;
+
+    @TableField(exist = false)
+    private String workerPhone;
 }

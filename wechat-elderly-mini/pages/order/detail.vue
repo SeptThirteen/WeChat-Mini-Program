@@ -48,6 +48,17 @@
           <view class="call-btn" @click="makeCall(order.contactPhone)">拨打</view>
         </view>
       </view>
+      <!-- 接单服务人员信息 -->
+      <view class="worker-card" v-if="order.workerName && order.status !== 'CREATED' && order.status !== 'CANCELLED'">
+        <text class="worker-title">👷 服务人员</text>
+        <view class="worker-info">
+          <text class="worker-name">{{ order.workerName }}</text>
+          <view class="worker-phone-row" v-if="order.workerPhone">
+            <text class="worker-phone">{{ order.workerPhone }}</text>
+            <view class="call-btn" @click="makeCall(order.workerPhone)">拨打</view>
+          </view>
+        </view>
+      </view>
       <view class="row" v-if="order.rating">
         <text class="label">评分</text>
         <text class="value rating-stars">{{ '★'.repeat(order.rating) }}{{ '☆'.repeat(5 - order.rating) }}</text>
@@ -236,6 +247,45 @@ onLoad((query) => {
   font-size: $fontSize-sm;
   padding: 6px 16px;
   border-radius: 14px;
+}
+
+.worker-card {
+  background: #f0f7ff;
+  border-radius: 10px;
+  padding: 14px 12px;
+  margin-top: 12px;
+}
+
+.worker-title {
+  display: block;
+  font-size: $fontSize-base;
+  font-weight: 600;
+  color: #1565c0;
+  margin-bottom: 8px;
+}
+
+.worker-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.worker-name {
+  font-size: $fontSize-base;
+  color: $color-text;
+  font-weight: 500;
+}
+
+.worker-phone-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.worker-phone {
+  font-size: $fontSize-base;
+  color: #1565c0;
+  font-weight: 600;
 }
 
 .status-created  { background: #fff3e0; color: #e65100; }

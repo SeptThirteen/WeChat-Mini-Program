@@ -40,3 +40,24 @@
 - [x] Profile editing (`pages/user/profile.vue`)
       → Inline edit mode for name and age; validates input before calling
          PUT /api/user/profile via new updateUserProfile() in api/user.js.
+
+## AI Module & Recent Features
+
+- [x] AI 双引擎问答（百度文心 ERNIE + 腾讯混元 Hunyuan）
+      → IAiProvider 策略模式，前端可切换引擎；文本问答 + 语音问答全链路。
+- [x] 全站语音操作按钮（VoiceActionSheet 组件）
+      → 首页/订单/查询/个人中心均可唤起语音操作。
+- [x] FAQ 常见问题列表 + 音频播放
+      → 6 条 FAQ 硬编码 + 预录 MP3 音频端点（/api/ai/faq-audio/{id}）。
+- [x] AI 问答历史记录（ai_query_logs 表 + GET /api/ai/history）
+      → 后端存储文本问答日志，前端可查询历史。
+- [x] 订单创建时保存联系电话（contact_phone 字段）
+      → OrderServiceImpl 创建订单时自动存入下单用户手机号。
+- [x] 订单详情显示联系电话 + 拨打按钮
+      → COMPLETED/RATED 状态下展示 contactPhone，可直接拨打。
+- [x] 订单详情显示服务人员信息（workerName + workerPhone）
+      → 接单后关联查询 Worker 姓名与电话，detail.vue 展示并可拨打。
+- [x] 常用地址管理（profile 编辑保存 + 创建订单快捷填入）
+      → profile 页新增常用地址卡片，后端 + localStorage 双存储。
+- [x] AI API 配置教程文档
+      → 新增 `md/AI-API配置教程.md`，覆盖百度/腾讯密钥获取与配置流程。

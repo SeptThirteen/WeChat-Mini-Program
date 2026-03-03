@@ -35,7 +35,7 @@ WeChat-Mini-Program/
 │   │   │   └── ai-chat.vue     # AI 问答入口
 │   │   ├── order/              # 订单流程（create→confirm→success→list→detail）
 │   │   ├── query/index.vue     # 便民缴费查询
-│   │   └── user/               # 个人中心（profile/bills/emergency）
+│   │   └── user/               # 个人中心（profile/bills/emergency/gov-tasks）
 │   ├── store/user.js           # Pinia 用户状态（token/userId）
 │   ├── styles/theme.scss       # 适老化设计 Token（字号/颜色/按钮尺寸）
 │   └── api/config.js           # BASE_URL 配置（本地调试需修改）
@@ -149,7 +149,7 @@ npm run dev:h5          # H5 浏览器调试
 |------|---------|------|
 | `users` | `user_id` / `phone` / `name` / `age` / `address` | 用户信息，登录时自动创建 |
 | `services` | `service_id` / `category` / `description` / `price` | 服务项目（滴滴摇人4类+基础3类） |
-| `orders` | `order_id` / `user_id` / `service_id` / `status` | 订单，status: `CREATED/COMPLETED/RATED/CANCELLED` |
+| `orders` | `order_id` / `user_id` / `service_id` / `status` / `contact_phone` / `worker_id` | 订单，status: `CREATED/ASSIGNED/COMPLETED/RATED/CANCELLED`；含联系电话和服务人员关联 |
 | `bill_queries` | `query_id` / `user_id` / `query_type` / `result_snapshot` | 缴费查询记录（当前为模拟数据） |
 | `ai_query_logs` | `log_id` / `user_id` / `provider` / `intent` / `query_text` / `response_text` | AI 问答日志（仅存文本，不存音频） |
 
@@ -191,7 +191,7 @@ $btn-height:    56px;     // 按钮最小高度
 ## 已知限制
 
 - 账单查询（`/api/bill/query`）返回模拟金额（¥128.50），不是真实账单数据
-- AI 问答已接入双引擎策略（百度文心 / 腾讯混元），需在 `application-dev.yml` 中填入真实 API Key 方可使用
-- FAQ 语音播报需在 `src/main/resources/static/audio/` 放置 `faq-001.mp3` ~ `faq-006.mp3` 文件（命名规范见该目录 README）
-- 紧急联系人存储为本地 mock 数据，需后端新增 `emergency_contacts` 表支持持久化
+- AI 问答已接入双引擎策略（百度文心 / 腾讯混元），需在 `application-dev.yml` 中填入真实 API Key 方可使用（详见 `md/AI-API配置教程.md`）
+- FAQ 语音播报需在 `src/main/resources/static/audio/` 放置 `faq-001.mp3` ~ `faq-006.mp3` 文件
 - 验证码登录跳过实际校验，测试时输入任意 6 位数字即可
+- Worker 密码为明文存储（测试项目简化）
