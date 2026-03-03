@@ -42,6 +42,7 @@ public class OrderServiceImpl implements OrderService {
         order.setScheduledSlot(request.getScheduledSlot());
         order.setAddress(request.getAddress());
         order.setRemark(request.getRemark());
+        order.setContactPhone(user.getPhone());
         order.setStatus("CREATED");
         orderMapper.insert(order);
         return order;

@@ -40,6 +40,14 @@
         <text class="label">备注</text>
         <text class="value">{{ order.remark }}</text>
       </view>
+      <!-- 结单/评价后显示联系电话 -->
+      <view class="row contact-row" v-if="order.contactPhone && (order.status === 'COMPLETED' || order.status === 'RATED')">
+        <text class="label">联系电话</text>
+        <view class="contact-phone-box">
+          <text class="value contact-phone">{{ order.contactPhone }}</text>
+          <view class="call-btn" @click="makeCall(order.contactPhone)">拨打</view>
+        </view>
+      </view>
       <view class="row" v-if="order.rating">
         <text class="label">评分</text>
         <text class="value rating-stars">{{ '★'.repeat(order.rating) }}{{ '☆'.repeat(5 - order.rating) }}</text>
@@ -115,6 +123,10 @@ const handleCancel = () => {
       }
     }
   });
+};
+
+const makeCall = (phoneNum) => {
+  uni.makePhoneCall({ phoneNumber: phoneNum });
 };
 
 const handleRate = () => {
@@ -197,6 +209,33 @@ onLoad((query) => {
   padding: 2px 8px;
   border-radius: 8px;
   font-size: 14px;
+}
+
+.contact-row {
+  background: #fff9f0;
+  border-radius: 8px;
+  padding: 12px 10px !important;
+  margin-top: 4px;
+}
+
+.contact-phone-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.contact-phone {
+  font-size: $fontSize-base;
+  font-weight: 600;
+  color: $color-primary;
+}
+
+.call-btn {
+  background: $color-primary;
+  color: #fff;
+  font-size: $fontSize-sm;
+  padding: 6px 16px;
+  border-radius: 14px;
 }
 
 .status-created  { background: #fff3e0; color: #e65100; }

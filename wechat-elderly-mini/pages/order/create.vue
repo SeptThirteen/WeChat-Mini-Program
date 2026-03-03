@@ -35,7 +35,13 @@
 
     <!-- 服务地址 -->
     <view class="section-card">
-      <text class="section-label">服务地址</text>
+      <view class="label-row">
+        <text class="section-label">服务地址</text>
+        <view class="use-saved-btn" v-if="commonAddress" @click="address = commonAddress">
+          使用常用地址
+        </view>
+      </view>
+      <text class="saved-addr-hint" v-if="commonAddress">常用：{{ commonAddress }}</text>
       <input
         class="text-input"
         v-model="address"
@@ -58,7 +64,8 @@
       <text class="price-text">服务完成后付费 · 预估 ¥{{ servicePrice }}</text>
     </view>
     <view class="submit-btn" @click="handleSubmit">
-      确认下单（预估¥{{ servicePrice }}·后付费）
+      <text class="submit-text">确认下单</text>
+      <text class="submit-sub">预估¥{{ servicePrice }} · 后付费</text>
     </view>
   </view>
 </template>
@@ -70,6 +77,7 @@ import { onLoad } from '@dcloudio/uni-app';
 const serviceId = ref('');
 const serviceName = ref('服务');
 const servicePrice = ref('0.00');
+const commonAddress = ref('');
 const selectedDate = ref('today');
 const selectedSlot = ref('morning');
 const address = ref('');
@@ -129,6 +137,7 @@ onLoad((query) => {
   serviceId.value = query?.serviceId || '';
   serviceName.value = decodeURIComponent(query?.serviceName || '服务');
   servicePrice.value = query?.servicePrice || '0.00';
+  commonAddress.value = uni.getStorageSync('commonAddress') || '';
 });
 </script>
 
@@ -216,14 +225,45 @@ onLoad((query) => {
   color: #fff;
 }
 
+.label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.label-row .section-label {
+  margin-bottom: 0;
+}
+
+.use-saved-btn {
+  background: $color-primary;
+  color: #fff;
+  font-size: $fontSize-sm;
+  padding: 4px 12px;
+  border-radius: 14px;
+  flex-shrink: 0;
+}
+
+.saved-addr-hint {
+  display: block;
+  font-size: $fontSize-sm;
+  color: $color-muted;
+  margin-bottom: 8px;
+}
+
 .text-input {
-  background: #f9f9f9;
-  border: 1px solid #eee;
-  border-radius: 10px;
-  padding: 12px;
+  display: block;
   width: 100%;
   box-sizing: border-box;
+  background: #f9f9f9;
+  border: 1.5px solid #eee;
+  border-radius: 10px;
+  padding: 0 14px;
+  height: 52px;
+  line-height: 52px;
   font-size: $fontSize-base;
+  color: $color-text;
 }
 
 .price-tip {
@@ -239,11 +279,25 @@ onLoad((query) => {
 .submit-btn {
   margin: 10px 16px 0;
   background: $color-primary;
-  color: #fff;
   border-radius: 14px;
-  text-align: center;
-  padding: 18px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 0;
+  gap: 2px;
+}
+
+.submit-text {
   font-size: $fontSize-md;
-  font-weight: 600;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.4;
+}
+
+.submit-sub {
+  font-size: $fontSize-sm;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.4;
 }
 </style>

@@ -69,6 +69,24 @@
         </view>
         <text class="func-arrow">▶</text>
       </view>
+
+      <!-- 常用地址 -->
+      <view class="func-card addr-card" v-if="!editingAddress" @click="editingAddress = true">
+        <text class="func-icon">📍</text>
+        <view class="func-text">
+          <text class="func-title">常用服务地址</text>
+          <text class="func-desc">{{ addressInput || '未设置，点击添加' }}</text>
+        </view>
+        <text class="func-arrow">✏️</text>
+      </view>
+      <view class="addr-edit-card" v-if="editingAddress">
+        <text class="addr-edit-title">编辑常用地址</text>
+        <input class="addr-input" v-model="addressInput" placeholder="输入常用服务地址" />
+        <view class="addr-btns">
+          <view class="addr-cancel" @click="editingAddress = false">取消</view>
+          <view class="addr-save" @click="saveCommonAddress">保存</view>
+        </view>
+      </view>
     </view>
 
     <view class="loading-box" v-if="userId && loading">
@@ -91,7 +109,7 @@
 
 <script setup>
 import { computed, nextTick, onMounted, ref } from 'vue';
-import { getUserProfile } from '../../api/user';
+import { getUserProfile, updateUserProfile } from '../../api/user';
 import { useUserStore } from '../../store/user';
 import VoiceActionSheet from '../../components/VoiceActionSheet.vue';
 import { voiceQuery, textQuery } from '../../api/ai';
@@ -104,6 +122,8 @@ const loading = ref(false);
 const currentTime = ref('');
 const showVoiceSheet = ref(false);
 const isReady = ref(false);
+const editingAddress = ref(false);
+const addressInput = ref('');
 
 const updateTime = () => {
   const now = new Date();
@@ -149,6 +169,23 @@ const handleQuickSelect = async ({ intent, text }) => {
   }
 };
 
+const saveCommonAddress = async () => {
+  const val = addressInput.value.trim();
+  if (!val) {
+    uni.showToast({ title: '请输入地址', icon: 'none' });
+    return;
+  }
+  try {
+    await updateUserProfile(userStore.userId, { address: val });
+    uni.setStorageSync('commonAddress', val);
+    profile.value = { ...profile.value, address: val };
+    editingAddress.value = false;
+    uni.showToast({ title: '已保存' });
+  } catch (e) {
+    uni.showToast({ title: '保存失败', icon: 'none' });
+  }
+};
+
 const handleLogout = () => {
   uni.showModal({
     title: '退出登录',
@@ -168,6 +205,9 @@ const loadProfile = async () => {
   try {
     const res = await getUserProfile(userStore.userId);
     profile.value = res.data || {};
+    // 同步常用地址
+    const cached = uni.getStorageSync('commonAddress');
+    addressInput.value = cached || profile.value.address || '';
   } catch {
     profile.value = {};
   } finally {
@@ -364,5 +404,62 @@ onMounted(() => {
   text-align: center;
   padding: 16px 0;
   font-size: $fontSize-base;
+}
+
+.addr-edit-card {
+  background: $color-card;
+  border-radius: 14px;
+  padding: 16px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.addr-edit-title {
+  display: block;
+  font-size: $fontSize-md;
+  color: $color-text;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.addr-input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  background: #f9f9f9;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 0 14px;
+  height: 52px;
+  line-height: 52px;
+  font-size: $fontSize-base;
+  margin-bottom: 12px;
+}
+
+.addr-btns {
+  display: flex;
+  gap: 12px;
+}
+
+.addr-cancel {
+  flex: 1;
+  height: 48px;
+  line-height: 48px;
+  text-align: center;
+  border-radius: 10px;
+  background: #f0f0f0;
+  color: $color-muted;
+  font-size: $fontSize-base;
+}
+
+.addr-save {
+  flex: 2;
+  height: 48px;
+  line-height: 48px;
+  text-align: center;
+  border-radius: 10px;
+  background: $color-primary;
+  color: #fff;
+  font-size: $fontSize-base;
+  font-weight: 600;
 }
 </style>

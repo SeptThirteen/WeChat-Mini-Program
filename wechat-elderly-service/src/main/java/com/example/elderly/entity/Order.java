@@ -19,6 +19,7 @@ public class Order {
     private String scheduledSlot;
     private String address;
     private String remark;
+    private String contactPhone;
     private Integer rating;
     private Long workerId;
     private LocalDateTime assignedTime;

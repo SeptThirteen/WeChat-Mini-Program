@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS orders (
   scheduled_slot VARCHAR(30) DEFAULT NULL COMMENT '预约时段',
   address VARCHAR(255) DEFAULT NULL COMMENT '服务地址',
   remark VARCHAR(500) DEFAULT NULL COMMENT '备注',
+  contact_phone VARCHAR(20) DEFAULT NULL COMMENT '用户联系电话（下单时快照）',
   rating INT DEFAULT NULL COMMENT '评分1-5',
   worker_id BIGINT DEFAULT NULL COMMENT '接单服务人员ID',
   assigned_time TIMESTAMP NULL DEFAULT NULL COMMENT '接单时间',
