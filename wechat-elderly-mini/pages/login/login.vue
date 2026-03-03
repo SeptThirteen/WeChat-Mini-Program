@@ -73,40 +73,62 @@ const handleLogin = async () => {
 
 <style lang="scss" scoped>
 .page {
-  padding: 16px;
-}
-
-.header {
-  margin-bottom: 12px;
-}
-
-.title {
-  font-size: 22px;
-  font-weight: 600;
-}
-
-.card {
-  background: $color-card;
-  border-radius: 12px;
-  padding: 16px;
-}
-
-.input {
-  background: #fff;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 12px;
-  width: 100%;
+  min-height: 100vh;
+  background: $color-bg;
+  padding: 40px 24px 24px;
   box-sizing: border-box;
 }
 
+.header {
+  margin-bottom: 32px;
+}
+
+.title {
+  font-size: $fontSize-title;   // 34px 适老化大标题
+  font-weight: 700;
+  color: #333;
+  line-height: 1.3;
+}
+
+.card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 28px 20px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  background: #fafafa;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 0 16px;
+  height: $btn-height;           // 56px 与按钮等高，触控友好
+  line-height: $btn-height;
+  font-size: $fontSize-base;     // 18px 正文字号
+  color: #333;
+  margin-bottom: 16px;
+}
+
+.input:focus {
+  border-color: $color-primary;
+}
+
 .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: $btn-height;           // 56px
   background: $color-primary;
   color: #fff;
   border-radius: 10px;
-  text-align: center;
-  padding: 10px 0;
+  font-size: $fontSize-md;       // 20px
+  font-weight: 600;
+  margin-top: 8px;
+  box-sizing: border-box;
 }
 
 .btn.disabled {

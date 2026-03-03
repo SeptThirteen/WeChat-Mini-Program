@@ -118,6 +118,11 @@ npm run dev:h5          # H5 浏览器调试
 | `/api/bill/query` | POST | ✅ | 费用查询（`userId` + `queryType`） |
 | `/api/user/profile` | GET | ✅ | 获取用户信息（`?userId=`） |
 | `/api/user/update` | PUT | ✅ | 更新用户信息（`userId` + 可选字段） |
+| `/api/ai/faq-list` | GET | ❌ | 获取常见问题列表（6 条） |
+| `/api/ai/faq-audio/{id}` | GET | ❌ | 获取 FAQ 音频流（需放置 MP3 文件） |
+| `/api/ai/text-query` | POST | ✅ | 文本 AI 问答（`userId/provider/intent/text`） |
+| `/api/ai/voice-query` | POST | ✅ | 语音 AI 问答（multipart 音频 + 参数） |
+| `/api/ai/history` | GET | ✅ | 查询历史记录（`?userId=&limit=`） |
 
 > **注意**：`/api/user/update` 是更新接口的实际路径（非 `/api/user/profile`）。
 
@@ -146,6 +151,7 @@ npm run dev:h5          # H5 浏览器调试
 | `services` | `service_id` / `category` / `description` / `price` | 服务项目（滴滴摇人4类+基础3类） |
 | `orders` | `order_id` / `user_id` / `service_id` / `status` | 订单，status: `CREATED/COMPLETED/RATED/CANCELLED` |
 | `bill_queries` | `query_id` / `user_id` / `query_type` / `result_snapshot` | 缴费查询记录（当前为模拟数据） |
+| `ai_query_logs` | `log_id` / `user_id` / `provider` / `intent` / `query_text` / `response_text` | AI 问答日志（仅存文本，不存音频） |
 
 ---
 
@@ -185,6 +191,7 @@ $btn-height:    56px;     // 按钮最小高度
 ## 已知限制
 
 - 账单查询（`/api/bill/query`）返回模拟金额（¥128.50），不是真实账单数据
-- AI 问答、政务代办、语音录入功能为 UI 占位，功能待后期接入
+- AI 问答已接入双引擎策略（百度文心 / 腾讯混元），需在 `application-dev.yml` 中填入真实 API Key 方可使用
+- FAQ 语音播报需在 `src/main/resources/static/audio/` 放置 `faq-001.mp3` ~ `faq-006.mp3` 文件（命名规范见该目录 README）
 - 紧急联系人存储为本地 mock 数据，需后端新增 `emergency_contacts` 表支持持久化
 - 验证码登录跳过实际校验，测试时输入任意 6 位数字即可
