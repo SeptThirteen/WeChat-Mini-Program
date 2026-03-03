@@ -8,3 +8,13 @@ spring:
 logging:
   level:
     com.example.elderly: info
+
+# AI provider keys for development
+ai:
+  default-provider: BAIDU
+  baidu:
+    api-key: "YOUR_BAIDU_API_KEY"
+    secret-key: "YOUR_BAIDU_SECRET_KEY"
+  tencent:
+    secret-id: "YOUR_TENCENT_SECRET_ID"
+    secret-key: "YOUR_TENCENT_SECRET_KEY"

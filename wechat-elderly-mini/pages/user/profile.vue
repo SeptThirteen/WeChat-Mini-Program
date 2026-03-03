@@ -2,7 +2,7 @@
   <view class="page">
     <view class="top-bar">
       <text class="time">{{ currentTime }}</text>
-      <view class="voice-btn" @click="handleVoice">
+      <view class="voice-btn" @click="showVoiceSheet = true">
         <text class="voice-text">语音说需求 🔊</text>
       </view>
     </view>
@@ -77,6 +77,15 @@
 
     <!-- 退出登录 -->
     <view class="logout-btn" v-if="userId" @click="handleLogout">退出登录</view>
+
+    <!-- 语音快捷操作弹窗 -->
+    <VoiceActionSheet
+      :show="showVoiceSheet"
+      context="profile"
+      @close="showVoiceSheet = false"
+      @voiceResult="handleVoiceResult"
+      @quickSelect="handleQuickSelect"
+    />
   </view>
 </template>
 
@@ -84,6 +93,8 @@
 import { computed, onMounted, ref } from 'vue';
 import { getUserProfile } from '../../api/user';
 import { useUserStore } from '../../store/user';
+import VoiceActionSheet from '../../components/VoiceActionSheet.vue';
+import { voiceQuery, textQuery } from '../../api/ai';
 
 const userStore = useUserStore();
 const userId = computed(() => userStore.userId);
@@ -91,6 +102,7 @@ const phone = computed(() => userStore.phone);
 const profile = ref({});
 const loading = ref(false);
 const currentTime = ref('');
+const showVoiceSheet = ref(false);
 
 const updateTime = () => {
   const now = new Date();
@@ -99,7 +111,42 @@ const updateTime = () => {
 
 const go = (url) => uni.navigateTo({ url });
 const goLogin = () => uni.navigateTo({ url: '/pages/login/login' });
-const handleVoice = () => uni.showToast({ title: '语音功能开发中', icon: 'none' });
+
+const handleVoiceResult = async (filePath) => {
+  if (!userStore.userId) {
+    uni.showToast({ title: '请先登录', icon: 'none' });
+    return;
+  }
+  uni.showLoading({ title: 'AI思考中…' });
+  try {
+    const res = await voiceQuery(filePath, userStore.userId, 'BAIDU', 'free');
+    uni.hideLoading();
+    uni.navigateTo({
+      url: `/pages/home/ai-chat?autoResult=${encodeURIComponent(JSON.stringify(res.data))}`
+    });
+  } catch (e) {
+    uni.hideLoading();
+    uni.showToast({ title: e.message || '语音识别失败', icon: 'none' });
+  }
+};
+
+const handleQuickSelect = async ({ intent, text }) => {
+  if (!userStore.userId) {
+    uni.showToast({ title: '请先登录', icon: 'none' });
+    return;
+  }
+  uni.showLoading({ title: 'AI思考中…' });
+  try {
+    const res = await textQuery({ userId: userStore.userId, provider: 'BAIDU', intent, text });
+    uni.hideLoading();
+    uni.navigateTo({
+      url: `/pages/home/ai-chat?autoResult=${encodeURIComponent(JSON.stringify(res.data))}`
+    });
+  } catch (e) {
+    uni.hideLoading();
+    uni.showToast({ title: e.message || '查询失败', icon: 'none' });
+  }
+};
 
 const showWip = (name) => {
   uni.showModal({

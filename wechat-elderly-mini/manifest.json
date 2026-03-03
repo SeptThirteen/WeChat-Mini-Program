@@ -13,6 +13,12 @@
         "appid" : "wx3624940e3fc07095",
         "setting" : {
             "urlCheck" : false
-        }
+        },
+        "permission" : {
+            "scope.record" : {
+                "desc" : "需要使用您的麦克风进行语音问答"
+            }
+        },
+        "requiredPrivateInfos" : []
     }
 }

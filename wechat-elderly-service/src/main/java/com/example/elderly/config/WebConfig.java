@@ -23,6 +23,8 @@ public class WebConfig implements WebMvcConfigurer {
                 "/api/service/list",
                 "/api/service/*",
                         "/api/health",
+                        "/api/ai/faq-list",
+                        "/api/ai/faq-audio/*",
                         "/swagger-ui/**",
                         "/swagger-ui.html",
                         "/api-docs/**",

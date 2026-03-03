@@ -1,0 +1,290 @@
+<template>
+  <!-- 底部弹窗：语音快捷操作 -->
+  <view class="voice-sheet-mask" v-if="show" @click.self="$emit('close')">
+    <view class="voice-sheet">
+      <view class="sheet-handle"></view>
+      <text class="sheet-title">🎤 语音快捷操作</text>
+
+      <!-- 上下文感知的快捷问题 -->
+      <view class="quick-list">
+        <view
+          v-for="(item, idx) in quickItems"
+          :key="idx"
+          class="quick-item"
+          @click="handleQuickItem(item)"
+        >
+          <text class="quick-icon">{{ item.icon }}</text>
+          <text class="quick-text">{{ item.label }}</text>
+          <text class="quick-arrow">▶</text>
+        </view>
+      </view>
+
+      <!-- 直接语音提问 -->
+      <view class="voice-record-row">
+        <view class="voice-big-btn" :class="{ recording: isRecording }" @click="toggleRecord">
+          <text class="voice-big-icon">{{ isRecording ? '🔴' : '🎤' }}</text>
+          <text class="voice-big-text">{{ isRecording ? '松开停止' : '按住说话' }}</text>
+        </view>
+        <text class="voice-hint" v-if="isRecording">{{ recordSec }}s / 60s</text>
+        <text class="voice-hint" v-else>点击语音直接提问</text>
+      </view>
+
+      <!-- 去AI问答页 -->
+      <view class="goto-ai" @click="goAiChat">
+        <text class="goto-text">进入 AI问答 完整页面 →</text>
+      </view>
+
+      <view class="sheet-cancel" @click="$emit('close')">
+        <text class="cancel-text">取消</text>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup>
+import { ref, computed, watch, onUnmounted } from 'vue';
+import { startRecord, stopRecord, onRecordEnd, onRecordError } from '../utils/voiceRecorder';
+
+const props = defineProps({
+  show: { type: Boolean, default: false },
+  context: { type: String, default: '' } // 'index' / 'order' / 'bill' / 'profile' / 'service'
+});
+
+const emit = defineEmits(['close', 'voiceResult', 'quickSelect']);
+
+const isRecording = ref(false);
+const recordSec = ref(0);
+let timer = null;
+
+// 根据上下文生成快捷问题
+const quickItems = computed(() => {
+  const base = [
+    { icon: '🎤', label: '语音问社保/政务', intent: 'shengbao' },
+    { icon: '💊', label: '语音问健康', intent: 'health' },
+    { icon: '🔧', label: '语音问帮扶服务', intent: 'bangfu' },
+  ];
+
+  const contextItems = {
+    index: [
+      { icon: '📋', label: '如何预约帮扶服务？', intent: 'bangfu', preset: '如何预约帮扶服务' },
+      { icon: '💰', label: '查询水电费', intent: 'free', preset: '如何查询水电费' },
+    ],
+    order: [
+      { icon: '📦', label: '订单如何取消？', intent: 'free', preset: '如何取消订单' },
+      { icon: '⭐', label: '如何评价订单？', intent: 'free', preset: '如何评价服务订单' },
+    ],
+    bill: [
+      { icon: '💡', label: '电费怎么查？', intent: 'free', preset: '如何查询电费' },
+      { icon: '💧', label: '水费怎么查？', intent: 'free', preset: '如何查询水费' },
+    ],
+    profile: [
+      { icon: '🆘', label: '如何设置紧急联系人？', intent: 'free', preset: '如何设置紧急联系人' },
+      { icon: '📋', label: '如何查看政务代办？', intent: 'free', preset: '如何查看政务代办进度' },
+    ],
+    service: [
+      { icon: '🛒', label: '这个服务怎么预约？', intent: 'bangfu', preset: '如何预约上门服务' },
+      { icon: '💲', label: '服务收费标准？', intent: 'bangfu', preset: '帮扶服务的收费标准是什么' },
+    ]
+  };
+
+  const extra = contextItems[props.context] || [];
+  return [...extra, ...base];
+});
+
+const handleQuickItem = (item) => {
+  if (item.preset) {
+    // 直接发文本问题
+    emit('quickSelect', { intent: item.intent, text: item.preset });
+    emit('close');
+  } else {
+    // 跳转到AI问答页对应 intent
+    uni.navigateTo({
+      url: `/pages/home/ai-chat?intent=${item.intent}`
+    });
+    emit('close');
+  }
+};
+
+const toggleRecord = () => {
+  if (isRecording.value) {
+    stopRecording();
+  } else {
+    startRecording();
+  }
+};
+
+const startRecording = () => {
+  uni.authorize({
+    scope: 'scope.record',
+    success: () => {
+      onRecordEnd((filePath, duration) => {
+        isRecording.value = false;
+        clearInterval(timer);
+        emit('voiceResult', filePath);
+        emit('close');
+      });
+
+      onRecordError(() => {
+        isRecording.value = false;
+        clearInterval(timer);
+        uni.showToast({ title: '录音失败', icon: 'none' });
+      });
+
+      const ok = startRecord({ format: 'wav', sampleRate: 16000 });
+      if (ok) {
+        isRecording.value = true;
+        recordSec.value = 0;
+        timer = setInterval(() => {
+          recordSec.value++;
+          if (recordSec.value >= 60) stopRecording();
+        }, 1000);
+      }
+    },
+    fail: () => {
+      uni.showModal({
+        title: '需要录音权限',
+        content: '请在设置中允许使用麦克风',
+        showCancel: false
+      });
+    }
+  });
+};
+
+const stopRecording = () => {
+  stopRecord();
+  clearInterval(timer);
+};
+
+const goAiChat = () => {
+  emit('close');
+  uni.navigateTo({ url: '/pages/home/ai-chat' });
+};
+
+// 关闭弹窗时清理录音
+watch(() => props.show, (val) => {
+  if (!val && isRecording.value) {
+    stopRecording();
+  }
+});
+
+onUnmounted(() => {
+  clearInterval(timer);
+});
+</script>
+
+<style lang="scss" scoped>
+.voice-sheet-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 998;
+  display: flex;
+  align-items: flex-end;
+}
+
+.voice-sheet {
+  background: #fff;
+  border-radius: 24px 24px 0 0;
+  width: 100%;
+  padding: 12px 20px 32px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.sheet-handle {
+  width: 40px;
+  height: 4px;
+  background: #ddd;
+  border-radius: 2px;
+  margin: 0 auto 14px;
+}
+
+.sheet-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #3d2f2a;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.quick-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.quick-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #fff7f3;
+  border-radius: 14px;
+}
+
+.quick-icon { font-size: 22px; flex-shrink: 0; }
+.quick-text { flex: 1; font-size: 18px; color: #3d2f2a; font-weight: 500; }
+.quick-arrow { font-size: 16px; color: #7d6b66; }
+
+.voice-record-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 0;
+  border-top: 1px solid #f0e8e4;
+  border-bottom: 1px solid #f0e8e4;
+  margin-bottom: 12px;
+}
+
+.voice-big-btn {
+  width: 88px;
+  height: 88px;
+  border-radius: 44px;
+  background: #e76f51;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all 0.3s;
+}
+
+.voice-big-btn.recording {
+  background: #dc2626;
+  box-shadow: 0 0 0 10px rgba(220, 38, 38, 0.15);
+}
+
+.voice-big-icon { font-size: 32px; }
+.voice-big-text { font-size: 12px; color: #fff; }
+
+.voice-hint {
+  font-size: 16px;
+  color: #7d6b66;
+}
+
+.goto-ai {
+  padding: 14px;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.goto-text {
+  font-size: 16px;
+  color: #e76f51;
+  font-weight: 500;
+}
+
+.sheet-cancel {
+  text-align: center;
+  padding: 14px;
+  background: #f5f5f5;
+  border-radius: 14px;
+}
+
+.cancel-text {
+  font-size: 18px;
+  color: #999;
+}
+</style>

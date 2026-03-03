@@ -2,7 +2,7 @@
   <view class="page">
     <view class="top-bar">
       <text class="time">{{ currentTime }}</text>
-      <view class="voice-btn" @click="handleVoice">
+      <view class="voice-btn" @click="showVoiceSheet = true">
         <text class="voice-text">语音说需求 🔊</text>
       </view>
     </view>
@@ -23,13 +23,27 @@
         <text class="main-desc">点击语音问社保/健康/服务 ▶</text>
       </view>
     </view>
+
+    <!-- 语音快捷操作弹窗 -->
+    <VoiceActionSheet
+      :show="showVoiceSheet"
+      context="index"
+      @close="showVoiceSheet = false"
+      @voiceResult="handleVoiceResult"
+      @quickSelect="handleQuickSelect"
+    />
   </view>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import VoiceActionSheet from '../../components/VoiceActionSheet.vue';
+import { voiceQuery, textQuery } from '../../api/ai';
+import { useUserStore } from '../../store/user';
 
+const userStore = useUserStore();
 const currentTime = ref('');
+const showVoiceSheet = ref(false);
 
 const updateTime = () => {
   const now = new Date();
@@ -38,8 +52,44 @@ const updateTime = () => {
 
 const go = (url) => uni.navigateTo({ url });
 
-const handleVoice = () => {
-  uni.showToast({ title: '语音功能开发中', icon: 'none' });
+// 语音录音结果：上传并跳转AI问答页
+ const handleVoiceResult = async (filePath) => {
+  if (!userStore.userId) {
+    uni.showToast({ title: '请先登录', icon: 'none' });
+    return;
+  }
+  uni.showLoading({ title: 'AI思考中…' });
+  try {
+    const res = await voiceQuery(filePath, userStore.userId, 'BAIDU', 'free');
+    uni.hideLoading();
+    const data = res.data;
+    uni.navigateTo({
+      url: `/pages/home/ai-chat?autoResult=${encodeURIComponent(JSON.stringify(data))}`
+    });
+  } catch (e) {
+    uni.hideLoading();
+    uni.showToast({ title: e.message || '语音识别失败', icon: 'none' });
+  }
+};
+
+// 快捷问题点击：发送文本并跳转
+const handleQuickSelect = async ({ intent, text }) => {
+  if (!userStore.userId) {
+    uni.showToast({ title: '请先登录', icon: 'none' });
+    return;
+  }
+  uni.showLoading({ title: 'AI思考中…' });
+  try {
+    const res = await textQuery({ userId: userStore.userId, provider: 'BAIDU', intent, text });
+    uni.hideLoading();
+    const data = res.data;
+    uni.navigateTo({
+      url: `/pages/home/ai-chat?autoResult=${encodeURIComponent(JSON.stringify(data))}`
+    });
+  } catch (e) {
+    uni.hideLoading();
+    uni.showToast({ title: e.message || '查询失败', icon: 'none' });
+  }
 };
 
 onMounted(() => {

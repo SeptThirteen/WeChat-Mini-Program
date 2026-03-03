@@ -90,6 +90,17 @@ INSERT INTO services (category, description, price) VALUES
 ('代购', '代为购买日用品、药品等', 29.90),
 ('维修', '上门水电维修、家电简单维护', 39.90);
 
+CREATE TABLE IF NOT EXISTS ai_query_logs (
+  log_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  user_id BIGINT NOT NULL,
+  provider VARCHAR(20) NOT NULL COMMENT 'BAIDU / TENCENT',
+  intent VARCHAR(30) DEFAULT 'free' COMMENT 'shengbao/health/bangfu/faq/free',
+  query_text TEXT NOT NULL COMMENT '用户输入文本（ASR转写后）',
+  response_text TEXT COMMENT 'AI回复文本',
+  created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_ai_logs_user FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
 INSERT INTO workers (phone, name, password) VALUES
 ('18000000001', '王师傅', '123456'),
 ('18000000002', '赵师傅', '123456');
