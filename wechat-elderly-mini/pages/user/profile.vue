@@ -148,14 +148,6 @@ const handleQuickSelect = async ({ intent, text }) => {
   }
 };
 
-const showWip = (name) => {
-  uni.showModal({
-    title: '功能建设中',
-    content: `「${name}」功能正在建设，敬请期待`,
-    showCancel: false
-  });
-};
-
 const handleLogout = () => {
   uni.showModal({
     title: '退出登录',

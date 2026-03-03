@@ -136,6 +136,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick } from 'vue';
+import { onLoad } from '@dcloudio/uni-app';
 import { useUserStore } from '../../store/user';
 import { textQuery, voiceQuery, getFaqList, getFaqAudioUrl } from '../../api/ai';
 import { startRecord, stopRecord, onRecordEnd, onRecordError } from '../../utils/voiceRecorder';
@@ -381,10 +382,26 @@ const scrollToBottom = () => {
   });
 };
 
-onMounted(() => {
-  // 检查是否通过路由传参自动开始
-  // e.g. /pages/home/ai-chat?intent=shengbao&autoRecord=1
+// 接收从首页/个人中心语音按钮直接带过来的AI结果
+onLoad((query) => {
+  if (query && query.autoResult) {
+    try {
+      const data = JSON.parse(decodeURIComponent(query.autoResult));
+      if (data.queryText) {
+        chatMessages.value.push({ role: 'user', text: data.queryText, provider: data.provider || provider.value });
+      }
+      if (data.responseText) {
+        chatMessages.value.push({ role: 'ai', text: data.responseText, provider: data.provider || provider.value });
+        if (data.provider) provider.value = data.provider;
+        nextTick(() => scrollToBottom());
+      }
+    } catch (e) {
+      console.warn('autoResult parse error', e);
+    }
+  }
 });
+
+onMounted(() => {});
 
 onUnmounted(() => {
   clearInterval(recordTimer);
