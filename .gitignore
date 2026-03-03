@@ -1,6 +1,9 @@
 # Temp files created by Claude Code
 tmpclaude-*
 
+# AI 对话上下文交接文档（不纳入版本控制）
+_context/
+
 # Frontend dependencies & build output
 wechat-elderly-mini/node_modules/
 wechat-elderly-mini/dist/
