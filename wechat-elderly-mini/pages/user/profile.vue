@@ -1,5 +1,5 @@
 <template>
-  <view class="page">
+  <view class="page" v-if="isReady">
     <view class="top-bar">
       <text class="time">{{ currentTime }}</text>
       <view class="voice-btn" @click="showVoiceSheet = true">
@@ -90,7 +90,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import { getUserProfile } from '../../api/user';
 import { useUserStore } from '../../store/user';
 import VoiceActionSheet from '../../components/VoiceActionSheet.vue';
@@ -103,6 +103,7 @@ const profile = ref({});
 const loading = ref(false);
 const currentTime = ref('');
 const showVoiceSheet = ref(false);
+const isReady = ref(false);
 
 const updateTime = () => {
   const now = new Date();
@@ -175,9 +176,13 @@ const loadProfile = async () => {
 };
 
 onMounted(() => {
-  updateTime();
-  setInterval(updateTime, 30000);
-  loadProfile();
+  // 等待 Pinia 从持久化存储恢复状态后再渲染，避免同时显示两套视图
+  nextTick(() => {
+    isReady.value = true;
+    updateTime();
+    setInterval(updateTime, 30000);
+    loadProfile();
+  });
 });
 </script>
 

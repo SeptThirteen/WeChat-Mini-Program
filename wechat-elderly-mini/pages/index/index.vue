@@ -1,5 +1,5 @@
 <template>
-  <view class="page">
+  <view class="page" v-if="isReady">
     <view class="top-bar">
       <text class="time">{{ currentTime }}</text>
       <view class="voice-btn" @click="showVoiceSheet = true">
@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { nextTick, ref, onMounted } from 'vue';
 import VoiceActionSheet from '../../components/VoiceActionSheet.vue';
 import { voiceQuery, textQuery } from '../../api/ai';
 import { useUserStore } from '../../store/user';
@@ -44,6 +44,7 @@ import { useUserStore } from '../../store/user';
 const userStore = useUserStore();
 const currentTime = ref('');
 const showVoiceSheet = ref(false);
+const isReady = ref(false);
 
 const updateTime = () => {
   const now = new Date();
@@ -93,8 +94,11 @@ const handleQuickSelect = async ({ intent, text }) => {
 };
 
 onMounted(() => {
-  updateTime();
-  setInterval(updateTime, 30000);
+  nextTick(() => {
+    isReady.value = true;
+    updateTime();
+    setInterval(updateTime, 30000);
+  });
 });
 </script>
 
