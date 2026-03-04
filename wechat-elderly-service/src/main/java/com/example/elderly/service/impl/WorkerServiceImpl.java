@@ -3,6 +3,7 @@ package com.example.elderly.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.elderly.common.BusinessException;
 import com.example.elderly.dto.WorkerLoginRequest;
+import com.example.elderly.dto.WorkerRegisterRequest;
 import com.example.elderly.entity.Order;
 import com.example.elderly.entity.User;
 import com.example.elderly.entity.Worker;
@@ -30,6 +31,25 @@ public class WorkerServiceImpl implements WorkerService {
     private final JwtUtil jwtUtil;
 
     @Override
+    public Map<String, Object> register(WorkerRegisterRequest request) {
+        QueryWrapper<Worker> wrapper = new QueryWrapper<>();
+        wrapper.eq("phone", request.getPhone());
+        Worker existing = workerMapper.selectOne(wrapper);
+        if (existing != null) {
+            throw new BusinessException(409, "手机号已注册");
+        }
+
+        Worker worker = new Worker();
+        worker.setName(request.getName());
+        worker.setPhone(request.getPhone());
+        worker.setPassword(request.getPassword());
+        worker.setCreatedTime(LocalDateTime.now());
+        workerMapper.insert(worker);
+
+        return buildLoginResult(worker);
+    }
+
+    @Override
     public Map<String, Object> login(WorkerLoginRequest request) {
         QueryWrapper<Worker> wrapper = new QueryWrapper<>();
         wrapper.eq("phone", request.getPhone());
@@ -46,7 +66,19 @@ public class WorkerServiceImpl implements WorkerService {
         claims.put("phone", worker.getPhone());
         claims.put("role", "worker");
         String token = jwtUtil.generateToken(claims);
+        return buildLoginResult(worker, token);
+    }
 
+    private Map<String, Object> buildLoginResult(Worker worker) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("workerId", worker.getWorkerId());
+        claims.put("phone", worker.getPhone());
+        claims.put("role", "worker");
+        String token = jwtUtil.generateToken(claims);
+        return buildLoginResult(worker, token);
+    }
+
+    private Map<String, Object> buildLoginResult(Worker worker, String token) {
         Map<String, Object> result = new HashMap<>();
         result.put("token", token);
         result.put("workerId", worker.getWorkerId());

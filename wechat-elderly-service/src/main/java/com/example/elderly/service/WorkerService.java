@@ -1,6 +1,7 @@
 package com.example.elderly.service;
 
 import com.example.elderly.dto.WorkerLoginRequest;
+import com.example.elderly.dto.WorkerRegisterRequest;
 import com.example.elderly.entity.Order;
 
 import java.util.List;
@@ -10,6 +11,9 @@ public interface WorkerService {
 
     /** 服务人员登录，返回 token + 基本信息 */
     Map<String, Object> login(WorkerLoginRequest request);
+
+    /** 服务人员注册，返回 token + 基本信息 */
+    Map<String, Object> register(WorkerRegisterRequest request);
 
     /** 获取所有待抢单（status=CREATED） */
     List<Map<String, Object>> pendingOrders();

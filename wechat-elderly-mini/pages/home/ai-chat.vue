@@ -145,7 +145,8 @@ import { playAudio, stopAudio, destroyAudio } from '../../utils/audioPlayer';
 const userStore = useUserStore();
 
 // AI引擎选择
-const provider = ref('BAIDU');
+// 默认选用腾讯混元（当前已配置密钥）；如果已配置百度文心，可切换到 BAIDU 使用
+const provider = ref('TENCENT');
 
 // 录音相关
 const showRecordPanel = ref(false);

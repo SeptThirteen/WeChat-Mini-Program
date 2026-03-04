@@ -10,8 +10,9 @@ logging:
     com.example.elderly: info
 
 # AI provider keys for development
+# Copy this file to application-dev.yml and fill in your real keys
 ai:
-  default-provider: BAIDU
+  default-provider: TENCENT
   baidu:
     api-key: "YOUR_BAIDU_API_KEY"
     secret-key: "YOUR_BAIDU_SECRET_KEY"

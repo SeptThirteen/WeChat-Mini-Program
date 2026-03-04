@@ -69,7 +69,29 @@ WeChat-Mini-Program/
 mysql -u root -p < wechat-elderly-service/src/main/resources/db/init.sql
 ```
 
-### 2. 启动后端
+### 2. 配置开发环境密钥
+
+```bash
+cd wechat-elderly-service/src/main/resources
+cp application-dev.yml.example application-dev.yml
+```
+
+编辑 `application-dev.yml`，填入真实的 AI API 密钥：
+
+```yaml
+ai:
+  default-provider: TENCENT
+  baidu:
+    api-key: "你的百度API Key"
+    secret-key: "你的百度Secret Key"
+  tencent:
+    secret-id: "你的腾讯SecretId"
+    secret-key: "你的腾讯SecretKey"
+```
+
+> ⚠️ `application-dev.yml` 已加入 `.gitignore`，不会被提交到仓库。请勿将真实密钥写入其他被跟踪的文件中。
+
+### 3. 启动后端
 
 ```bash
 cd wechat-elderly-service
@@ -80,7 +102,7 @@ mvn spring-boot:run
 - 健康检查：`http://localhost:8080/api/health`
 - Swagger UI：`http://localhost:8080/swagger-ui.html`
 
-### 3. 配置前端接口地址
+### 4. 配置前端接口地址
 
 修改 `wechat-elderly-mini/api/config.js` 中的 `BASE_URL`，将 IP 改为本机局域网地址（微信小程序不支持 localhost）：
 
@@ -88,7 +110,7 @@ mvn spring-boot:run
 const BASE_URL = 'http://192.168.x.x:8080';  // 改为实际 IP
 ```
 
-### 4. 启动前端
+### 5. 启动前端
 
 ```bash
 cd wechat-elderly-mini
@@ -191,7 +213,7 @@ $btn-height:    56px;     // 按钮最小高度
 ## 已知限制
 
 - 账单查询（`/api/bill/query`）返回模拟金额（¥128.50），不是真实账单数据
-- AI 问答已接入双引擎策略（百度文心 / 腾讯混元），需在 `application-dev.yml` 中填入真实 API Key 方可使用（详见 `md/AI-API配置教程.md`）
+- AI 问答已接入双引擎策略（百度文心 / 腾讯混元），需在 `application-dev.yml` 中填入真实 API Key 方可使用（从 `.example` 模板复制，详见 `md/AI-API配置教程.md`）
 - FAQ 语音播报需在 `src/main/resources/static/audio/` 放置 `faq-001.mp3` ~ `faq-006.mp3` 文件
 - 验证码登录跳过实际校验，测试时输入任意 6 位数字即可
 - Worker 密码为明文存储（测试项目简化）

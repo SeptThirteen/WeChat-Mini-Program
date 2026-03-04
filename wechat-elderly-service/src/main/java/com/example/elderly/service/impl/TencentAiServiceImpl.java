@@ -39,6 +39,7 @@ public class TencentAiServiceImpl implements IAiProvider {
     private static final String HUNYUAN_HOST = "hunyuan.tencentcloudapi.com";
     private static final String HUNYUAN_URL = "https://hunyuan.tencentcloudapi.com";
     private static final String SERVICE = "hunyuan";
+    private static final String REGION = "ap-beijing"; // 官方文档推荐区域
     private static final String ALGORITHM = "TC3-HMAC-SHA256";
 
     @PostConstruct
@@ -149,7 +150,7 @@ public class TencentAiServiceImpl implements IAiProvider {
             bodyMap.put("Stream", false);
             String payload = objectMapper.writeValueAsString(bodyMap);
 
-            String authorization = buildTc3Authorization(
+                String authorization = buildTc3Authorization(
                     secretId, secretKey, SERVICE, HUNYUAN_HOST,
                     action, version, timestamp, date, payload);
 
@@ -162,12 +163,20 @@ public class TencentAiServiceImpl implements IAiProvider {
                     .addHeader("X-TC-Action", action)
                     .addHeader("X-TC-Version", version)
                     .addHeader("X-TC-Timestamp", String.valueOf(timestamp))
+                    .addHeader("X-TC-Region", REGION)
                     .build();
 
             try (Response response = httpClient.newCall(request).execute()) {
                 String body = response.body().string();
                 JsonNode node = objectMapper.readTree(body);
                 JsonNode resp = node.path("Response");
+                if (resp.has("Error")) {
+                    JsonNode err = resp.get("Error");
+                    String msg = err.path("Message").asText();
+                    String code = err.path("Code").asText();
+                    log.warn("腾讯混元返回错误 code={} msg={}", code, msg);
+                    return "AI服务暂时不可用：" + msg;
+                }
                 if (resp.has("Choices") && resp.get("Choices").isArray() && resp.get("Choices").size() > 0) {
                     return resp.get("Choices").get(0).path("Message").path("Content").asText();
                 }

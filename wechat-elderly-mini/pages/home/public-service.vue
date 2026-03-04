@@ -25,20 +25,24 @@
 <script setup>
 const goBack = () => uni.navigateBack();
 
-const wip = (name) => {
-  uni.showModal({
-    title: '功能建设中',
-    content: `「${name}」功能正在建设，敬请期待`,
-    showCancel: false
+const openMini = (shortLink) => {
+  uni.navigateToMiniProgram({
+    shortLink,
+    success: () => {
+      uni.showToast({ title: '即将跳转', icon: 'none' });
+    },
+    fail: () => {
+      uni.showToast({ title: '跳转失败，请重试', icon: 'none' });
+    }
   });
 };
 
 const toQuery = (type) => uni.navigateTo({ url: `/pages/query/index?type=${type}` });
 
 const services = [
-  { key: 'shebao',  name: '社保查询',     icon: '🏛',  tag: 'gov',  action: () => wip('社保查询') },
-  { key: 'yanglao', name: '养老补贴申请',  icon: '👴',  tag: 'gov',  action: () => wip('养老补贴申请') },
-  { key: 'yibao',   name: '医保备案',     icon: '🏥',  tag: 'gov',  action: () => wip('医保备案') },
+  { key: 'shebao',  name: '社保查询',     icon: '🏛',  tag: 'gov',  action: () => openMini('#小程序://我的社保卡/A8fzVgm5OGPNYRp') },
+  { key: 'yanglao', name: '养老补贴申请',  icon: '👴',  tag: 'gov',  action: () => openMini('#小程序://民政通/KcvVG5Ky8iqicDv') },
+  { key: 'yibao',   name: '医保备案',     icon: '🏥',  tag: 'gov',  action: () => openMini('#小程序://国家医保/tdL3MZpbCQz2SZl') },
   { key: 'dianfei', name: '电费缴纳',     icon: '💡',  tag: 'bill', action: () => toQuery('ELECTRICITY') },
   { key: 'shuifei', name: '水费缴纳',     icon: '💧',  tag: 'bill', action: () => toQuery('WATER') },
   { key: 'ranqi',   name: '燃气/有线电视', icon: '📺',  tag: 'bill', action: () => toQuery('TV') },

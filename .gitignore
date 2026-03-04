@@ -12,6 +12,10 @@ wechat-elderly-mini/unpackage/
 # Backend build output
 wechat-elderly-service/target/
 
+# Dev config with secrets (use application-dev.yml.example as template)
+wechat-elderly-service/src/main/resources/application-dev.yml
+wechat-elderly-service/target/**/application-dev.yml
+
 # IDE
 .idea/
 *.iml

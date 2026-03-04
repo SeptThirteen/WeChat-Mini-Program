@@ -2,6 +2,7 @@ package com.example.elderly.controller;
 
 import com.example.elderly.common.ApiResponse;
 import com.example.elderly.dto.WorkerLoginRequest;
+import com.example.elderly.dto.WorkerRegisterRequest;
 import com.example.elderly.entity.Order;
 import com.example.elderly.service.WorkerService;
 import jakarta.validation.Valid;
@@ -21,6 +22,12 @@ public class WorkerController {
     @PostMapping("/api/worker/login")
     public ApiResponse<Map<String, Object>> login(@Valid @RequestBody WorkerLoginRequest request) {
         return ApiResponse.success(workerService.login(request));
+    }
+
+    /** 服务人员注册（公开接口） */
+    @PostMapping("/api/worker/register")
+    public ApiResponse<Map<String, Object>> register(@Valid @RequestBody WorkerRegisterRequest request) {
+        return ApiResponse.success(workerService.register(request));
     }
 
     /** 获取所有待抢订单 */
