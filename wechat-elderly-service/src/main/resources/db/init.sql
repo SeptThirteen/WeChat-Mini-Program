@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS services (
   category VARCHAR(50) NOT NULL,
   description VARCHAR(255) NOT NULL,
   price DECIMAL(10, 2) NOT NULL,
+  display_name VARCHAR(50) DEFAULT NULL COMMENT '面向用户的友好名称',
   created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -82,14 +83,14 @@ INSERT INTO users (phone, name, age, address, community) VALUES
 ('13800000000', '张三', 68, '示例小区 1 号楼', '阳光社区居委会'),
 ('13900000000', '李四', 72, '示例小区 2 号楼', '幸福社区居委会');
 
-INSERT INTO services (category, description, price) VALUES
-('家务帮助', '上门打扫、整理房间', 39.90),
-('基础陪护', '陪同就医、取药', 59.90),
-('健康测量', '血压血糖基础测量', 29.90),
-('日间照护', '日间上门照护、陪伴服务', 49.90),
-('外出陪同', '陪同外出就医、购物、办事', 59.90),
-('代购', '代为购买日用品、药品等', 29.90),
-('维修', '上门水电维修、家电简单维护', 39.90);
+INSERT INTO services (category, description, price, display_name) VALUES
+('家务帮助', '上门打扫、整理房间', 39.90, '洁净到家'),
+('基础陪护', '陪同就医、取药', 59.90, '就医陪护'),
+('健康测量', '血压血糖基础测量', 29.90, '健康小站'),
+('日间照护', '日间上门照护、陪伴服务', 49.90, '暖心陪伴'),
+('外出陪同', '陪同外出就医、购物、办事', 59.90, '贴心出行'),
+('代购', '代为购买日用品、药品等', 29.90, '跑腿帮买'),
+('维修', '上门水电维修、家电简单维护', 39.90, '上门维修');
 
 CREATE TABLE IF NOT EXISTS ai_query_logs (
   log_id BIGINT PRIMARY KEY AUTO_INCREMENT,

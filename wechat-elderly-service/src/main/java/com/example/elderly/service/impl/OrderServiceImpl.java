@@ -40,7 +40,9 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order();
         order.setUserId(request.getUserId());
         order.setServiceId(request.getServiceId());
-        order.setServiceName(item.getCategory() + " - " + item.getDescription());
+        // 优先使用友好名称，回退到 category
+        String displayName = item.getDisplayName() != null ? item.getDisplayName() : item.getCategory();
+        order.setServiceName(displayName + " - " + item.getDescription());
         order.setScheduledDate(request.getScheduledDate());
         order.setScheduledSlot(request.getScheduledSlot());
         order.setAddress(request.getAddress());

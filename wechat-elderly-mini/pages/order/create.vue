@@ -61,8 +61,17 @@
       />
     </view>
 
+    <!-- 细分需求展开按钮（只对4类服务显示） -->
+    <view 
+      class="advanced-toggle" 
+      v-if="isDayCare || isAccompany || isPurchase || isRepair"
+      @click="toggleAdvanced"
+    >
+      <text class="toggle-text">{{ showAdvanced ? '收起详细需求 ▲' : '填写更多需求（可选） ▼' }}</text>
+    </view>
+
     <!-- 细分需求（按服务类型） -->
-    <view class="section-card" v-if="isDayCare">
+    <view class="section-card" v-if="showAdvanced && isDayCare">
       <text class="section-label">日间照护需求</text>
       <view class="form-row">
         <text class="form-label">护理重点</text>
@@ -78,7 +87,7 @@
       </view>
     </view>
 
-    <view class="section-card" v-if="isAccompany">
+    <view class="section-card" v-if="showAdvanced && isAccompany">
       <text class="section-label">外出陪同需求</text>
       <view class="form-row">
         <text class="form-label">出行目的</text>
@@ -96,7 +105,7 @@
       </view>
     </view>
 
-    <view class="section-card" v-if="isPurchase">
+    <view class="section-card" v-if="showAdvanced && isPurchase">
       <text class="section-label">代购买清单</text>
       <view class="form-row">
         <text class="form-label">物品类型</text>
@@ -114,7 +123,7 @@
       </view>
     </view>
 
-    <view class="section-card" v-if="isRepair">
+    <view class="section-card" v-if="showAdvanced && isRepair">
       <text class="section-label">维修细项</text>
       <view class="chip-row">
         <view
@@ -146,7 +155,7 @@
       <text class="price-text">服务完成后付费 · 预估 ¥{{ servicePrice }}</text>
     </view>
     <view class="submit-btn" @click="handleSubmit">
-      <text class="submit-text">确认下单</text>
+      <text class="submit-text">立即预约</text>
       <text class="submit-sub">预估¥{{ servicePrice }} · 后付费</text>
     </view>
   </view>
@@ -155,6 +164,10 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
+import { useUserStore } from '../../store/user';
+import { getUserProfile } from '../../api/user';
+
+const userStore = useUserStore();
 
 const serviceId = ref('');
 const serviceName = ref('服务');
@@ -224,6 +237,10 @@ const isAccompany = computed(() => detectServiceKey.value === 'accompany');
 const isPurchase = computed(() => detectServiceKey.value === 'purchase');
 const isRepair = computed(() => detectServiceKey.value === 'repair');
 
+// 折叠控制
+const showAdvanced = ref(false);
+const toggleAdvanced = () => { showAdvanced.value = !showAdvanced.value; };
+
 // 细分字段
 const careFocus = ref('');
 const mobility = ref('');
@@ -282,6 +299,9 @@ watch(selectedSlot, (val) => {
 });
 
 const handleSubmit = () => {
+  // 触觉反馈
+  uni.vibrateShort({ type: 'light' });
+  
   if (!address.value.trim()) {
     uni.showToast({ title: '请填写服务地址', icon: 'none' });
     return;
@@ -309,10 +329,37 @@ onLoad((query) => {
   serviceId.value = query?.serviceId || '';
   serviceName.value = decodeURIComponent(query?.serviceName || '服务');
   servicePrice.value = query?.servicePrice || '0.00';
-  commonAddress.value = uni.getStorageSync('commonAddress') || '';
+  
+  // 智能默认时段：根据当前时间选择最近可用时段
+  const now = new Date();
+  const hour = now.getHours();
+  if (hour < 9) {
+    selectedSlot.value = 'morning'; // 09:00 前 → 上午
+  } else if (hour < 14) {
+    selectedSlot.value = 'noon'; // 14:00 前 → 中午
+  } else {
+    selectedSlot.value = 'afternoon'; // 否则 → 下午
+  }
   // 根据默认段初始化时间
   selectedTime.value = slotConfigs[selectedSlot.value].def;
+  
+  // 加载用户地址预填
+  loadUserAddress();
 });
+
+const loadUserAddress = async () => {
+  try {
+    const userId = userStore.userId;
+    if (!userId) return;
+    const res = await getUserProfile(userId);
+    if (res.data && res.data.address) {
+      commonAddress.value = res.data.address;
+      address.value = res.data.address; // 预填地址
+    }
+  } catch (e) {
+    // 静默失败，用户可手动输入
+  }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -507,12 +554,12 @@ onLoad((query) => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 14px 0;
-  gap: 2px;
+  padding: 20px 0; /* 增加高度到约100rpx */
+  gap: 4px;
 }
 
 .submit-text {
-  font-size: $fontSize-md;
+  font-size: 36rpx; /* 增加字号 */
   font-weight: 700;
   color: #fff;
   line-height: 1.4;
@@ -522,5 +569,21 @@ onLoad((query) => {
   font-size: $fontSize-sm;
   color: rgba(255, 255, 255, 0.9);
   line-height: 1.4;
+}
+
+.advanced-toggle {
+  margin: 16px;
+  padding: 14px 0;
+  background: linear-gradient(135deg, #fff7f3 0%, #ffeee6 100%);
+  border: 1.5px dashed $color-primary;
+  border-radius: 12px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.toggle-text {
+  font-size: $fontSize-base;
+  color: $color-primary;
+  font-weight: 600;
 }
 </style>

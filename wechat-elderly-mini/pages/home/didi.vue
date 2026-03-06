@@ -34,10 +34,10 @@ const loading = ref(false);
 const serviceMap = ref({});
 
 const didiServices = [
-  { type: '日间照护', name: '日间照护', icon: '🌞' },
-  { type: '外出陪同', name: '外出陪同', icon: '🚶' },
-  { type: '代购',   name: '代购',   icon: '🛒' },
-  { type: '维修',   name: '维修',   icon: '🔧' },
+  { type: '日间照护', name: '暖心陪伴', icon: '🌞' },
+  { type: '外出陪同', name: '贴心出行', icon: '🚶' },
+  { type: '代购',   name: '跑腿帮买',   icon: '🛒' },
+  { type: '维修',   name: '上门维修',   icon: '🔧' },
 ];
 
 const loadServices = async () => {

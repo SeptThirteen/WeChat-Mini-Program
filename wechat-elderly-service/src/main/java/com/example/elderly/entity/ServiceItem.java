@@ -16,5 +16,6 @@ public class ServiceItem {
     private String category;
     private String description;
     private BigDecimal price;
+    private String displayName;
     private LocalDateTime createdTime;
 }
