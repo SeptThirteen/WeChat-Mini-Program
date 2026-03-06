@@ -45,6 +45,42 @@
       </view>
     </view>
 
+    <!-- 订单类型切换 -->
+    <view class="section-card">
+      <text class="section-label">预约类型</text>
+      <view class="chip-row">
+        <view class="chip" :class="{ active: orderType === 'SINGLE' }" @click="orderType = 'SINGLE'">单次预约</view>
+        <view class="chip" :class="{ active: orderType === 'RECURRING' }" @click="orderType = 'RECURRING'">长期预约 🔁</view>
+      </view>
+      <!-- 长期订单专属字段 -->
+      <view v-if="orderType === 'RECURRING'" class="recurring-fields">
+        <view class="form-row">
+          <text class="form-label">开始日期</text>
+          <picker mode="date" :value="dateStart" :start="todayStr" @change="dateStart = $event.detail.value">
+            <view class="picker-field">{{ dateStart || '请选择开始日期' }}</view>
+          </picker>
+        </view>
+        <view class="form-row">
+          <text class="form-label">结束日期</text>
+          <picker mode="date" :value="dateEnd" :start="dateStart || todayStr" @change="dateEnd = $event.detail.value">
+            <view class="picker-field">{{ dateEnd || '请选择结束日期' }}</view>
+          </picker>
+        </view>
+        <view class="form-row">
+          <text class="form-label">重复频率</text>
+          <view class="chip-row">
+            <view
+              v-for="r in recurrenceOptions"
+              :key="r"
+              class="chip"
+              :class="{ active: recurrenceRule === r }"
+              @click="recurrenceRule = r"
+            >{{ r }}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
     <!-- 服务地址 -->
     <view class="section-card">
       <view class="label-row">
@@ -179,6 +215,17 @@ const selectedTime = ref('09:00');
 const address = ref('');
 const remark = ref('');
 
+// 长期订单
+const orderType = ref('SINGLE');
+const dateStart = ref('');
+const dateEnd = ref('');
+const recurrenceRule = ref('每天');
+const recurrenceOptions = ['每天', '每周', '每周一三五', '每周二四六', '工作日'];
+const todayStr = (() => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+})();
+
 const today = new Date();
 const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
 const afterTomorrow = new Date(today); afterTomorrow.setDate(today.getDate() + 2);
@@ -310,6 +357,17 @@ const handleSubmit = () => {
     uni.showToast({ title: '请补充维修项目或故障', icon: 'none' });
     return;
   }
+  // 长期订单校验
+  if (orderType.value === 'RECURRING') {
+    if (!dateStart.value || !dateEnd.value) {
+      uni.showToast({ title: '请选择长期预约的起止日期', icon: 'none' });
+      return;
+    }
+    if (dateEnd.value <= dateStart.value) {
+      uni.showToast({ title: '结束日期须晚于开始日期', icon: 'none' });
+      return;
+    }
+  }
   const slotStr = `${slotConfigs[selectedSlot.value].label} ${selectedTime.value}`;
   const params = {
     serviceId: serviceId.value,
@@ -319,6 +377,10 @@ const handleSubmit = () => {
     slotStr,
     address: address.value.trim(),
     remark: buildRemark(),
+    orderType: orderType.value,
+    dateStart: orderType.value === 'RECURRING' ? dateStart.value : '',
+    dateEnd: orderType.value === 'RECURRING' ? dateEnd.value : '',
+    recurrenceRule: orderType.value === 'RECURRING' ? recurrenceRule.value : '',
   };
   uni.navigateTo({
     url: `/pages/order/confirm?params=${encodeURIComponent(JSON.stringify(params))}`
@@ -585,5 +647,11 @@ const loadUserAddress = async () => {
   font-size: $fontSize-base;
   color: $color-primary;
   font-weight: 600;
+}
+
+.recurring-fields {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed #eee;
 }
 </style>

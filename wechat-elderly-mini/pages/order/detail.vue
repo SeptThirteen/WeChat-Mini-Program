@@ -32,6 +32,18 @@
         <text class="label">预约时间</text>
         <text class="value">{{ order.scheduledDate }} {{ order.scheduledSlot || '' }}</text>
       </view>
+      <view class="row recurring-row" v-if="order.orderType === 'RECURRING'">
+        <text class="label">预约类型</text>
+        <text class="value recurring-tag">🔁 长期预约</text>
+      </view>
+      <view class="row" v-if="order.orderType === 'RECURRING' && order.dateStart">
+        <text class="label">服务周期</text>
+        <text class="value">{{ order.dateStart }} 至 {{ order.dateEnd }}</text>
+      </view>
+      <view class="row" v-if="order.orderType === 'RECURRING' && order.recurrenceRule">
+        <text class="label">重复频率</text>
+        <text class="value">{{ order.recurrenceRule }}</text>
+      </view>
       <view class="row" v-if="order.address">
         <text class="label">服务地址</text>
         <text class="value">{{ order.address }}</text>
@@ -50,7 +62,7 @@
       </view>
       <!-- 接单服务人员信息 -->
       <view class="worker-card" v-if="order.workerName && order.status !== 'CREATED' && order.status !== 'CANCELLED'">
-        <text class="worker-title">👷 服务人员</text>
+        <text class="worker-title">👷 服务人员{{ order.workerCategory ? ' · ' + order.workerCategory : '' }}</text>
         <view class="worker-info">
           <text class="worker-name">{{ order.workerName }}</text>
           <view class="worker-phone-row" v-if="order.workerPhone">
@@ -292,6 +304,17 @@ onLoad((query) => {
 .status-completed { background: #e8f5e9; color: #2e7d32; }
 .status-rated    { background: #e3f2fd; color: #1565c0; }
 .status-cancelled { background: #f5f5f5; color: #9e9e9e; }
+
+.recurring-row {
+  background: #fff8f0;
+  border-radius: 8px;
+  padding: 10px !important;
+}
+
+.recurring-tag {
+  color: #e65100;
+  font-weight: 600;
+}
 
 .btn {
   border-radius: 10px;

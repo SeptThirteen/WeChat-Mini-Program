@@ -21,6 +21,18 @@
         <text class="info-label">备注</text>
         <text class="info-value">{{ params.remark }}</text>
       </view>
+      <view class="info-row" v-if="params.orderType === 'RECURRING'">
+        <text class="info-label">预约类型</text>
+        <text class="info-value recurring-tag">🔁 长期预约</text>
+      </view>
+      <view class="info-row" v-if="params.orderType === 'RECURRING'">
+        <text class="info-label">服务周期</text>
+        <text class="info-value">{{ params.dateStart }} 至 {{ params.dateEnd }}</text>
+      </view>
+      <view class="info-row" v-if="params.orderType === 'RECURRING'">
+        <text class="info-label">重复频率</text>
+        <text class="info-value">{{ params.recurrenceRule }}</text>
+      </view>
       <view class="info-row price-row">
         <text class="info-label">费用</text>
         <text class="info-value price-value">¥{{ params.servicePrice }}（完成后支付）</text>
@@ -64,6 +76,10 @@ const handleConfirm = async () => {
       scheduledSlot: params.value.slotStr || '',
       address: params.value.address || '',
       remark: params.value.remark || '',
+      orderType: params.value.orderType || 'SINGLE',
+      dateStart: params.value.dateStart || '',
+      dateEnd: params.value.dateEnd || '',
+      recurrenceRule: params.value.recurrenceRule || '',
     });
     const orderId = res.data?.orderId || '';
     uni.redirectTo({
@@ -181,5 +197,10 @@ onLoad((query) => {
 
 .confirm-btn.disabled {
   opacity: 0.6;
+}
+
+.recurring-tag {
+  color: #e65100;
+  font-weight: 600;
 }
 </style>

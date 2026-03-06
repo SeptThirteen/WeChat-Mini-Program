@@ -43,6 +43,7 @@ public class WorkerServiceImpl implements WorkerService {
         worker.setName(request.getName());
         worker.setPhone(request.getPhone());
         worker.setPassword(request.getPassword());
+        worker.setCategory(request.getCategory() != null ? request.getCategory() : "其他");
         worker.setCreatedTime(LocalDateTime.now());
         workerMapper.insert(worker);
 
@@ -84,16 +85,58 @@ public class WorkerServiceImpl implements WorkerService {
         result.put("workerId", worker.getWorkerId());
         result.put("name", worker.getName());
         result.put("phone", worker.getPhone());
+        result.put("category", worker.getCategory());
         return result;
     }
 
+    // 服务类别 → 匹配的人员类别 映射（用于智能排序）
+    private static final Map<String, String> SERVICE_WORKER_MATCH;
+    static {
+        Map<String, String> m = new HashMap<>();
+        m.put("代购", "超市老板");
+        m.put("跑腿帮买", "超市老板");
+        m.put("维修", "物业工作人员");
+        m.put("上门维修", "物业工作人员");
+        m.put("日间照护", "志愿者");
+        m.put("暖心陪伴", "志愿者");
+        m.put("外出陪同", "社区工作人员");
+        m.put("贴心出行", "社区工作人员");
+        SERVICE_WORKER_MATCH = m;
+    }
+
     @Override
-    public List<Map<String, Object>> pendingOrders() {
+    public List<Map<String, Object>> pendingOrders(Long workerId) {
         QueryWrapper<Order> wrapper = new QueryWrapper<>();
         wrapper.eq("status", "CREATED");
         wrapper.orderByAsc("created_time");
         List<Order> orders = orderMapper.selectList(wrapper);
-        return enrichOrders(orders);
+        List<Map<String, Object>> enriched = enrichOrders(orders);
+
+        // 根据工人类别智能排序：匹配类别的订单排前面
+        if (workerId != null) {
+            Worker worker = workerMapper.selectById(workerId);
+            if (worker != null && worker.getCategory() != null) {
+                String workerCat = worker.getCategory();
+                enriched.sort((a, b) -> {
+                    boolean aMatch = isMatchingCategory(String.valueOf(a.get("serviceName")), workerCat);
+                    boolean bMatch = isMatchingCategory(String.valueOf(b.get("serviceName")), workerCat);
+                    if (aMatch == bMatch) return 0;
+                    return aMatch ? -1 : 1;
+                });
+            }
+        }
+        return enriched;
+    }
+
+    /** 判断订单服务名是否匹配该人员类别 */
+    private boolean isMatchingCategory(String serviceName, String workerCategory) {
+        if (serviceName == null || workerCategory == null) return false;
+        for (Map.Entry<String, String> entry : SERVICE_WORKER_MATCH.entrySet()) {
+            if (serviceName.contains(entry.getKey()) && workerCategory.equals(entry.getValue())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -172,6 +215,13 @@ public class WorkerServiceImpl implements WorkerService {
                 map.put("userName", user.getName());
                 map.put("userPhone", user.getPhone());
                 map.put("userAddress", user.getAddress());
+            }
+            // 补充接单人员类别
+            if (order.getWorkerId() != null) {
+                Worker w = workerMapper.selectById(order.getWorkerId());
+                if (w != null) {
+                    map.put("workerCategory", w.getCategory());
+                }
             }
             result.add(map);
         }

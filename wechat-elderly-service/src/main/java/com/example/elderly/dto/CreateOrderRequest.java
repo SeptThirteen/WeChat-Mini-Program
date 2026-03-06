@@ -15,4 +15,13 @@ public class CreateOrderRequest {
     private String scheduledSlot;
     private String address;
     private String remark;
+
+    /** 订单类型: SINGLE(默认) / RECURRING */
+    private String orderType;
+    /** 长期订单开始日期 */
+    private String dateStart;
+    /** 长期订单结束日期 */
+    private String dateEnd;
+    /** 重复规则: 每天/每周/每周一三五 等 */
+    private String recurrenceRule;
 }

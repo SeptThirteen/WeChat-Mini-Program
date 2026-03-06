@@ -48,6 +48,12 @@ public class OrderServiceImpl implements OrderService {
         order.setAddress(request.getAddress());
         order.setRemark(request.getRemark());
         order.setContactPhone(user.getPhone());
+        // 长期订单字段
+        String orderType = request.getOrderType();
+        order.setOrderType(orderType != null ? orderType : "SINGLE");
+        order.setDateStart(request.getDateStart());
+        order.setDateEnd(request.getDateEnd());
+        order.setRecurrenceRule(request.getRecurrenceRule());
         order.setStatus("CREATED");
         orderMapper.insert(order);
         return order;
@@ -78,6 +84,7 @@ public class OrderServiceImpl implements OrderService {
             if (worker != null) {
                 order.setWorkerName(worker.getName());
                 order.setWorkerPhone(worker.getPhone());
+                order.setWorkerCategory(worker.getCategory());
             }
         }
         return order;

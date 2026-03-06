@@ -25,6 +25,10 @@ public class Order {
     private Long workerId;
     private LocalDateTime assignedTime;
     private String status;
+    private String orderType;
+    private String dateStart;
+    private String dateEnd;
+    private String recurrenceRule;
     private LocalDateTime createdTime;
 
     /** 非持久化字段：接单服务人员信息（关联查询填充） */
@@ -33,4 +37,7 @@ public class Order {
 
     @TableField(exist = false)
     private String workerPhone;
+
+    @TableField(exist = false)
+    private String workerCategory;
 }

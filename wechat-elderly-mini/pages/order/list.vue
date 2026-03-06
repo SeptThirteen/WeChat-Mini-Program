@@ -49,6 +49,8 @@
             :serviceName="item.serviceName"
             :status="item.status"
             :createdTime="item.createdTime"
+            :orderType="item.orderType"
+            :recurrenceRule="item.recurrenceRule"
             class="list-item"
             @click-detail="goDetail(item.orderId)"
             @cancel="handleCancel(item)"

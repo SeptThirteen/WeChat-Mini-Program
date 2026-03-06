@@ -30,10 +30,11 @@ public class WorkerController {
         return ApiResponse.success(workerService.register(request));
     }
 
-    /** 获取所有待抢订单 */
+    /** 获取所有待抢订单（根据人员类别智能排序） */
     @GetMapping("/api/worker/orders/pending")
-    public ApiResponse<List<Map<String, Object>>> pendingOrders() {
-        return ApiResponse.success(workerService.pendingOrders());
+    public ApiResponse<List<Map<String, Object>>> pendingOrders(
+            @RequestParam(value = "workerId", required = false) Long workerId) {
+        return ApiResponse.success(workerService.pendingOrders(workerId));
     }
 
     /** 获取我的订单（按 workerId） */

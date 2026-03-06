@@ -15,5 +15,6 @@ public class Worker {
     private String phone;
     private String name;
     private String password;
+    private String category;
     private LocalDateTime createdTime;
 }

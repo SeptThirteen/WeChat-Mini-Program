@@ -57,19 +57,19 @@
 **影响范围**：数据库 + 后端接单逻辑 + 前端工人端  
 
 **实施清单**：
-- [ ] 数据库：`workers` 表新增 `category` 字段（VARCHAR 20）
+- [x] 数据库：`workers` 表新增 `category` 字段（VARCHAR 20）
   - 可选值：超市老板 / 志愿者 / 社区工作人员 / 物业工作人员 / 其他
-- [ ] 后端：
-  - [ ] `Worker.java` 新增 `category` 字段
-  - [ ] `WorkerRegisterRequest.java` 新增 `category` 必填校验
-  - [ ] `WorkerServiceImpl.register()` 保存类别
-  - [ ] `WorkerServiceImpl.pendingOrders()` 增加智能排序：
-    - 代购 → 优先推荐"超市老板"
-    - 维修 → 优先推荐"物业工作人员"
-    - 日间照护/外出陪同 → 优先推荐"志愿者"或"社区工作人员"
-- [ ] 前端：
-  - [ ] `worker/index.html` 注册表单增加类别下拉选择
-  - [ ] `order/detail.vue` 显示接单人类别标签（带图标）
+- [x] 后端：
+  - [x] `Worker.java` 新增 `category` 字段
+  - [x] `WorkerRegisterRequest.java` 新增 `category` 校验
+  - [x] `WorkerServiceImpl.register()` 保存类别
+  - [x] `WorkerServiceImpl.pendingOrders()` 增加智能排序：
+    - 代购 → 优先推荐“超市老板”
+    - 维修 → 优先推荐“物业工作人员”
+    - 日间照护/外出陪同 → 优先推荐“志愿者”或“社区工作人员”
+- [x] 前端：
+  - [x] `worker/index.html` 注册表单增加类别下拉选择
+  - [x] `order/detail.vue` 显示接单人类别标签（带图标）
 
 ---
 
@@ -83,20 +83,21 @@
 - 或：拆成多条子订单（便于逐一接单）
 
 **实施清单**：
-- [ ] 数据库：`orders` 表新增字段：
-  - `order_type` VARCHAR(20) DEFAULT 'SINGLE'（SINGLE/RECURRING）
+- [x] 数据库：`orders` 表新增字段：
+  - `order_type` VARCHAR(10) DEFAULT 'SINGLE'（SINGLE/RECURRING）
   - `date_start` VARCHAR(20)（长期订单起始日期）
   - `date_end` VARCHAR(20)（长期订单结束日期）
-  - `recurrence_rule` JSON（重复规则：{freq: 'DAILY/WEEKLY', days: [1,3,5]}）
-- [ ] 后端：
-  - [ ] `Order.java` 新增 4 个字段
-  - [ ] `CreateOrderRequest.java` 新增长期订单参数
-  - [ ] `OrderServiceImpl.createOrder()` 判断 `orderType` 分支处理
-- [ ] 前端：
-  - [ ] `create.vue` 增加"单次/长期"切换 Tab
-  - [ ] 长期订单模式下：隐藏日期芯片，显示日期区间 picker + 重复频率选择器
-  - [ ] `order/list.vue` 和 `detail.vue` 显示"长期"标签 + 日期范围
-  - [ ] 工人端显示长期订单标识
+  - `recurrence_rule` VARCHAR(50)（重复规则：每天/每周/每周一三五 等）
+- [x] 后端：
+  - [x] `Order.java` 新增 4 个字段
+  - [x] `CreateOrderRequest.java` 新增长期订单参数
+  - [x] `OrderServiceImpl.createOrder()` 处理 `orderType` 字段
+- [x] 前端：
+  - [x] `create.vue` 增加“单次/长期”切换 Tab
+  - [x] 长期订单模式下：显示日期区间 picker + 重复频率选择器
+  - [x] `confirm.vue` 显示长期订单信息 + 传参到API
+  - [x] `order/list.vue` 和 `detail.vue` 显示“长期”标签 + 日期范围
+  - [x] 工人端显示长期订单标识
 
 ---
 

@@ -134,6 +134,16 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft Ya
       <label>密码</label>
       <input type="password" id="registerPassword" placeholder="设置密码（至少6位）" autocomplete="new-password">
     </div>
+    <div class="form-group">
+      <label>人员类别</label>
+      <select id="registerCategory" style="width:100%;padding:12px 14px;border:1px solid #ddd;border-radius:8px;font-size:15px;outline:none;background:#fff;">
+        <option value="其他">其他</option>
+        <option value="超市老板">超市老板</option>
+        <option value="志愿者">志愿者</option>
+        <option value="社区工作人员">社区工作人员</option>
+        <option value="物业工作人员">物业工作人员</option>
+      </select>
+    </div>
     <button class="btn-login" id="btnRegister" onclick="handleRegister()">注 册 并 登录</button>
     <div id="registerError" class="login-error"></div>
     <p class="login-hint">已有账号？<span class="link" onclick="showLogin()">返回登录</span></p>
@@ -176,6 +186,7 @@ const BASE_URL = location.origin; // same origin, no CORS needed
 let token = localStorage.getItem('workerToken') || '';
 let workerId = localStorage.getItem('workerId') || '';
 let workerName = localStorage.getItem('workerName') || '';
+let workerCategory = localStorage.getItem('workerCategory') || '';
 let currentTab = 'pending';
 let refreshTimer = null;
 
@@ -201,9 +212,11 @@ function setSession(data) {
   token = data.token;
   workerId = data.workerId;
   workerName = data.name;
+  workerCategory = data.category || '';
   localStorage.setItem('workerToken', token);
   localStorage.setItem('workerId', workerId);
   localStorage.setItem('workerName', workerName);
+  localStorage.setItem('workerCategory', workerCategory);
 }
 
 function showLogin() {
@@ -269,6 +282,7 @@ async function handleRegister() {
   const name = document.getElementById('registerName').value.trim();
   const phone = document.getElementById('registerPhone').value.trim();
   const password = document.getElementById('registerPassword').value.trim();
+  const category = document.getElementById('registerCategory').value;
   const errEl = document.getElementById('registerError');
   const btn = document.getElementById('btnRegister');
 
@@ -279,7 +293,7 @@ async function handleRegister() {
   btn.disabled = true;
   btn.textContent = '注册中...';
   try {
-    const data = await api('POST', '/api/worker/register', { name, phone, password });
+    const data = await api('POST', '/api/worker/register', { name, phone, password, category });
     setSession(data);
     showMain();
     loadOrders();
@@ -309,9 +323,11 @@ function handleLogout() {
   token = '';
   workerId = '';
   workerName = '';
+  workerCategory = '';
   localStorage.removeItem('workerToken');
   localStorage.removeItem('workerId');
   localStorage.removeItem('workerName');
+  localStorage.removeItem('workerCategory');
   stopAutoRefresh();
   document.getElementById('mainView').style.display = 'none';
   document.getElementById('registerView').style.display = 'none';
@@ -325,7 +341,7 @@ function showMain() {
   document.getElementById('loginView').style.display = 'none';
   document.getElementById('registerView').style.display = 'none';
   document.getElementById('mainView').style.display = 'block';
-  document.getElementById('workerName').textContent = '👷 ' + workerName;
+  document.getElementById('workerName').textContent = '👷 ' + workerName + (workerCategory ? ' · ' + workerCategory : '');
 }
 
 // ============ Tab Switch ============
@@ -350,7 +366,7 @@ async function loadOrders() {
   try {
     let orders;
     if (currentTab === 'pending') {
-      orders = await api('GET', '/api/worker/orders/pending');
+      orders = await api('GET', '/api/worker/orders/pending' + (workerId ? '?workerId=' + workerId : ''));
     } else if (currentTab === 'mine') {
       orders = await api('GET', '/api/worker/orders/mine?workerId=' + workerId + '&status=ASSIGNED');
     } else {
@@ -416,6 +432,7 @@ function renderCard(o) {
     + '  <div class="info-item"><span class="label">服务地址：</span><span class="value">' + esc(o.address || o.userAddress || '-') + '</span></div>'
     + '  <div class="info-item"><span class="label">下单时间：</span><span class="value">' + formatTime(o.createdTime) + '</span></div>'
     + '</div>'
+    + (o.orderType === 'RECURRING' ? '<div class="remark" style="color:#e65100;font-weight:600;">🔁 长期预约 · ' + esc(o.recurrenceRule || '') + '（' + esc(o.dateStart || '') + ' 至 ' + esc(o.dateEnd || '') + '）</div>' : '')
     + (o.remark ? '<div class="remark">📝 ' + esc(o.remark) + '</div>' : '')
     + '<div class="card-footer">'
     + '  <span class="order-id">订单 #' + o.orderId + ' ' + ratingHtml + '</span>'

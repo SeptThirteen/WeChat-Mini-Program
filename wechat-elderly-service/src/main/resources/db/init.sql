@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS workers (
   phone VARCHAR(20) NOT NULL UNIQUE,
   name VARCHAR(50) NOT NULL,
   password VARCHAR(100) NOT NULL,
+  category VARCHAR(20) DEFAULT '其他' COMMENT '人员类别：超市老板/志愿者/社区工作人员/物业工作人员/其他',
   created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -41,6 +42,10 @@ CREATE TABLE IF NOT EXISTS orders (
   rating INT DEFAULT NULL COMMENT '评分1-5',
   worker_id BIGINT DEFAULT NULL COMMENT '接单服务人员ID',
   assigned_time TIMESTAMP NULL DEFAULT NULL COMMENT '接单时间',
+  order_type VARCHAR(10) NOT NULL DEFAULT 'SINGLE' COMMENT '订单类型: SINGLE/RECURRING',
+  date_start VARCHAR(20) DEFAULT NULL COMMENT '长期订单开始日期',
+  date_end VARCHAR(20) DEFAULT NULL COMMENT '长期订单结束日期',
+  recurrence_rule VARCHAR(50) DEFAULT NULL COMMENT '重复规则: 每天/每周/每周一三五 等',
   status VARCHAR(20) NOT NULL,
   created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_orders_user FOREIGN KEY (user_id) REFERENCES users(user_id),
@@ -103,6 +108,6 @@ CREATE TABLE IF NOT EXISTS ai_query_logs (
   CONSTRAINT fk_ai_logs_user FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-INSERT INTO workers (phone, name, password) VALUES
-('18000000001', '王师傅', '123456'),
-('18000000002', '赵师傅', '123456');
+INSERT INTO workers (phone, name, password, category) VALUES
+('18000000001', '王师傅', '123456', '物业工作人员'),
+('18000000002', '赵师傅', '123456', '志愿者');
