@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/wechat_elderly?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&useUnicode=true
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+logging:
+  level:
+    com.example.elderly: info
+
+# AI provider keys for development
+ai:
+  default-provider: TENCENT
+  baidu:
+    api-key: "YOUR_BAIDU_API_KEY"
+    secret-key: "YOUR_BAIDU_SECRET_KEY"
+  tencent:
+    secret-id: "YOUR_TENCENT_SECRET_ID"
+    secret-key: "YOUR_TENCENT_SECRET_KEY"

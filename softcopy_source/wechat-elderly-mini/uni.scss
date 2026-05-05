@@ -1,0 +1,20 @@
+@import "@/styles/theme.scss";
+
+page {
+  background: $color-bg;
+  color: $color-text;
+  font-size: $fontSize-base;
+}
+
+.text-muted {
+  color: $color-muted;
+}
+
+.btn-primary {
+  background: $color-primary;
+  color: #ffffff;
+  border-radius: 12px;
+  height: $btn-height;
+  line-height: $btn-height;
+  text-align: center;
+}

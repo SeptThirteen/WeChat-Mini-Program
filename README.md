@@ -1,6 +1,6 @@
 # 社区适老化服务小程序
 
-> 面向老年用户的社区综合服务平台，提供"滴滴摇人"帮扶预约、公共服务缴费查询、AI 智能问答三大核心功能。
+> 面向老年用户的社区综合服务平台，提供"一呼馨家"帮扶预约、公共服务缴费查询、AI 智能问答三大核心功能。
 > 
 > **技术栈**：uni-app (Vue 3 + Pinia) + Spring Boot 3 + MyBatis-Plus + MySQL 8
 
@@ -30,7 +30,7 @@ WeChat-Mini-Program/
 │   ├── pages/
 │   │   ├── index/index.vue     # 首页（3 大分类入口）
 │   │   ├── home/               # 一级分类子页
-│   │   │   ├── didi.vue        # 滴滴摇人服务选择
+│   │   │   ├── didi.vue        # 一呼馨家服务选择
 │   │   │   ├── public-service.vue  # 公共服务入口
 │   │   │   └── ai-chat.vue     # AI 问答入口
 │   │   ├── order/              # 订单流程（create→confirm→success→list→detail）
@@ -170,7 +170,7 @@ npm run dev:h5          # H5 浏览器调试
 | 表名 | 主要字段 | 说明 |
 |------|---------|------|
 | `users` | `user_id` / `phone` / `name` / `age` / `address` | 用户信息，登录时自动创建 |
-| `services` | `service_id` / `category` / `description` / `price` | 服务项目（滴滴摇人4类+基础3类） |
+| `services` | `service_id` / `category` / `description` / `price` | 服务项目（一呼馨家4类+基础3类） |
 | `orders` | `order_id` / `user_id` / `service_id` / `status` / `contact_phone` / `worker_id` | 订单，status: `CREATED/ASSIGNED/COMPLETED/RATED/CANCELLED`；含联系电话和服务人员关联 |
 | `bill_queries` | `query_id` / `user_id` / `query_type` / `result_snapshot` | 缴费查询记录（当前为模拟数据） |
 | `ai_query_logs` | `log_id` / `user_id` / `provider` / `intent` / `query_text` / `response_text` | AI 问答日志（仅存文本，不存音频） |

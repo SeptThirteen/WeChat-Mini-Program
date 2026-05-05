@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>社区服务人员工作台</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif; background: #f5f7fa; color: #333; min-height: 100vh; }
+
+/* ===== Header ===== */
+.header { background: linear-gradient(135deg, #2b5876, #4e4376); color: #fff; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+.header h1 { font-size: 20px; font-weight: 600; }
+.header .user-info { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+.header .user-info span { opacity: .9; }
+.btn-logout { background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.4); color: #fff; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: background .2s; }
+.btn-logout:hover { background: rgba(255,255,255,.35); }
+
+/* ===== Login ===== */
+.login-wrapper { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+.login-card { background: #fff; border-radius: 16px; padding: 40px 36px; width: 380px; max-width: 100%; box-shadow: 0 8px 32px rgba(0,0,0,.08); }
+.login-card h2 { text-align: center; margin-bottom: 8px; color: #2b5876; font-size: 24px; }
+.login-card .subtitle { text-align: center; color: #999; margin-bottom: 28px; font-size: 14px; }
+.form-group { margin-bottom: 18px; }
+.form-group label { display: block; margin-bottom: 6px; font-size: 14px; color: #555; font-weight: 500; }
+.form-group input { width: 100%; padding: 12px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; transition: border-color .2s; outline: none; }
+.form-group input:focus { border-color: #4e4376; }
+.btn-login { width: 100%; padding: 14px; background: linear-gradient(135deg, #2b5876, #4e4376); color: #fff; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity .2s; margin-top: 6px; }
+.btn-login:hover { opacity: .9; }
+.btn-login:disabled { opacity: .5; cursor: not-allowed; }
+.login-error { color: #e74c3c; font-size: 13px; margin-top: 10px; text-align: center; }
+.login-hint { color: #aaa; font-size: 12px; margin-top: 16px; text-align: center; }
+
+/* ===== Tabs ===== */
+.tabs { display: flex; background: #fff; border-bottom: 2px solid #eee; }
+.link { color: #4e4376; cursor: pointer; }
+.tab { flex: 1; text-align: center; padding: 14px 0; font-size: 15px; font-weight: 500; color: #666; cursor: pointer; border-bottom: 3px solid transparent; transition: all .2s; position: relative; }
+.tab:hover { color: #4e4376; }
+.tab.active { color: #4e4376; border-bottom-color: #4e4376; font-weight: 600; }
+.tab .badge { position: absolute; top: 8px; right: calc(50% - 36px); background: #e74c3c; color: #fff; font-size: 11px; padding: 1px 6px; border-radius: 10px; font-weight: 600; }
+
+/* ===== Content ===== */
+.content { max-width: 800px; margin: 0 auto; padding: 20px 16px; }
+.empty { text-align: center; padding: 60px 20px; color: #aaa; font-size: 15px; }
+.empty::before { content: '📋'; display: block; font-size: 48px; margin-bottom: 12px; }
+
+/* ===== Order Cards ===== */
+.order-card { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.04); border: 1px solid #f0f0f0; transition: box-shadow .2s; }
+.order-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.08); }
+.order-card .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.order-card .order-id { font-size: 12px; color: #aaa; }
+.order-card .service-name { font-size: 17px; font-weight: 600; color: #2b5876; }
+.order-card .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; margin-bottom: 14px; }
+.order-card .info-item { font-size: 13px; color: #666; }
+.order-card .info-item .label { color: #999; margin-right: 4px; }
+.order-card .info-item .value { color: #333; }
+.order-card .remark { font-size: 13px; color: #888; background: #f9f9f9; padding: 8px 12px; border-radius: 6px; margin-bottom: 14px; }
+.order-card .card-footer { display: flex; justify-content: space-between; align-items: center; }
+
+/* ===== Status Badge ===== */
+.status-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+.status-CREATED { background: #fff3e0; color: #e65100; }
+.status-ASSIGNED { background: #e3f2fd; color: #1565c0; }
+.status-COMPLETED { background: #e8f5e9; color: #2e7d32; }
+.status-RATED { background: #f3e5f5; color: #7b1fa2; }
+.status-CANCELLED { background: #fafafa; color: #999; }
+
+/* ===== Action Buttons ===== */
+.btn-action { padding: 8px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: all .2s; }
+.btn-accept { background: #4e4376; color: #fff; }
+.btn-accept:hover { background: #3a3260; }
+.btn-complete { background: #2e7d32; color: #fff; }
+.btn-complete:hover { background: #1b5e20; }
+.btn-action:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ===== Loading ===== */
+.loading { text-align: center; padding: 40px; color: #999; }
+.loading::after { content: ''; display: inline-block; width: 20px; height: 20px; border: 2px solid #ddd; border-top-color: #4e4376; border-radius: 50%; animation: spin .8s linear infinite; margin-left: 8px; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===== Toast ===== */
+.toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 8px; color: #fff; font-size: 14px; z-index: 9999; opacity: 0; transition: opacity .3s; pointer-events: none; }
+.toast.show { opacity: 1; }
+.toast.success { background: #2e7d32; }
+.toast.error { background: #e74c3c; }
+
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+  .login-card { padding: 30px 24px; }
+  .order-card .info-grid { grid-template-columns: 1fr; }
+  .header h1 { font-size: 17px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<!-- Login View -->
+<div id="loginView" class="login-wrapper">
+  <div class="login-card">
+    <h2>🔧 服务人员工作台</h2>
+    <p class="subtitle">社区适老化服务 · 服务人员端</p>
+    <div class="form-group">
+      <label>手机号</label>
+      <input type="tel" id="loginPhone" placeholder="请输入手机号" maxlength="11" autocomplete="tel">
+    </div>
+    <div class="form-group">
+      <label>密码</label>
+      <input type="password" id="loginPassword" placeholder="请输入密码" autocomplete="current-password">
+    </div>
+    <button class="btn-login" id="btnLogin" onclick="handleLogin()">登 录</button>
+    <div id="loginError" class="login-error"></div>
+    <p class="login-hint">测试账号：18000000001 / 密码：123456</p>
+    <p class="login-hint">没有账号？<span class="link" onclick="showRegister()">去注册</span></p>
+  </div>
+</div>
+
+<!-- Register View -->
+<div id="registerView" class="login-wrapper" style="display:none;">
+  <div class="login-card">
+    <h2>👷 服务人员注册</h2>
+    <p class="subtitle">输入姓名、手机号、密码完成注册</p>
+    <div class="form-group">
+      <label>姓名</label>
+      <input type="text" id="registerName" placeholder="请输入姓名" maxlength="20" autocomplete="name">
+    </div>
+    <div class="form-group">
+      <label>手机号</label>
+      <input type="tel" id="registerPhone" placeholder="请输入手机号" maxlength="11" autocomplete="tel">
+    </div>
+    <div class="form-group">
+      <label>密码</label>
+      <input type="password" id="registerPassword" placeholder="设置密码（至少6位）" autocomplete="new-password">
+    </div>
+    <div class="form-group">
+      <label>人员类别</label>
+      <select id="registerCategory" style="width:100%;padding:12px 14px;border:1px solid #ddd;border-radius:8px;font-size:15px;outline:none;background:#fff;">
+        <option value="其他">其他</option>
+        <option value="超市老板">超市老板</option>
+        <option value="志愿者">志愿者</option>
+        <option value="社区工作人员">社区工作人员</option>
+        <option value="物业工作人员">物业工作人员</option>
+      </select>
+    </div>
+    <button class="btn-login" id="btnRegister" onclick="handleRegister()">注 册 并 登录</button>
+    <div id="registerError" class="login-error"></div>
+    <p class="login-hint">已有账号？<span class="link" onclick="showLogin()">返回登录</span></p>
+  </div>
+</div>
+
+<!-- Main View (hidden by default) -->
+<div id="mainView" style="display:none;">
+  <div class="header">
+    <h1>🔧 服务人员工作台</h1>
+    <div class="user-info">
+      <span id="workerName"></span>
+      <button class="btn-logout" onclick="handleLogout()">退出</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="pending" onclick="switchTab('pending')">
+      待抢单
+      <span class="badge" id="pendingBadge" style="display:none;">0</span>
+    </div>
+    <div class="tab" data-tab="mine" onclick="switchTab('mine')">
+      进行中
+    </div>
+    <div class="tab" data-tab="done" onclick="switchTab('done')">
+      已完成
+    </div>
+  </div>
+
+  <div class="content" id="orderList">
+    <div class="loading">加载中</div>
+  </div>
+</div>
+
+<script>
+// ============ Config ============
+const BASE_URL = location.origin; // same origin, no CORS needed
+
+// ============ State ============
+let token = localStorage.getItem('workerToken') || '';
+let workerId = localStorage.getItem('workerId') || '';
+let workerName = localStorage.getItem('workerName') || '';
+let workerCategory = localStorage.getItem('workerCategory') || '';
+let currentTab = 'pending';
+let refreshTimer = null;
+
+// ============ Init ============
+(function init() {
+  if (token && workerId) {
+    showMain();
+    loadOrders();
+    startAutoRefresh();
+  }
+})();
+
+// ============ Toast ============
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type + ' show';
+  setTimeout(() => t.className = 'toast', 2500);
+}
+
+// ============ Session Helper ============
+function setSession(data) {
+  token = data.token;
+  workerId = data.workerId;
+  workerName = data.name;
+  workerCategory = data.category || '';
+  localStorage.setItem('workerToken', token);
+  localStorage.setItem('workerId', workerId);
+  localStorage.setItem('workerName', workerName);
+  localStorage.setItem('workerCategory', workerCategory);
+}
+
+function showLogin() {
+  document.getElementById('loginView').style.display = 'flex';
+  document.getElementById('registerView').style.display = 'none';
+  document.getElementById('loginError').textContent = '';
+  document.getElementById('registerError').textContent = '';
+}
+
+function showRegister() {
+  document.getElementById('loginView').style.display = 'none';
+  document.getElementById('registerView').style.display = 'flex';
+  document.getElementById('loginError').textContent = '';
+  document.getElementById('registerError').textContent = '';
+}
+
+// ============ API Helper ============
+async function api(method, path, body) {
+  const opts = {
+    method,
+    headers: { 'Content-Type': 'application/json' }
+  };
+  if (token) opts.headers['Authorization'] = 'Bearer ' + token;
+  if (body) opts.body = JSON.stringify(body);
+
+  const res = await fetch(BASE_URL + path, opts);
+  if (res.status === 401) {
+    handleLogout();
+    throw new Error('登录已过期');
+  }
+  const json = await res.json();
+  if (json.code !== 0) throw new Error(json.message || '请求失败');
+  return json.data;
+}
+
+// ============ Login ============
+async function handleLogin() {
+  const phone = document.getElementById('loginPhone').value.trim();
+  const password = document.getElementById('loginPassword').value.trim();
+  const errEl = document.getElementById('loginError');
+  const btn = document.getElementById('btnLogin');
+
+  errEl.textContent = '';
+  if (!phone || !password) { errEl.textContent = '请填写手机号和密码'; return; }
+
+  btn.disabled = true;
+  btn.textContent = '登录中...';
+  try {
+    const data = await api('POST', '/api/worker/login', { phone, password });
+    setSession(data);
+    showMain();
+    loadOrders();
+    startAutoRefresh();
+  } catch (e) {
+    errEl.textContent = e.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '登 录';
+  }
+}
+
+async function handleRegister() {
+  const name = document.getElementById('registerName').value.trim();
+  const phone = document.getElementById('registerPhone').value.trim();
+  const password = document.getElementById('registerPassword').value.trim();
+  const category = document.getElementById('registerCategory').value;
+  const errEl = document.getElementById('registerError');
+  const btn = document.getElementById('btnRegister');
+
+  errEl.textContent = '';
+  if (!name || !phone || !password) { errEl.textContent = '请填写姓名、手机号和密码'; return; }
+  if (password.length < 6) { errEl.textContent = '密码长度至少6位'; return; }
+
+  btn.disabled = true;
+  btn.textContent = '注册中...';
+  try {
+    const data = await api('POST', '/api/worker/register', { name, phone, password, category });
+    setSession(data);
+    showMain();
+    loadOrders();
+    startAutoRefresh();
+    showToast('注册成功，已自动登录', 'success');
+  } catch (e) {
+    errEl.textContent = e.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '注 册 并 登录';
+  }
+}
+
+// Enter key login
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    if (document.getElementById('loginView').style.display !== 'none') {
+      handleLogin();
+    } else if (document.getElementById('registerView').style.display !== 'none') {
+      handleRegister();
+    }
+  }
+});
+
+// ============ Logout ============
+function handleLogout() {
+  token = '';
+  workerId = '';
+  workerName = '';
+  workerCategory = '';
+  localStorage.removeItem('workerToken');
+  localStorage.removeItem('workerId');
+  localStorage.removeItem('workerName');
+  localStorage.removeItem('workerCategory');
+  stopAutoRefresh();
+  document.getElementById('mainView').style.display = 'none';
+  document.getElementById('registerView').style.display = 'none';
+  document.getElementById('loginView').style.display = 'flex';
+  document.getElementById('loginPhone').value = '';
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('loginError').textContent = '';
+}
+
+function showMain() {
+  document.getElementById('loginView').style.display = 'none';
+  document.getElementById('registerView').style.display = 'none';
+  document.getElementById('mainView').style.display = 'block';
+  document.getElementById('workerName').textContent = '👷 ' + workerName + (workerCategory ? ' · ' + workerCategory : '');
+}
+
+// ============ Tab Switch ============
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  loadOrders();
+}
+
+// ============ Auto Refresh ============
+function startAutoRefresh() {
+  stopAutoRefresh();
+  refreshTimer = setInterval(() => loadOrders(), 10000);
+}
+function stopAutoRefresh() {
+  if (refreshTimer) { clearInterval(refreshTimer); refreshTimer = null; }
+}
+
+// ============ Load Orders ============
+async function loadOrders() {
+  const container = document.getElementById('orderList');
+  try {
+    let orders;
+    if (currentTab === 'pending') {
+      orders = await api('GET', '/api/worker/orders/pending' + (workerId ? '?workerId=' + workerId : ''));
+    } else if (currentTab === 'mine') {
+      orders = await api('GET', '/api/worker/orders/mine?workerId=' + workerId + '&status=ASSIGNED');
+    } else {
+      orders = await api('GET', '/api/worker/orders/mine?workerId=' + workerId + '&status=COMPLETED');
+    }
+
+    // Update pending badge
+    if (currentTab === 'pending') {
+      updateBadge(orders.length);
+    } else {
+      // also fetch pending count in background
+      api('GET', '/api/worker/orders/pending').then(p => updateBadge(p.length)).catch(() => {});
+    }
+
+    if (!orders || orders.length === 0) {
+      const msgs = { pending: '暂无待抢订单', mine: '暂无进行中的订单', done: '暂无已完成订单' };
+      container.innerHTML = '<div class="empty">' + msgs[currentTab] + '</div>';
+      return;
+    }
+
+    container.innerHTML = orders.map(o => renderCard(o)).join('');
+  } catch (e) {
+    container.innerHTML = '<div class="empty">加载失败：' + e.message + '</div>';
+  }
+}
+
+function updateBadge(count) {
+  const badge = document.getElementById('pendingBadge');
+  if (count > 0) {
+    badge.style.display = 'inline';
+    badge.textContent = count > 99 ? '99+' : count;
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+// ============ Render ============
+const STATUS_MAP = {
+  CREATED: '待接单', ASSIGNED: '进行中', COMPLETED: '已完成', RATED: '已评价', CANCELLED: '已取消'
+};
+
+function renderCard(o) {
+  const statusText = STATUS_MAP[o.status] || o.status;
+  let actionHtml = '';
+  if (currentTab === 'pending' && o.status === 'CREATED') {
+    actionHtml = '<button class="btn-action btn-accept" onclick="handleAccept(' + o.orderId + ')">立即接单</button>';
+  } else if (currentTab === 'mine' && o.status === 'ASSIGNED') {
+    actionHtml = '<button class="btn-action btn-complete" onclick="handleComplete(' + o.orderId + ')">确认完成</button>';
+  }
+
+  const ratingHtml = o.rating ? '<span style="color:#f39c12;">★ ' + o.rating + ' 分</span>' : '';
+
+  return '<div class="order-card">'
+    + '<div class="card-header">'
+    + '  <span class="service-name">' + esc(o.serviceName || '未知服务') + '</span>'
+    + '  <span class="status-badge status-' + o.status + '">' + statusText + '</span>'
+    + '</div>'
+    + '<div class="info-grid">'
+    + '  <div class="info-item"><span class="label">下单用户：</span><span class="value">' + esc(o.userName || '-') + '</span></div>'
+    + '  <div class="info-item"><span class="label">联系电话：</span><span class="value">' + esc(o.userPhone || '-') + '</span></div>'
+    + '  <div class="info-item"><span class="label">预约日期：</span><span class="value">' + esc(o.scheduledDate || '-') + '</span></div>'
+    + '  <div class="info-item"><span class="label">预约时段：</span><span class="value">' + esc(o.scheduledSlot || '-') + '</span></div>'
+    + '  <div class="info-item"><span class="label">服务地址：</span><span class="value">' + esc(o.address || o.userAddress || '-') + '</span></div>'
+    + '  <div class="info-item"><span class="label">下单时间：</span><span class="value">' + formatTime(o.createdTime) + '</span></div>'
+    + '</div>'
+    + (o.orderType === 'RECURRING' ? '<div class="remark" style="color:#e65100;font-weight:600;">🔁 长期预约 · ' + esc(o.recurrenceRule || '') + '（' + esc(o.dateStart || '') + ' 至 ' + esc(o.dateEnd || '') + '）</div>' : '')
+    + (o.remark ? '<div class="remark">📝 ' + esc(o.remark) + '</div>' : '')
+    + '<div class="card-footer">'
+    + '  <span class="order-id">订单 #' + o.orderId + ' ' + ratingHtml + '</span>'
+    + '  ' + actionHtml
+    + '</div>'
+    + '</div>';
+}
+
+function esc(s) {
+  if (!s) return '';
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function formatTime(t) {
+  if (!t) return '-';
+  // Handle both "2025-10-10T10:30:00" and array format [2025,10,10,10,30]
+  if (Array.isArray(t)) {
+    const [y, m, d, h, mi] = t;
+    return y + '-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0')
+      + ' ' + String(h).padStart(2,'0') + ':' + String(mi || 0).padStart(2,'0');
+  }
+  return String(t).replace('T', ' ').substring(0, 16);
+}
+
+// ============ Actions ============
+async function handleAccept(orderId) {
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = '接单中...';
+  try {
+    await api('POST', '/api/worker/orders/' + orderId + '/accept', { workerId: Number(workerId) });
+    showToast('接单成功！', 'success');
+    loadOrders();
+  } catch (e) {
+    showToast(e.message, 'error');
+    btn.disabled = false;
+    btn.textContent = '立即接单';
+  }
+}
+
+async function handleComplete(orderId) {
+  if (!confirm('确认该订单已完成服务？')) return;
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = '提交中...';
+  try {
+    await api('POST', '/api/worker/orders/' + orderId + '/complete', { workerId: Number(workerId) });
+    showToast('订单已完成！', 'success');
+    loadOrders();
+  } catch (e) {
+    showToast(e.message, 'error');
+    btn.disabled = false;
+    btn.textContent = '确认完成';
+  }
+}
+</script>
+</body>
+</html>

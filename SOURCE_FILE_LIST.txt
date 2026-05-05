@@ -1,0 +1,33 @@
+# SOURCE_FILE_LIST.txt
+# 列出要包含到“源代码提交”的文件与目录（相对于仓库根目录）
+# 说明：请勿包含 dist、unpackage、target、node_modules、package-lock.json 等构建产物或依赖文件
+
+# 前端（微信小程序/uni-app）核心文件
+wechat-elderly-mini/App.vue
+wechat-elderly-mini/main.js
+wechat-elderly-mini/index.html
+wechat-elderly-mini/pages.json
+wechat-elderly-mini/manifest.json
+wechat-elderly-mini/package.json
+wechat-elderly-mini/project.config.json
+wechat-elderly-mini/project.private.config.json
+wechat-elderly-mini/uni.scss
+wechat-elderly-mini/vite.config.js
+
+# 前端目录（包含源码，排除 dist/unpackage）
+wechat-elderly-mini/api
+wechat-elderly-mini/components
+wechat-elderly-mini/pages
+wechat-elderly-mini/store
+wechat-elderly-mini/styles
+wechat-elderly-mini/utils
+
+# 后端（Spring Boot）核心文件与目录
+wechat-elderly-service/pom.xml
+wechat-elderly-service/src/main/java
+wechat-elderly-service/src/main/resources
+
+# 数据库脚本（初始化与迁移）
+wechat-elderly-service/src/main/resources/db
+
+# 备注：如果你的软著要求只包含部分文件，可在本文件中删除不需要的条目

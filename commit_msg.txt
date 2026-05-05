@@ -1,0 +1,16 @@
+﻿feat(backend): 初始化Spring Boot后端服务完整架构
+
+- 新增wechat-elderly-service (Spring Boot 3 + MyBatis-Plus + MySQL)
+- 实现核心业务模块:
+  - 用户认证 (JWT + 拦截器)
+  - 订单管理 (创建/取消/评价/长期预约)
+  - 服务管理 (列表/详情/创建/更新/删除)
+  - AI问答 (文本/语音查询 + 百度/腾讯混元)
+  - 账单查询 (水电费等)
+  - 政务代办 (审核工作流)
+  - 紧急联系人管理
+  - 服务人员管理 (登录/注册/订单分配)
+- 完整的数据库schema初始化脚本
+- API文档 (OpenAPI/Swagger)
+- 服务人员工作台HTML界面
+- 数据库迁移脚本支持
