@@ -23,3 +23,6 @@ wechat-elderly-service/target/**/application-dev.yml
 # OS
 .DS_Store
 Thumbs.db
+
+# Mimosa security scan state
+.mimosa/
