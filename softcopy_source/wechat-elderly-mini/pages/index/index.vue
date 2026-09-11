@@ -10,97 +10,31 @@
       </view>
       <view class="hero-actions">
         <view class="voice-btn" @click="showVoiceSheet = true">
-          <text class="voice-text">语音说需求 🔊</text>
+          <text class="voice-text">语音说需求</text>
         </view>
       </view>
     </view>
 
     <view class="section">
       <view class="section-bar">
-        <text class="section-title">核心场景</text>
+        <text class="section-title">常用功能</text>
       </view>
-      <view class="section-grid">
-        <view class="info-card" @click="go('/pages/home/didi')">
-          <view class="card-head">
-            <view class="card-dot dot-didi"></view>
-            <text class="card-title">生活服务预约</text>
-          </view>
-          <text class="card-desc">一呼馨家上门服务</text>
-          <text class="card-cta">点击进入 →</text>
+      <view class="row-list">
+        <view class="func-row" hover-class="row-pressed" @click="go('/pages/home/didi')">
+          <text class="row-title">生活服务预约</text>
+          <text class="row-desc">一呼馨家上门服务</text>
         </view>
-
-        <view class="info-card" @click="go('/pages/query/index')">
-          <view class="card-head">
-            <view class="card-dot dot-query"></view>
-            <text class="card-title">便民缴费查询</text>
-          </view>
-          <text class="card-desc">水电燃气等生活缴费</text>
-          <text class="card-cta">点击进入 →</text>
+        <view class="func-row" hover-class="row-pressed" @click="go('/pages/query/index')">
+          <text class="row-title">便民缴费查询</text>
+          <text class="row-desc">水电燃气等生活缴费</text>
         </view>
-
-        <view class="info-card" @click="go('/pages/home/public-service')">
-          <view class="card-head">
-            <view class="card-dot dot-public"></view>
-            <text class="card-title">公共服务办理</text>
-          </view>
-          <text class="card-desc">社保、医保、补贴事项</text>
-          <text class="card-cta">点击进入 →</text>
+        <view class="func-row" hover-class="row-pressed" @click="go('/pages/home/public-service')">
+          <text class="row-title">公共服务办理</text>
+          <text class="row-desc">社保、医保、补贴事项</text>
         </view>
-
-        <view class="info-card" @click="go('/pages/home/ai-chat')">
-          <view class="card-head">
-            <view class="card-dot dot-ai"></view>
-            <text class="card-title">智能咨询协助</text>
-          </view>
-          <text class="card-desc">语音/文字问答解疑</text>
-          <text class="card-cta">点击进入 →</text>
-        </view>
-      </view>
-    </view>
-
-    <view class="section">
-      <view class="section-bar">
-        <text class="section-title">服务体系</text>
-      </view>
-      <view class="section-grid">
-        <view class="info-card static-card">
-          <view class="card-head">
-            <view class="card-dot dot-system"></view>
-            <text class="card-title">线上小程序</text>
-          </view>
-          <text class="card-desc">一站式入口，统一管理</text>
-        </view>
-
-        <view class="info-card static-card">
-          <view class="card-head">
-            <view class="card-dot dot-system"></view>
-            <text class="card-title">线下社区协同</text>
-          </view>
-          <text class="card-desc">社区服务中心协作响应</text>
-        </view>
-      </view>
-    </view>
-
-    <view class="section">
-      <view class="section-bar">
-        <text class="section-title">运营模式</text>
-      </view>
-      <view class="section-grid mini-grid">
-        <view class="info-card mini-card static-card">
-          <text class="mini-title">大学生专业团队</text>
-          <text class="mini-desc">产品研发与运营支持</text>
-        </view>
-        <view class="info-card mini-card static-card">
-          <text class="mini-title">社区试点切入</text>
-          <text class="mini-desc">聚焦真实需求验证</text>
-        </view>
-        <view class="info-card mini-card static-card">
-          <text class="mini-title">标准化复制</text>
-          <text class="mini-desc">流程固化快速扩展</text>
-        </view>
-        <view class="info-card mini-card static-card">
-          <text class="mini-title">可量化评估</text>
-          <text class="mini-desc">数据驱动持续优化</text>
+        <view class="func-row func-row-last" hover-class="row-pressed" @click="go('/pages/home/ai-chat')">
+          <text class="row-title">智能咨询协助</text>
+          <text class="row-desc">语音/文字问答解疑</text>
         </view>
       </view>
     </view>
@@ -256,97 +190,47 @@ onMounted(() => {
 }
 
 .section-bar {
-  margin: 14px 16px 0;
-  background: $gradient-brand;
-  border-radius: 14px;
-  padding: 8px 14px;
-  box-shadow: 0 8px 18px $color-shadow;
+  margin: 18px 16px 10px;
 }
 
 .section-title {
-  color: #fff;
-  font-size: 18px;
+  color: $color-text;
+  font-size: 20px;
   font-weight: 700;
 }
 
-.section-grid {
-  padding: 12px 16px 0;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.mini-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.info-card {
+/* 竖排功能列表:纯文字行,适老化最熟悉的形态 */
+.row-list {
+  margin: 0 16px;
   background: $color-card;
-  border-radius: 14px;
   border: 1px solid $color-border;
-  padding: 14px;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.func-row {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  min-height: 110px;
-  box-shadow: 0 8px 16px $color-shadow;
+  gap: 4px;
+  padding: 16px;
+  border-bottom: 1px solid $color-border;
 }
 
-.static-card {
-  box-shadow: 0 6px 12px rgba(15, 61, 62, 0.08);
+.func-row-last {
+  border-bottom: none;
 }
 
-.card-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.row-pressed {
+  background: $color-bg;
 }
 
-.card-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: $color-primary;
-}
-
-.dot-didi { background: $color-didi; }
-.dot-query { background: $color-accent; }
-.dot-public { background: $color-public; }
-.dot-ai { background: $color-ai; }
-.dot-system { background: $color-primary; }
-
-.card-title {
-  font-size: 20px;
+.row-title {
+  font-size: 22px;
   color: $color-text;
   font-weight: 700;
 }
 
-.card-desc {
-  font-size: 16px;
-  color: $color-muted;
-  line-height: 1.4;
-}
-
-.card-cta {
-  margin-top: auto;
-  font-size: 16px;
-  color: $color-primary;
-  font-weight: 700;
-}
-
-.mini-card {
-  min-height: 88px;
-  align-items: center;
-  text-align: center;
-}
-
-.mini-title {
-  font-size: 18px;
-  color: $color-text;
-  font-weight: 700;
-}
-
-.mini-desc {
+.row-desc {
   font-size: 16px;
   color: $color-muted;
 }
