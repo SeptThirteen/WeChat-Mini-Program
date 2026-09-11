@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,9 @@ public class UserController {
     @PutMapping("/api/user/update")
     public ApiResponse<Map<String, Object>> update(@Valid @RequestBody UpdateUserRequest request) {
         userService.updateProfile(request);
-        return ApiResponse.success(Map.of("userId", request.getUserId()));
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("userId", request.getUserId());
+        return ApiResponse.success(result);
     }
 
     @GetMapping("/api/user/list")
