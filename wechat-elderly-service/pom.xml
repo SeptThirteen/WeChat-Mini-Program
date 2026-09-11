@@ -12,6 +12,9 @@
 
     <properties>
         <java.version>17</java.version>
+        <!-- 本项目未以 spring-boot-starter-parent 为 parent，
+             需显式指定编译版本，否则 maven-compiler-plugin 默认按 Java 8 编译 -->
+        <maven.compiler.release>17</maven.compiler.release>
         <spring-boot.version>3.2.2</spring-boot.version>
         <mybatis-plus.version>3.5.6</mybatis-plus.version>
         <lombok.version>1.18.30</lombok.version>
@@ -93,6 +96,12 @@
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
+        </dependency>
+
+        <!-- BCrypt password hashing (crypto module only, no security filter chain) -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
         </dependency>
     </dependencies>
 
