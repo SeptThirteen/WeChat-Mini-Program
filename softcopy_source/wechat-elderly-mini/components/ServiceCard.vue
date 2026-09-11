@@ -22,10 +22,11 @@ defineEmits(['click']);
 <style lang="scss" scoped>
 .card {
   background: $color-card;
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 16px;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   margin-bottom: 12px;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .row {
@@ -56,12 +57,13 @@ defineEmits(['click']);
 .btn {
   background: $color-primary;
   color: #fff;
-  border-radius: 8px;
+  border-radius: 12px;
   text-align: center;
   height: 56px;
   line-height: 56px;
   margin-top: 20px;
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 700;
+  border: 1px solid $color-primary;
 }
 </style>

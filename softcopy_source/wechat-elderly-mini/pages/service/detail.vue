@@ -91,7 +91,8 @@ onLoad((query) => {
   background: $color-card;
   border-radius: 12px;
   padding: 16px;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .row {
@@ -125,7 +126,8 @@ onLoad((query) => {
   background: $color-card;
   border-radius: 12px;
   padding: 16px;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .btn {
@@ -136,7 +138,7 @@ onLoad((query) => {
   height: 56px;
   line-height: 56px;
   margin-top: 12px;
-  border: 2px solid $color-primary;
+  border: 1px solid $color-primary;
   font-size: 18px;
   font-weight: 700;
 }

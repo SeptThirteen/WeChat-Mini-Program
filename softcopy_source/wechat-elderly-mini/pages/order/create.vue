@@ -436,12 +436,12 @@ const loadUserAddress = async () => {
 }
 
 .create-header {
-  background: $color-card;
-  border-bottom: 2px solid $color-border;
+  background: $gradient-brand;
+  border-bottom: none;
 }
 
 .header-title {
-  color: $color-text;
+  color: #fff;
   font-size: 24px;
   font-weight: 700;
 }
@@ -454,7 +454,8 @@ const loadUserAddress = async () => {
   background: $color-card;
   margin: 12px 16px 0;
   border-radius: 12px;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .hint-text {
@@ -472,7 +473,7 @@ const loadUserAddress = async () => {
   padding: 0 16px;
   font-size: 18px;
   font-weight: 700;
-  border: 2px solid $color-primary;
+  border: 1px solid $color-primary;
   flex-shrink: 0;
 }
 
@@ -481,7 +482,8 @@ const loadUserAddress = async () => {
   border-radius: 12px;
   padding: 16px;
   margin: 12px 16px 0;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .section-label {
@@ -637,7 +639,7 @@ const loadUserAddress = async () => {
   margin: 10px 16px 0;
   background: $color-primary;
   border-radius: 12px;
-  border: 2px solid $color-primary;
+  border: 1px solid $color-primary;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -667,9 +669,10 @@ const loadUserAddress = async () => {
   align-items: center;
   justify-content: center;
   background: $color-card;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   border-radius: 12px;
   text-align: center;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .toggle-text {

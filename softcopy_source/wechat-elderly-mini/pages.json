@@ -2,73 +2,73 @@
   "pages": [
     {
       "path": "pages/index/index",
-      "style": { "navigationBarTitleText": "首页", "navigationBarBackgroundColor": "#fff7f3", "navigationBarTextStyle": "black" }
+      "style": { "navigationBarTitleText": "首页", "navigationBarBackgroundColor": "#E8F8F6", "navigationBarTextStyle": "black" }
     },
     {
       "path": "pages/user/profile",
-      "style": { "navigationBarTitleText": "我的", "navigationBarBackgroundColor": "#fff7f3", "navigationBarTextStyle": "black" }
+      "style": { "navigationBarTitleText": "我的", "navigationBarBackgroundColor": "#E8F8F6", "navigationBarTextStyle": "black" }
     },
     {
       "path": "pages/login/login",
-      "style": { "navigationBarTitleText": "登录" }
+      "style": { "navigationBarTitleText": "登录", "navigationBarBackgroundColor": "#E8F8F6", "navigationBarTextStyle": "black" }
     },
     {
       "path": "pages/home/didi",
-      "style": { "navigationBarTitleText": "一呼馨家", "navigationBarBackgroundColor": "#7B3F1F", "navigationBarTextStyle": "white" }
+      "style": { "navigationBarTitleText": "一呼馨家", "navigationBarBackgroundColor": "#E8F8F6", "navigationBarTextStyle": "black" }
     },
     {
       "path": "pages/home/public-service",
-      "style": { "navigationBarTitleText": "公共服务", "navigationBarBackgroundColor": "#8B6914", "navigationBarTextStyle": "white" }
+      "style": { "navigationBarTitleText": "公共服务", "navigationBarBackgroundColor": "#E8F8F6", "navigationBarTextStyle": "black" }
     },
     {
       "path": "pages/home/ai-chat",
-      "style": { "navigationBarTitleText": "AI问答", "navigationBarBackgroundColor": "#C85A3A", "navigationBarTextStyle": "white" }
+      "style": { "navigationBarTitleText": "AI问答", "navigationBarBackgroundColor": "#E8F8F6", "navigationBarTextStyle": "black" }
     },
     {
       "path": "pages/order/create",
-      "style": { "navigationBarTitleText": "服务下单" }
+      "style": { "navigationBarTitleText": "服务下单", "navigationBarBackgroundColor": "#E8F8F6", "navigationBarTextStyle": "black" }
     },
     {
       "path": "pages/order/confirm",
-      "style": { "navigationBarTitleText": "确认订单" }
+      "style": { "navigationBarTitleText": "确认订单", "navigationBarBackgroundColor": "#E8F8F6", "navigationBarTextStyle": "black" }
     },
     {
       "path": "pages/order/success",
-      "style": { "navigationBarTitleText": "下单成功" }
+      "style": { "navigationBarTitleText": "下单成功", "navigationBarBackgroundColor": "#E8F8F6", "navigationBarTextStyle": "black" }
     },
     {
       "path": "pages/order/list",
-      "style": { "navigationBarTitleText": "我的订单" }
+      "style": { "navigationBarTitleText": "我的订单", "navigationBarBackgroundColor": "#E8F8F6", "navigationBarTextStyle": "black" }
     },
     {
       "path": "pages/order/detail",
-      "style": { "navigationBarTitleText": "订单详情" }
+      "style": { "navigationBarTitleText": "订单详情", "navigationBarBackgroundColor": "#E8F8F6", "navigationBarTextStyle": "black" }
     },
     {
       "path": "pages/query/index",
-      "style": { "navigationBarTitleText": "便民查询" }
+      "style": { "navigationBarTitleText": "便民查询", "navigationBarBackgroundColor": "#E8F8F6", "navigationBarTextStyle": "black" }
     },
     {
       "path": "pages/service/detail",
-      "style": { "navigationBarTitleText": "服务详情" }
+      "style": { "navigationBarTitleText": "服务详情", "navigationBarBackgroundColor": "#E8F8F6", "navigationBarTextStyle": "black" }
     },
     {
       "path": "pages/user/bills",
-      "style": { "navigationBarTitleText": "缴费记录" }
+      "style": { "navigationBarTitleText": "缴费记录", "navigationBarBackgroundColor": "#E8F8F6", "navigationBarTextStyle": "black" }
     },
     {
       "path": "pages/user/emergency",
-      "style": { "navigationBarTitleText": "紧急联系人" }
+      "style": { "navigationBarTitleText": "紧急联系人", "navigationBarBackgroundColor": "#E8F8F6", "navigationBarTextStyle": "black" }
     },
     {
       "path": "pages/user/gov-tasks",
-      "style": { "navigationBarTitleText": "政务代办进度" }
+      "style": { "navigationBarTitleText": "政务代办进度", "navigationBarBackgroundColor": "#E8F8F6", "navigationBarTextStyle": "black" }
     }
   ],
   "tabBar": {
-    "color": "#7d6b66",
-    "selectedColor": "#e76f51",
-    "backgroundColor": "#fff7f3",
+    "color": "#5F7C7A",
+    "selectedColor": "#1FA8A4",
+    "backgroundColor": "#E8F8F6",
     "list": [
       {
         "pagePath": "pages/index/index",

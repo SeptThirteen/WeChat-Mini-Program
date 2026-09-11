@@ -4,15 +4,19 @@ $fontSize-lg: 26px;
 $fontSize-md: 22px;
 $fontSize-sm: 18px;
 
-$color-primary: #1A73E8;   // 政务蓝
-$color-text: #202124;      // 高对比黑
-$color-muted: #5F6368;     // 清晰深灰
-$color-bg: #F0F2F5;        // 冷色背景
-$color-card: #ffffff;      // 纯白卡片底色
-$color-border: #DADCE0;    // 实线边框
-$color-accent: #34A853;    // 状态绿
-$color-didi: #4285F4;      // 打车蓝
-$color-public: #34A853;    // 政务绿
-$color-ai: #FBBC05;        // 智能黄
+$color-primary: #1FA8A4;   // 品牌主色（清爽青绿）
+$color-text: #0F3D3E;      // 深色文字
+$color-muted: #5F7C7A;     // 次级文字
+$color-bg: #EAF7F6;        // 轻浅青底
+$color-card: #FFFFFF;      // 卡片底色
+$color-border: #CDE7E4;    // 柔和边框
+$color-accent: #4FC3B7;    // 辅助青绿
+$color-didi: #2BB1A7;      // 服务入口点缀
+$color-public: #1B9A90;    // 政务入口点缀
+$color-ai: #5CCFC3;        // AI入口点缀
+$color-shadow: rgba(15, 61, 62, 0.10);
+
+$gradient-brand: linear-gradient(180deg, #21B6AE 0%, #179B93 100%);
+$gradient-soft: linear-gradient(180deg, #E8F8F6 0%, #F7FCFB 100%);
 
 $btn-height: 64px;

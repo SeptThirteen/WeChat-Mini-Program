@@ -3,6 +3,7 @@ package com.example.elderly.service.impl;
 import com.example.elderly.dto.LoginRequest;
 import com.example.elderly.entity.User;
 import com.example.elderly.service.AuthService;
+import com.example.elderly.service.SmsCodeService;
 import com.example.elderly.service.UserService;
 import com.example.elderly.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +17,13 @@ import java.util.Map;
 public class AuthServiceImpl implements AuthService {
 
     private final UserService userService;
+    private final SmsCodeService smsCodeService;
     private final JwtUtil jwtUtil;
 
     @Override
     public Map<String, Object> login(LoginRequest request) {
+        smsCodeService.verify(request.getPhone(), request.getCode());
+
         User user = userService.getByPhone(request.getPhone());
         if (user == null) {
             user = userService.createUser(request.getPhone());

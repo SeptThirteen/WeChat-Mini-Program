@@ -13,6 +13,8 @@ import com.example.elderly.mapper.WorkerMapper;
 import com.example.elderly.service.WorkerService;
 import com.example.elderly.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class WorkerServiceImpl implements WorkerService {
@@ -29,6 +32,7 @@ public class WorkerServiceImpl implements WorkerService {
     private final OrderMapper orderMapper;
     private final UserMapper userMapper;
     private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Map<String, Object> register(WorkerRegisterRequest request) {
@@ -42,7 +46,7 @@ public class WorkerServiceImpl implements WorkerService {
         Worker worker = new Worker();
         worker.setName(request.getName());
         worker.setPhone(request.getPhone());
-        worker.setPassword(request.getPassword());
+        worker.setPassword(passwordEncoder.encode(request.getPassword()));
         worker.setCategory(request.getCategory() != null ? request.getCategory() : "其他");
         worker.setCreatedTime(LocalDateTime.now());
         workerMapper.insert(worker);
@@ -58,7 +62,7 @@ public class WorkerServiceImpl implements WorkerService {
         if (worker == null) {
             throw new BusinessException(401, "手机号未注册");
         }
-        if (!worker.getPassword().equals(request.getPassword())) {
+        if (!matchesAndUpgrade(worker, request.getPassword())) {
             throw new BusinessException(401, "密码错误");
         }
         // 生成 JWT（带 role=worker 标识）
@@ -68,6 +72,24 @@ public class WorkerServiceImpl implements WorkerService {
         claims.put("role", "worker");
         String token = jwtUtil.generateToken(claims);
         return buildLoginResult(worker, token);
+    }
+
+    /**
+     * 校验密码：优先 BCrypt 比对；对历史明文密码（如 init.sql 种子数据）做兼容比对，
+     * 比对成功后自动升级为 BCrypt 哈希落库，实现无感迁移。
+     */
+    private boolean matchesAndUpgrade(Worker worker, String rawPassword) {
+        String stored = worker.getPassword();
+        if (stored != null && stored.startsWith("$2")) {
+            return passwordEncoder.matches(rawPassword, stored);
+        }
+        if (stored != null && stored.equals(rawPassword)) {
+            worker.setPassword(passwordEncoder.encode(rawPassword));
+            workerMapper.updateById(worker);
+            log.info("工人账号密码已从明文自动升级为BCrypt, workerId={}", worker.getWorkerId());
+            return true;
+        }
+        return false;
     }
 
     private Map<String, Object> buildLoginResult(Worker worker) {

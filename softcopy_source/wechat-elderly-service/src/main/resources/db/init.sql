@@ -108,6 +108,7 @@ CREATE TABLE IF NOT EXISTS ai_query_logs (
   CONSTRAINT fk_ai_logs_user FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
+-- 种子工人密码为 123456 的 BCrypt 哈希（历史明文账号登录后会自动升级为哈希）
 INSERT INTO workers (phone, name, password, category) VALUES
-('18000000001', '王师傅', '123456', '物业工作人员'),
-('18000000002', '赵师傅', '123456', '志愿者');
+('18000000001', '王师傅', '$2a$10$yjmRbJqlmvy.a.DusKcm5OFBxUM7vWzft62QqLuGaxWB4temlqDoO', '物业工作人员'),
+('18000000002', '赵师傅', '$2a$10$yjmRbJqlmvy.a.DusKcm5OFBxUM7vWzft62QqLuGaxWB4temlqDoO', '志愿者');

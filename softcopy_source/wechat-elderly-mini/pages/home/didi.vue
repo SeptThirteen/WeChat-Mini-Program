@@ -84,12 +84,11 @@ onMounted(loadServices);
 }
 
 .didi-header {
-  background: $color-card;
-  border-bottom: 2px solid $color-border;
+  background: $gradient-brand;
 }
 
 .header-title {
-  color: $color-text;
+  color: #fff;
   font-size: 24px;
   font-weight: 700;
 }
@@ -97,7 +96,7 @@ onMounted(loadServices);
 .back-row {
   padding: 14px 20px;
   background: $color-card;
-  border-bottom: 2px solid $color-border;
+  border-bottom: 1px solid $color-border;
 }
 
 .back-text {
@@ -114,13 +113,14 @@ onMounted(loadServices);
 
 .grid-item {
   background: $color-card;
-  border-radius: 12px;
-  border: 2px solid $color-border;
+  border-radius: 14px;
+  border: 1px solid $color-border;
   padding: 30px 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 14px;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .grid-icon {
@@ -146,7 +146,7 @@ onMounted(loadServices);
 .order-btn {
   margin: 12px 16px 0;
   background: $color-primary;
-  border: 2px solid $color-primary;
+  border: 1px solid $color-primary;
   color: #fff;
   border-radius: 12px;
   text-align: center;

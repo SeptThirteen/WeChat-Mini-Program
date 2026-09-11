@@ -195,9 +195,10 @@ onLoad((query) => {
 .state-box {
   background: $color-card;
   border-radius: 12px;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   padding: 28px 16px;
   text-align: center;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .state-text {
@@ -208,8 +209,9 @@ onLoad((query) => {
 .card {
   background: $color-card;
   border-radius: 12px;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   padding: 16px;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .row {
@@ -246,7 +248,7 @@ onLoad((query) => {
 
 .contact-row {
   background: $color-bg;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   border-radius: 12px;
   padding: 12px 10px !important;
   margin-top: 4px;
@@ -272,16 +274,17 @@ onLoad((query) => {
   line-height: 56px;
   padding: 0 16px;
   border-radius: 12px;
-  border: 2px solid $color-primary;
+  border: 1px solid $color-primary;
   flex-shrink: 0;
 }
 
 .worker-card {
   background: $color-card;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   border-radius: 12px;
   padding: 14px 12px;
   margin-top: 12px;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .worker-title {
@@ -324,7 +327,7 @@ onLoad((query) => {
 
 .recurring-row {
   background: $color-bg;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   border-radius: 12px;
   padding: 10px !important;
 }
@@ -345,14 +348,14 @@ onLoad((query) => {
 }
 
 .cancel-btn {
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   color: $color-text;
-  background: $color-bg;
+  background: $color-card;
 }
 
 .rate-btn {
   background: $color-primary;
   color: #fff;
-  border: 2px solid $color-primary;
+  border: 1px solid $color-primary;
 }
 </style>

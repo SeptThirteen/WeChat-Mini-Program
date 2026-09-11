@@ -125,22 +125,23 @@ onMounted(loadTasks);
 }
 
 .gov-header {
-  background: $color-card;
-  border-bottom: 2px solid $color-border;
+  background: $gradient-brand;
+  border-bottom: none;
 }
 
 .header-title {
-  color: $color-text;
+  color: #fff;
   font-size: 24px;
   font-weight: 700;
 }
 
 .submit-card {
   background: $color-card;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   border-radius: 12px;
   margin: 12px 16px 0;
   padding: 20px;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .submit-title {
@@ -172,7 +173,7 @@ onMounted(loadTasks);
   display: flex;
   align-items: center;
   padding: 0 14px;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   border-radius: 12px;
   background: $color-card;
   min-width: 150px;
@@ -183,7 +184,7 @@ onMounted(loadTasks);
   flex: 1;
   font-size: 18px;
   background: $color-card;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   border-radius: 12px;
   height: 56px;
   padding: 0 14px;
@@ -194,7 +195,7 @@ onMounted(loadTasks);
   margin-top: 16px;
   background: $color-primary;
   color: #fff;
-  border: 2px solid $color-primary;
+  border: 1px solid $color-primary;
   border-radius: 12px;
   height: 56px;
   display: flex;
@@ -218,10 +219,11 @@ onMounted(loadTasks);
 
 .task-card {
   background: $color-card;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   border-radius: 12px;
   margin: 8px 16px 0;
   padding: 16px 20px;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .task-header {
@@ -268,11 +270,12 @@ onMounted(loadTasks);
 
 .empty-box {
   background: $color-card;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   border-radius: 12px;
   margin: 16px;
   padding: 40px 16px;
   text-align: center;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .empty-text {

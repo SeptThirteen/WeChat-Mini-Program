@@ -52,10 +52,11 @@ const statusClass = computed(() => {
 <style lang="scss" scoped>
 .card {
   background: $color-card;
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 16px;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   margin-bottom: 12px;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .row {
@@ -73,8 +74,8 @@ const statusClass = computed(() => {
 .status {
   font-size: 18px;
   padding: 4px 10px;
-  border-radius: 6px;
-  font-weight: 600;
+  border-radius: 8px;
+  font-weight: 700;
 }
 
 .status-created  { background: #fff3e0; color: #e65100; border: 1px solid #ffb74d; }
@@ -105,24 +106,19 @@ const statusClass = computed(() => {
   text-align: center;
   height: 56px;
   line-height: 56px;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .cancel {
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   color: $color-text;
-  background: $color-bg;
+  background: $color-card;
 }
 .rate {
   background: $color-primary;
   color: #ffffff;
-  border: 2px solid $color-primary;
-}
-
-.rate {
-  background: $color-primary;
-  color: #fff;
+  border: 1px solid $color-primary;
 }
 </style>

@@ -148,12 +148,12 @@ onMounted(loadHistory);
 }
 
 .bills-header {
-  background: $color-card;
-  border-bottom: 2px solid $color-border;
+  background: $gradient-brand;
+  border-bottom: none;
 }
 
 .header-title {
-  color: $color-text;
+  color: #fff;
   font-size: 24px;
   font-weight: 700;
 }
@@ -163,9 +163,10 @@ onMounted(loadHistory);
   background: $color-card;
   margin: 12px 16px 0;
   border-radius: 12px;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   padding: 4px;
   gap: 4px;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .tab {
@@ -193,10 +194,11 @@ onMounted(loadHistory);
   gap: 10px;
   background: $color-card;
   border-radius: 12px;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   padding: 14px;
   margin: 12px 16px 0;
   align-items: center;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .query-input {
@@ -214,7 +216,7 @@ onMounted(loadHistory);
 .query-btn {
   background: $color-primary;
   color: #fff;
-  border: 2px solid $color-primary;
+  border: 1px solid $color-primary;
   border-radius: 12px;
   height: 56px;
   padding: 0 22px;
@@ -241,8 +243,9 @@ onMounted(loadHistory);
 .record-card {
   background: $color-card;
   border-radius: 12px;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   padding: 16px 20px;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .record-header {
@@ -286,10 +289,11 @@ onMounted(loadHistory);
 .empty-box {
   background: $color-card;
   border-radius: 12px;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   margin: 16px;
   padding: 40px 16px;
   text-align: center;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .empty-text {
