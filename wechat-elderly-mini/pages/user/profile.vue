@@ -272,7 +272,8 @@ onMounted(() => {
   border-radius: 12px;
   margin: 0 16px 16px;
   padding: 32px 24px;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
+  box-shadow: 0 8px 16px $color-shadow;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -302,7 +303,8 @@ onMounted(() => {
   border-radius: 12px;
   margin: 0 16px 16px;
   padding: 24px;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .avatar-row {
@@ -361,7 +363,8 @@ onMounted(() => {
   align-items: center;
   gap: 16px;
   box-shadow: none;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .func-icon {
@@ -407,21 +410,22 @@ onMounted(() => {
   margin: 0 16px;
   background: $color-card;
   color: #D32F2F;
-  border: 2px solid #D32F2F;
+  border: 1px solid #D32F2F;
   border-radius: 12px;
   text-align: center;
   height: 56px;
   line-height: 56px;
   font-size: 22px;
   font-weight: 700;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .addr-edit-card {
   background: $color-card;
   border-radius: 12px;
   padding: 24px 20px;
-  box-shadow: none;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .addr-edit-title {

@@ -175,12 +175,12 @@ onMounted(loadContacts);
 }
 
 .emergency-header {
-  background: $color-card;
-  border-bottom: 2px solid $color-border;
+  background: $gradient-brand;
+  border-bottom: none;
 }
 
 .header-title {
-  color: $color-text;
+  color: #fff;
   font-size: 24px;
   font-weight: 700;
 }
@@ -190,7 +190,8 @@ onMounted(loadContacts);
   border-radius: 12px;
   margin: 12px 16px 0;
   overflow: hidden;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .contact-badge {
@@ -231,7 +232,7 @@ onMounted(loadContacts);
   font-weight: 700;
   background: $color-bg;
   color: $color-text;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
 }
 
 .card-action-btn.delete {
@@ -264,8 +265,8 @@ onMounted(loadContacts);
   display: flex;
   align-items: center;
   gap: 12px;
-  box-shadow: none;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .edit-icon {
@@ -283,7 +284,8 @@ onMounted(loadContacts);
   border-radius: 12px;
   margin: 12px 16px 0;
   padding: 16px;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .tip-text {
@@ -298,7 +300,8 @@ onMounted(loadContacts);
   margin: 12px 16px 0;
   padding: 40px 16px;
   text-align: center;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .empty-text {
@@ -325,7 +328,8 @@ onMounted(loadContacts);
   width: 85%;
   max-width: 360px;
   padding: 24px 20px;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
+  box-shadow: 0 12px 24px $color-shadow;
 }
 
 .modal-title {

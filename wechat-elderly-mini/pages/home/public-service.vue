@@ -61,12 +61,11 @@ const services = [
 }
 
 .public-header {
-  background: $color-card;
-  border-bottom: 2px solid $color-border;
+  background: $gradient-brand;
 }
 
 .header-title {
-  color: $color-text;
+  color: #fff;
   font-size: 24px;
   font-weight: 700;
 }
@@ -74,7 +73,7 @@ const services = [
 .back-row {
   padding: 14px 20px;
   background: $color-card;
-  border-bottom: 2px solid $color-border;
+  border-bottom: 1px solid $color-border;
 }
 
 .back-text {
@@ -91,13 +90,14 @@ const services = [
 
 .grid-item {
   background: $color-card;
-  border-radius: 12px;
-  border: 2px solid $color-border;
+  border-radius: 14px;
+  border: 1px solid $color-border;
   padding: 24px 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .grid-icon {
@@ -115,15 +115,18 @@ const services = [
   font-size: 12px;
   padding: 3px 8px;
   border-radius: 10px;
+  border: 1px solid transparent;
 }
 
 .tag-bill {
-  background: #e8f5e9;
-  color: #2e7d32;
+  background: #E2F5F2;
+  color: $color-primary;
+  border-color: #BEE8E3;
 }
 
 .tag-gov {
-  background: #e3f2fd;
-  color: #1565c0;
+  background: #E6F7F6;
+  color: $color-text;
+  border-color: #CFEDE9;
 }
 </style>

@@ -113,12 +113,12 @@ onLoad((query) => {
 }
 
 .confirm-header {
-  background: $color-card;
-  border-bottom: 2px solid $color-border;
+  background: $gradient-brand;
+  border-bottom: none;
 }
 
 .header-title {
-  color: $color-text;
+  color: #fff;
   font-size: 24px;
   font-weight: 700;
 }
@@ -128,7 +128,8 @@ onLoad((query) => {
   border-radius: 12px;
   margin: 16px;
   padding: 4px 16px;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .info-row {
@@ -180,7 +181,7 @@ onLoad((query) => {
   flex: 1;
   background: $color-card;
   color: $color-text;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   border-radius: 12px;
   text-align: center;
   height: 56px;
@@ -193,7 +194,7 @@ onLoad((query) => {
   flex: 2;
   background: $color-primary;
   color: #fff;
-  border: 2px solid $color-primary;
+  border: 1px solid $color-primary;
   border-radius: 12px;
   text-align: center;
   height: 56px;

@@ -184,18 +184,19 @@ onUnmounted(() => {
 
 .voice-sheet {
   background: $color-card;
-  border-top: 2px solid $color-border;
+  border-top: 3px solid $color-accent;
   border-radius: 12px 12px 0 0;
   width: 100%;
   padding: 12px 20px 32px;
   max-height: 80vh;
   overflow-y: auto;
+  box-shadow: 0 -12px 24px $color-shadow;
 }
 
 .sheet-handle {
   width: 40px;
   height: 4px;
-  background: $color-border;
+  background: $color-accent;
   border-radius: 2px;
   margin: 0 auto 14px;
 }
@@ -220,9 +221,10 @@ onUnmounted(() => {
   align-items: center;
   gap: 12px;
   padding: 14px 16px;
-  background: $color-bg;
+  background: $color-card;
   border-radius: 12px;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
+  box-shadow: 0 6px 14px rgba(15, 61, 62, 0.08);
 }
 
 .quick-icon { font-size: 24px; flex-shrink: 0; }
@@ -244,8 +246,8 @@ onUnmounted(() => {
   width: 96px;
   height: 96px;
   border-radius: 48px;
-  background: $color-primary;
-  border: 2px solid $color-primary;
+  background: $gradient-brand;
+  border: 1px solid $color-primary;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -274,8 +276,9 @@ onUnmounted(() => {
   text-align: center;
   margin-bottom: 8px;
   background: $color-card;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   border-radius: 12px;
+  box-shadow: 0 6px 14px rgba(15, 61, 62, 0.08);
 }
 
 .goto-text {
@@ -289,8 +292,9 @@ onUnmounted(() => {
   height: 56px;
   line-height: 56px;
   background: $color-card;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   border-radius: 12px;
+  box-shadow: 0 6px 14px rgba(15, 61, 62, 0.08);
 }
 
 .cancel-text {

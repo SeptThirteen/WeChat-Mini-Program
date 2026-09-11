@@ -187,10 +187,11 @@ onMounted(load);
   display: flex;
   background: $color-card;
   border-radius: 12px;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   padding: 4px;
   gap: 4px;
   margin-bottom: 12px;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .tab {
@@ -215,9 +216,10 @@ onMounted(load);
 .state-box {
   background: $color-card;
   border-radius: 12px;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
   padding: 28px 16px;
   text-align: center;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .state-text {
@@ -229,7 +231,7 @@ onMounted(load);
   margin-top: 12px;
   background: $color-primary;
   color: #fff;
-  border: 2px solid $color-primary;
+  border: 1px solid $color-primary;
   border-radius: 12px;
   height: 56px;
   line-height: 56px;
@@ -262,7 +264,7 @@ onMounted(load);
   background: $color-primary;
   color: #fff;
   border-radius: 12px;
-  border: 2px solid $color-primary;
+  border: 1px solid $color-primary;
   height: 56px;
   line-height: 56px;
   padding: 0 18px;

@@ -13,7 +13,8 @@
 
 .app {
   min-height: 100vh;
-  background: $color-bg;
+  background: $gradient-soft;
   color: $color-text;
+  font-family: "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 </style>

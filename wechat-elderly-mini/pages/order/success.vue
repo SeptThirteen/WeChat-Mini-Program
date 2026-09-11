@@ -58,8 +58,8 @@ onLoad((query) => {
 }
 
 .success-header {
-  background: $color-card;
-  border-bottom: 2px solid $color-border;
+  background: $gradient-brand;
+  border-bottom: none;
   padding: 40px 20px 32px;
   display: flex;
   flex-direction: column;
@@ -73,7 +73,7 @@ onLoad((query) => {
 
 .success-title {
   font-size: 24px;
-  color: #2e7d32;
+  color: #fff;
   font-weight: 700;
 }
 
@@ -85,7 +85,8 @@ onLoad((query) => {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  border: 2px solid $color-border;
+  border: 1px solid $color-border;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .service-name {
@@ -134,7 +135,7 @@ onLoad((query) => {
   line-height: 56px;
   font-size: 18px;
   font-weight: 700;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
 }
 
 .primary-btn {
@@ -144,9 +145,9 @@ onLoad((query) => {
 }
 
 .call-btn {
-  background: #2e7d32;
+  background: $color-accent;
   color: #fff;
-  border-color: #2e7d32;
+  border-color: $color-accent;
 }
 
 .home-btn {

@@ -422,8 +422,8 @@ onUnmounted(() => {
 }
 
 .ai-header {
-  background: $color-card;
-  border-bottom: 2px solid $color-border;
+  background: $gradient-brand;
+  border-bottom: none;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -432,7 +432,7 @@ onUnmounted(() => {
 }
 
 .header-title {
-  color: $color-text;
+  color: #fff;
   font-size: 24px;
   font-weight: 700;
 }
@@ -446,25 +446,25 @@ onUnmounted(() => {
   padding: 6px 14px;
   border-radius: 12px;
   font-size: 18px;
-  color: $color-muted;
-  background: $color-card;
-  border: 2px solid $color-border;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .provider-chip.active {
-  color: #fff;
-  background: $color-primary;
-  border: 2px solid $color-primary;
+  color: $color-primary;
+  background: #fff;
+  border: 1px solid #fff;
   font-weight: 700;
 }
 
 .back-row {
   padding: 14px 20px;
   background: $color-card;
-  border-bottom: 2px solid $color-border;
+  border-bottom: 1px solid $color-border;
 }
 
 .back-text {
@@ -482,12 +482,13 @@ onUnmounted(() => {
 
 .ai-btn {
   background: $color-card;
-  border-radius: 12px;
-  border: 2px solid $color-border;
+  border-radius: 14px;
+  border: 1px solid $color-border;
   padding: 20px;
   display: flex;
   align-items: center;
   gap: 16px;
+  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .ai-icon { font-size: 30px; flex-shrink: 0; }

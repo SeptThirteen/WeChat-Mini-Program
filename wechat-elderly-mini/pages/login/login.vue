@@ -10,7 +10,7 @@
         v-model="phone"
         type="number"
         maxlength="11"
-        border: 2px solid $color-border;
+        placeholder="请输入11位手机号"
       />
       <input
         class="input"
@@ -80,21 +80,26 @@ const handleLogin = async () => {
 }
 
 .header {
-  margin-bottom: 32px;
+  margin-bottom: 24px;
+  background: $gradient-brand;
+  border-radius: 16px;
+  padding: 18px 20px;
+  box-shadow: 0 10px 20px $color-shadow;
 }
 
 .title {
-  font-size: $fontSize-title;   // 34px 适老化大标题
+  font-size: 28px;
   font-weight: 700;
-  color: #333;
+  color: #fff;
   line-height: 1.3;
 }
 
 .card {
   background: $color-card;
-  border-radius: 12px;
-  border: 2px solid $color-border;
+  border-radius: 14px;
+  border: 1px solid $color-border;
   padding: 28px 20px;
+  box-shadow: 0 10px 20px $color-shadow;
 }
 
 .input {
