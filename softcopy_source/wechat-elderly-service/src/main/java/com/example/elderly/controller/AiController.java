@@ -92,7 +92,7 @@ public class AiController {
      * 可用仓库根目录 generate_faq_audio.ps1 重新生成）
      */
     @GetMapping("/faq-audio/{id}")
-    public ResponseEntity<Resource> faqAudio(@PathVariable String id) {
+    public ResponseEntity<Resource> faqAudio(@PathVariable("id") String id) {
         String path = "static/audio/faq-" + id + ".wav";
         Resource resource = new ClassPathResource(path);
         if (!resource.exists()) {

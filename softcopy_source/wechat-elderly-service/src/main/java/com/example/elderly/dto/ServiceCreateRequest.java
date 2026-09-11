@@ -16,4 +16,7 @@ public class ServiceCreateRequest {
 
     @NotNull(message = "价格不能为空")
     private BigDecimal price;
+
+    /** 友好展示名称（如 洁净到家），可选，缺省时前端回退到 category */
+    private String displayName;
 }

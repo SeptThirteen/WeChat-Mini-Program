@@ -16,4 +16,7 @@ public class ServiceUpdateRequest {
 
     @NotNull(message = "价格不能为空")
     private BigDecimal price;
+
+    /** 友好展示名称（如 洁净到家），可选，传 null 时保持原值 */
+    private String displayName;
 }

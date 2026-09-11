@@ -59,7 +59,7 @@ const handleTap = (svc) => {
   const matched = serviceMap.value[svc.type];
   if (matched) {
     uni.navigateTo({
-      url: `/pages/order/create?serviceId=${matched.serviceId}&serviceName=${encodeURIComponent(matched.category)}&servicePrice=${matched.price}`
+      url: `/pages/order/create?serviceId=${matched.serviceId}&serviceName=${encodeURIComponent(matched.displayName || matched.category)}&servicePrice=${matched.price}`
     });
   } else {
     uni.showToast({ title: '服务暂未开放，请稍后再试', icon: 'none' });
