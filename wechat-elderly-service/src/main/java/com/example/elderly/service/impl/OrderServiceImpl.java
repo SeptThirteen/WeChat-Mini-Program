@@ -32,11 +32,7 @@ public class OrderServiceImpl implements OrderService {
         if (user == null) {
             throw new BusinessException(404, "用户不存在");
         }
-        ServiceItem item = serviceItemMapper.selectOne(
-            new QueryWrapper<ServiceItem>()
-                .select("service_id", "category", "description", "price", "created_time")
-                .eq("service_id", request.getServiceId())
-        );
+        ServiceItem item = serviceItemMapper.selectById(request.getServiceId());
         if (item == null) {
             throw new BusinessException(404, "服务不存在");
         }

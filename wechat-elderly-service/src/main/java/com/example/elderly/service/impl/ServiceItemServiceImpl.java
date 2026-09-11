@@ -10,6 +10,7 @@ import com.example.elderly.service.ServiceItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -20,21 +21,15 @@ public class ServiceItemServiceImpl implements ServiceItemService {
 
     @Override
     public List<ServiceItem> listAll() {
-        // Keep query compatible with older schemas that don't have display_name yet.
+        // display_name 已于 v1.1 迁移全量回填, 全列查询即可
         return serviceItemMapper.selectList(
-                new QueryWrapper<ServiceItem>()
-                        .select("service_id", "category", "description", "price", "created_time")
-                        .orderByDesc("created_time")
+                new QueryWrapper<ServiceItem>().orderByDesc("created_time")
         );
     }
 
     @Override
     public ServiceItem getById(Long id) {
-        ServiceItem item = serviceItemMapper.selectOne(
-                new QueryWrapper<ServiceItem>()
-                        .select("service_id", "category", "description", "price", "created_time")
-                        .eq("service_id", id)
-        );
+        ServiceItem item = serviceItemMapper.selectById(id);
         if (item == null) {
             throw new BusinessException(404, "服务不存在");
         }
@@ -47,6 +42,8 @@ public class ServiceItemServiceImpl implements ServiceItemService {
         item.setCategory(request.getCategory());
         item.setDescription(request.getDescription());
         item.setPrice(request.getPrice());
+        item.setDisplayName(request.getDisplayName());
+        item.setCreatedTime(LocalDateTime.now());
         serviceItemMapper.insert(item);
         return item;
     }
@@ -57,6 +54,9 @@ public class ServiceItemServiceImpl implements ServiceItemService {
         item.setCategory(request.getCategory());
         item.setDescription(request.getDescription());
         item.setPrice(request.getPrice());
+        if (request.getDisplayName() != null) {
+            item.setDisplayName(request.getDisplayName());
+        }
         serviceItemMapper.updateById(item);
         return item;
     }
