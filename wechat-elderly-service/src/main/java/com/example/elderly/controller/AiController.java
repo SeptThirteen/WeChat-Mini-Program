@@ -88,18 +88,19 @@ public class AiController {
 
     /**
      * FAQ 预录音频下载（公开接口）
-     * 文件存放于 resources/static/audio/faq-{id}.mp3
+     * 文件存放于 resources/static/audio/faq-{id}.wav（Windows SAPI 中文TTS预生成，
+     * 可用仓库根目录 generate_faq_audio.ps1 重新生成）
      */
     @GetMapping("/faq-audio/{id}")
     public ResponseEntity<Resource> faqAudio(@PathVariable String id) {
-        String path = "static/audio/faq-" + id + ".mp3";
+        String path = "static/audio/faq-" + id + ".wav";
         Resource resource = new ClassPathResource(path);
         if (!resource.exists()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=faq-" + id + ".mp3")
-                .contentType(MediaType.parseMediaType("audio/mpeg"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=faq-" + id + ".wav")
+                .contentType(MediaType.parseMediaType("audio/wav"))
                 .body(resource);
     }
 
