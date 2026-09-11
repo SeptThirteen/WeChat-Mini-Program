@@ -180,7 +180,7 @@ npm run dev:h5          # H5 浏览器调试
 
 ## 适老化设计规范
 
-所有 UI 样式变量定义于 `styles/theme.scss`：
+所有 UI 样式变量定义于 `styles/theme.scss`（主题：治愈青绿，对标 WCAG 对比度校验）：
 
 ```scss
 $fontSize-title: 36px;  // 页面大标题
@@ -189,8 +189,9 @@ $fontSize-md:    22px;  // 按钮/导航文字
 $fontSize-base:  20px;  // 正文基础字号
 $fontSize-sm:    18px;  // 说明文字
 
-$color-primary: #1FA8A4;  // 主色（品牌青绿）
-$color-bg:      #EAF7F6;  // 页面背景（轻浅青底）
+$color-primary: #0891B2;  // 主色（医疗青，白字按钮 3.9:1 大字号达标）
+$color-text:    #164E63;  // 正文深青（10.4:1）
+$color-bg:      #ECFEFF;  // 页面背景（浅青底）
 $btn-height:    64px;     // 按钮最小高度
 ```
 

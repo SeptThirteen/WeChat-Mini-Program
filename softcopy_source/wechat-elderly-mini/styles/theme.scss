@@ -4,19 +4,21 @@ $fontSize-lg: 26px;
 $fontSize-md: 22px;
 $fontSize-sm: 18px;
 
-$color-primary: #1FA8A4;   // 品牌主色（清爽青绿）
-$color-text: #0F3D3E;      // 深色文字
-$color-muted: #5F7C7A;     // 次级文字
-$color-bg: #EAF7F6;        // 轻浅青底
+// 主题：治愈青绿（Healthcare 方向,ui-ux-pro-max 检索配色）
+// 对比度：主色白字 3.9:1（大字号按钮达标 3:1）；正文深青 10.4:1；次级文字 4.8:1
+$color-primary: #0891B2;   // 品牌主色（医疗青）
+$color-text: #164E63;      // 深青文字
+$color-muted: #64748B;     // 次级文字
+$color-bg: #ECFEFF;        // 浅青底
 $color-card: #FFFFFF;      // 卡片底色
-$color-border: #CDE7E4;    // 柔和边框
-$color-accent: #4FC3B7;    // 辅助青绿
-$color-didi: #2BB1A7;      // 服务入口点缀
-$color-public: #1B9A90;    // 政务入口点缀
-$color-ai: #5CCFC3;        // AI入口点缀
-$color-shadow: rgba(15, 61, 62, 0.10);
+$color-border: #A5F3FC;    // 醒目边框（适老化高可见分隔）
+$color-accent: #059669;    // 健康绿（成功/积极语义）
+$color-didi: #0891B2;      // 服务入口点缀
+$color-public: #059669;    // 政务入口点缀
+$color-ai: #22D3EE;        // AI入口点缀（仅装饰,不做文字色）
+$color-shadow: rgba(22, 78, 99, 0.10);
 
-$gradient-brand: linear-gradient(180deg, #21B6AE 0%, #179B93 100%);
-$gradient-soft: linear-gradient(180deg, #E8F8F6 0%, #F7FCFB 100%);
+$gradient-brand: linear-gradient(180deg, #0891B2 0%, #0E7490 100%);
+$gradient-soft: linear-gradient(180deg, #E0F7FC 0%, #F7FEFF 100%);
 
 $btn-height: 64px;
