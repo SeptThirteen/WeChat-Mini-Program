@@ -3,7 +3,7 @@
     <view class="top-bar">
       <text class="time">{{ currentTime }}</text>
       <view class="voice-btn" @click="showVoiceSheet = true">
-        <text class="voice-text">语音说需求 🔊</text>
+        <text class="voice-text">语音说需求</text>
       </view>
     </view>
 
@@ -33,59 +33,46 @@
     </view>
 
     <!-- 功能入口 -->
-    <view class="func-list" v-if="userId && !loading">
-      <view class="func-card" @click="go('/pages/user/bills')">
-        <text class="func-icon">💰</text>
+    <view class="row-list" v-if="userId && !loading">
+      <view class="func-row" hover-class="row-pressed" @click="go('/pages/user/bills')">
         <view class="func-text">
           <text class="func-title">缴费记录</text>
           <text class="func-desc">查看水电费缴费历史</text>
         </view>
-        <text class="func-arrow">▶</text>
       </view>
-
-      <view class="func-card" @click="go('/pages/user/gov-tasks')">
-        <text class="func-icon">📋</text>
+      <view class="func-row" hover-class="row-pressed" @click="go('/pages/user/gov-tasks')">
         <view class="func-text">
           <text class="func-title">政务代办进度</text>
           <text class="func-desc">查看申请办理进度</text>
         </view>
-        <text class="func-arrow">▶</text>
       </view>
-
-      <view class="func-card" @click="go('/pages/order/list')">
-        <text class="func-icon">🚗</text>
+      <view class="func-row" hover-class="row-pressed" @click="go('/pages/order/list')">
         <view class="func-text">
           <text class="func-title">一呼馨家订单</text>
           <text class="func-desc">查看全部帮扶服务订单</text>
         </view>
-        <text class="func-arrow">▶</text>
       </view>
-
-      <view class="func-card" @click="go('/pages/user/emergency')">
-        <text class="func-icon">🆘</text>
+      <view class="func-row" hover-class="row-pressed" @click="go('/pages/user/emergency')">
         <view class="func-text">
           <text class="func-title">紧急联系人设置</text>
           <text class="func-desc">设置紧急求助联系人</text>
         </view>
-        <text class="func-arrow">▶</text>
       </view>
-
       <!-- 常用地址 -->
-      <view class="func-card addr-card" v-if="!editingAddress" @click="editingAddress = true">
-        <text class="func-icon">📍</text>
+      <view class="func-row" v-if="!editingAddress" hover-class="row-pressed" @click="editingAddress = true">
         <view class="func-text">
           <text class="func-title">常用服务地址</text>
           <text class="func-desc">{{ addressInput || '未设置，点击添加' }}</text>
         </view>
-        <text class="func-arrow">✏️</text>
+        <text class="func-edit-hint">编辑</text>
       </view>
-      <view class="addr-edit-card" v-if="editingAddress">
-        <text class="addr-edit-title">编辑常用地址</text>
-        <input class="addr-input" v-model="addressInput" placeholder="输入常用服务地址" />
-        <view class="addr-btns">
-          <view class="addr-cancel" @click="editingAddress = false">取消</view>
-          <view class="addr-save" @click="saveCommonAddress">保存</view>
-        </view>
+    </view>
+    <view class="addr-edit-card" v-if="editingAddress">
+      <text class="addr-edit-title">编辑常用地址</text>
+      <input class="addr-input" v-model="addressInput" placeholder="输入常用服务地址" />
+      <view class="addr-btns">
+        <view class="addr-cancel" @click="editingAddress = false">取消</view>
+        <view class="addr-save" @click="saveCommonAddress">保存</view>
       </view>
     </view>
 
@@ -347,53 +334,53 @@ onMounted(() => {
   color: $color-muted;
 }
 
-.func-list {
-  padding: 0 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 16px;
+/* 功能入口:竖排文字列表 */
+.row-list {
+  margin: 0 16px 16px;
+  background: $color-card;
+  border: 1px solid $color-border;
+  border-radius: 14px;
+  overflow: hidden;
 }
 
-.func-card {
-  background: $color-card;
-  border-radius: 12px;
-  padding: 24px 20px;
+.func-row {
   display: flex;
   align-items: center;
-  gap: 16px;
-  box-shadow: none;
-  border: 1px solid $color-border;
-  box-shadow: 0 8px 16px $color-shadow;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid $color-border;
 }
 
-.func-icon {
-  font-size: 32px;
-  flex-shrink: 0;
+.row-pressed {
+  background: $color-bg;
 }
 
 .func-text {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
+  min-width: 0;
 }
 
 .func-title {
-  font-size: 24px;
+  font-size: 20px;
   color: $color-text;
   font-weight: 700;
 }
 
 .func-desc {
-  font-size: 18px;
+  font-size: 16px;
   color: $color-muted;
+  word-break: break-all;
 }
 
-.func-arrow {
-  font-size: 20px;
-  color: $color-muted;
+.func-edit-hint {
   flex-shrink: 0;
+  font-size: 16px;
+  color: $color-primary;
+  font-weight: 700;
 }
 
 .loading-box {
@@ -422,10 +409,10 @@ onMounted(() => {
 
 .addr-edit-card {
   background: $color-card;
-  border-radius: 12px;
+  border-radius: 14px;
+  margin: 0 16px 16px;
   padding: 24px 20px;
   border: 1px solid $color-border;
-  box-shadow: 0 8px 16px $color-shadow;
 }
 
 .addr-edit-title {

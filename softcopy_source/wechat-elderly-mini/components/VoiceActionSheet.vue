@@ -3,7 +3,7 @@
   <view class="voice-sheet-mask" v-if="show" @click.self="$emit('close')">
     <view class="voice-sheet">
       <view class="sheet-handle"></view>
-      <text class="sheet-title">🎤 语音快捷操作</text>
+      <text class="sheet-title">语音快捷操作</text>
 
       <!-- 上下文感知的快捷问题 -->
       <view class="quick-list">
@@ -13,17 +13,14 @@
           class="quick-item"
           @click="handleQuickItem(item)"
         >
-          <text class="quick-icon">{{ item.icon }}</text>
           <text class="quick-text">{{ item.label }}</text>
-          <text class="quick-arrow">▶</text>
         </view>
       </view>
 
       <!-- 直接语音提问 -->
       <view class="voice-record-row">
         <view class="voice-big-btn" :class="{ recording: isRecording }" @click="toggleRecord">
-          <text class="voice-big-icon">{{ isRecording ? '🔴' : '🎤' }}</text>
-          <text class="voice-big-text">{{ isRecording ? '松开停止' : '按住说话' }}</text>
+          <text class="voice-big-text">{{ isRecording ? '录音中 · 点击结束' : '点击说话提问' }}</text>
         </view>
         <text class="voice-hint" v-if="isRecording">{{ recordSec }}s / 60s</text>
         <text class="voice-hint" v-else>点击语音直接提问</text>
@@ -31,7 +28,7 @@
 
       <!-- 去AI问答页 -->
       <view class="goto-ai" @click="goAiChat">
-        <text class="goto-text">进入 AI问答 完整页面 →</text>
+        <text class="goto-text">进入 AI 问答完整页面</text>
       </view>
 
       <view class="sheet-cancel" @click="$emit('close')">
@@ -59,31 +56,31 @@ let timer = null;
 // 根据上下文生成快捷问题
 const quickItems = computed(() => {
   const base = [
-    { icon: '🎤', label: '语音问社保/政务', intent: 'shengbao' },
-    { icon: '💊', label: '语音问健康', intent: 'health' },
-    { icon: '🔧', label: '语音问帮扶服务', intent: 'bangfu' },
+    { label: '语音问社保/政务', intent: 'shengbao' },
+    { label: '语音问健康', intent: 'health' },
+    { label: '语音问帮扶服务', intent: 'bangfu' },
   ];
 
   const contextItems = {
     index: [
-      { icon: '📋', label: '如何预约帮扶服务？', intent: 'bangfu', preset: '如何预约帮扶服务' },
-      { icon: '💰', label: '查询水电费', intent: 'free', preset: '如何查询水电费' },
+      { label: '如何预约帮扶服务？', intent: 'bangfu', preset: '如何预约帮扶服务' },
+      { label: '查询水电费', intent: 'free', preset: '如何查询水电费' },
     ],
     order: [
-      { icon: '📦', label: '订单如何取消？', intent: 'free', preset: '如何取消订单' },
-      { icon: '⭐', label: '如何评价订单？', intent: 'free', preset: '如何评价服务订单' },
+      { label: '订单如何取消？', intent: 'free', preset: '如何取消订单' },
+      { label: '如何评价订单？', intent: 'free', preset: '如何评价服务订单' },
     ],
     bill: [
-      { icon: '💡', label: '电费怎么查？', intent: 'free', preset: '如何查询电费' },
-      { icon: '💧', label: '水费怎么查？', intent: 'free', preset: '如何查询水费' },
+      { label: '电费怎么查？', intent: 'free', preset: '如何查询电费' },
+      { label: '水费怎么查？', intent: 'free', preset: '如何查询水费' },
     ],
     profile: [
-      { icon: '🆘', label: '如何设置紧急联系人？', intent: 'free', preset: '如何设置紧急联系人' },
-      { icon: '📋', label: '如何查看政务代办？', intent: 'free', preset: '如何查看政务代办进度' },
+      { label: '如何设置紧急联系人？', intent: 'free', preset: '如何设置紧急联系人' },
+      { label: '如何查看政务代办？', intent: 'free', preset: '如何查看政务代办进度' },
     ],
     service: [
-      { icon: '🛒', label: '这个服务怎么预约？', intent: 'bangfu', preset: '如何预约上门服务' },
-      { icon: '💲', label: '服务收费标准？', intent: 'bangfu', preset: '帮扶服务的收费标准是什么' },
+      { label: '这个服务怎么预约？', intent: 'bangfu', preset: '如何预约上门服务' },
+      { label: '服务收费标准？', intent: 'bangfu', preset: '帮扶服务的收费标准是什么' },
     ]
   };
 
@@ -219,17 +216,13 @@ onUnmounted(() => {
 .quick-item {
   display: flex;
   align-items: center;
-  gap: 12px;
   padding: 14px 16px;
   background: $color-card;
   border-radius: 12px;
   border: 1px solid $color-border;
-  box-shadow: 0 6px 14px rgba(15, 61, 62, 0.08);
 }
 
-.quick-icon { font-size: 24px; flex-shrink: 0; }
 .quick-text { flex: 1; font-size: 18px; color: $color-text; font-weight: 700; }
-.quick-arrow { font-size: 18px; color: $color-muted; }
 
 .voice-record-row {
   display: flex;
@@ -243,16 +236,14 @@ onUnmounted(() => {
 }
 
 .voice-big-btn {
-  width: 96px;
-  height: 96px;
-  border-radius: 48px;
+  width: 100%;
+  height: 64px;
+  border-radius: 999px;
   background: $gradient-brand;
   border: 1px solid $color-primary;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
   transition: all 0.3s;
 }
 
@@ -261,8 +252,7 @@ onUnmounted(() => {
   border: 2px solid #dc2626;
 }
 
-.voice-big-icon { font-size: 34px; }
-.voice-big-text { font-size: 18px; color: #fff; font-weight: 700; }
+.voice-big-text { font-size: 20px; color: #fff; font-weight: 700; }
 
 .voice-hint {
   font-size: 18px;

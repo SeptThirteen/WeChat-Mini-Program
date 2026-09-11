@@ -34,7 +34,7 @@
       </view>
       <view class="row recurring-row" v-if="order.orderType === 'RECURRING'">
         <text class="label">预约类型</text>
-        <text class="value recurring-tag">🔁 长期预约</text>
+        <text class="value recurring-tag">长期预约</text>
       </view>
       <view class="row" v-if="order.orderType === 'RECURRING' && order.dateStart">
         <text class="label">服务周期</text>
@@ -62,7 +62,7 @@
       </view>
       <!-- 接单服务人员信息 -->
       <view class="worker-card" v-if="order.workerName && order.status !== 'CREATED' && order.status !== 'CANCELLED'">
-        <text class="worker-title">👷 服务人员{{ order.workerCategory ? ' · ' + order.workerCategory : '' }}</text>
+        <text class="worker-title">服务人员{{ order.workerCategory ? ' · ' + order.workerCategory : '' }}</text>
         <view class="worker-info">
           <text class="worker-name">{{ order.workerName }}</text>
           <view class="worker-phone-row" v-if="order.workerPhone">

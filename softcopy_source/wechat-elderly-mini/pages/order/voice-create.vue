@@ -1,7 +1,7 @@
 <template>
   <view class="page">
     <view class="header">
-      <text class="title">🎤 语音下单</text>
+      <text class="title">语音下单</text>
       <text class="subtitle">按下方按钮，说出您的需求</text>
     </view>
 
@@ -12,7 +12,6 @@
         :class="{ recording: state === 'recording', loading: state === 'uploading' }"
         @click="toggleRecord"
       >
-        <text class="mic-icon">{{ state === 'recording' ? '🔴' : (state === 'uploading' ? '⏳' : '🎤') }}</text>
         <text class="mic-text">
           {{ state === 'recording' ? recordSec + 's · 点击结束' : (state === 'uploading' ? '正在理解您的话…' : '点击说话') }}
         </text>
@@ -54,7 +53,6 @@
 
     <!-- 失败提示 -->
     <view class="card error-card" v-if="state === 'error'">
-      <text class="error-icon">😮</text>
       <text class="error-text">{{ errorMsg }}</text>
       <text class="heard-text" v-if="queryText">（我听到您说：“{{ queryText }}”）</text>
       <view class="btn confirm-btn" @click="resetToIdle">再试一次</view>
@@ -231,11 +229,10 @@ const goManual = () => {
 
 .mic-btn {
   width: 100%;
-  height: 150px;
+  height: 110px;
   border-radius: 20px;
   background: $gradient-brand;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   box-shadow: 0 10px 20px $color-shadow;
@@ -249,13 +246,8 @@ const goManual = () => {
   opacity: 0.75;
 }
 
-.mic-icon {
-  font-size: 52px;
-}
-
 .mic-text {
-  margin-top: 10px;
-  font-size: $fontSize-md;
+  font-size: 26px;
   font-weight: 700;
   color: #ffffff;
 }
@@ -351,11 +343,6 @@ const goManual = () => {
 
 .error-card {
   text-align: center;
-}
-
-.error-icon {
-  display: block;
-  font-size: 48px;
 }
 
 .error-text {

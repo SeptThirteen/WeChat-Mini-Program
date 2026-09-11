@@ -1,24 +1,29 @@
 <template>
   <view class="page">
     <view class="page-header didi-header">
-      <text class="header-title">🟤 一呼馨家</text>
+      <text class="header-title">一呼馨家</text>
       <view class="voice-order-btn" @click="goVoiceOrder">
-        <text class="voice-order-text">🎤 语音下单</text>
+        <text class="voice-order-text">语音下单</text>
       </view>
     </view>
     <view class="back-row" @click="goBack">
       <text class="back-text">← 返回首页</text>
     </view>
 
-    <view class="grid" v-if="!loading">
+    <view class="row-list" v-if="!loading">
       <view
-        v-for="svc in didiServices"
+        v-for="(svc, idx) in didiServices"
         :key="svc.type"
-        class="grid-item"
+        class="func-row"
+        :class="{ 'func-row-last': idx === didiServices.length - 1 }"
+        hover-class="row-pressed"
         @click="handleTap(svc)"
       >
-        <text class="grid-icon">{{ svc.icon }}</text>
-        <text class="grid-name">{{ svc.name }}</text>
+        <view class="row-main">
+          <text class="row-title">{{ svc.name }}</text>
+          <text class="row-desc">上门服务 · {{ svc.type }}</text>
+        </view>
+        <text class="row-price" v-if="serviceMap[svc.type]">¥{{ serviceMap[svc.type].price }}</text>
       </view>
     </view>
     <view class="loading-box" v-else>
@@ -37,10 +42,10 @@ const loading = ref(false);
 const serviceMap = ref({});
 
 const didiServices = [
-  { type: '日间照护', name: '暖心陪伴', icon: '🌞' },
-  { type: '外出陪同', name: '贴心出行', icon: '🚶' },
-  { type: '代购',   name: '跑腿帮买',   icon: '🛒' },
-  { type: '维修',   name: '上门维修',   icon: '🔧' },
+  { type: '日间照护', name: '暖心陪伴' },
+  { type: '外出陪同', name: '贴心出行' },
+  { type: '代购',   name: '跑腿帮买' },
+  { type: '维修',   name: '上门维修' },
 ];
 
 const loadServices = async () => {
@@ -124,33 +129,56 @@ onMounted(loadServices);
   color: $color-primary;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  padding: 20px 16px 8px;
+/* 竖排服务列表:名称+价格,纯文字 */
+.row-list {
+  margin: 16px;
+  background: $color-card;
+  border: 1px solid $color-border;
+  border-radius: 14px;
+  overflow: hidden;
 }
 
-.grid-item {
-  background: $color-card;
-  border-radius: 14px;
-  border: 1px solid $color-border;
-  padding: 30px 16px;
+.func-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid $color-border;
+}
+
+.func-row-last {
+  border-bottom: none;
+}
+
+.row-pressed {
+  background: $color-bg;
+}
+
+.row-main {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  box-shadow: 0 8px 16px $color-shadow;
+  gap: 4px;
+  min-width: 0;
 }
 
-.grid-icon {
-  font-size: 44px;
-}
-
-.grid-name {
-  font-size: $fontSize-md;
+.row-title {
+  font-size: 22px;
   color: $color-text;
-  font-weight: 600;
+  font-weight: 700;
+}
+
+.row-desc {
+  font-size: 16px;
+  color: $color-muted;
+}
+
+.row-price {
+  flex-shrink: 0;
+  font-size: $fontSize-md;
+  font-weight: 700;
+  color: $color-primary;
 }
 
 .loading-box {

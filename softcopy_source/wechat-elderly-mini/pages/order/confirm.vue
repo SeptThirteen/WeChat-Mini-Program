@@ -23,7 +23,7 @@
       </view>
       <view class="info-row" v-if="params.orderType === 'RECURRING'">
         <text class="info-label">预约类型</text>
-        <text class="info-value recurring-tag">🔁 长期预约</text>
+        <text class="info-value recurring-tag">长期预约</text>
       </view>
       <view class="info-row" v-if="params.orderType === 'RECURRING'">
         <text class="info-label">服务周期</text>

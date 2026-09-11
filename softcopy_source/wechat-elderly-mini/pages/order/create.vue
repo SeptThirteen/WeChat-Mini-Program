@@ -5,7 +5,7 @@
     </view>
 
     <view class="voice-hint">
-      <text class="hint-text">🎤 语音填信息 / 点选时间</text>
+      <text class="hint-text">语音填信息 / 点选时间</text>
       <view class="voice-small-btn" @click="handleVoice">语音填写</view>
     </view>
 
@@ -50,7 +50,7 @@
       <text class="section-label">预约类型</text>
       <view class="chip-row">
         <view class="chip" :class="{ active: orderType === 'SINGLE' }" @click="orderType = 'SINGLE'">单次预约</view>
-        <view class="chip" :class="{ active: orderType === 'RECURRING' }" @click="orderType = 'RECURRING'">长期预约 🔁</view>
+        <view class="chip" :class="{ active: orderType === 'RECURRING' }" @click="orderType = 'RECURRING'">长期预约</view>
       </view>
       <!-- 长期订单专属字段 -->
       <view v-if="orderType === 'RECURRING'" class="recurring-fields">
@@ -103,7 +103,7 @@
       v-if="isDayCare || isAccompany || isPurchase || isRepair"
       @click="toggleAdvanced"
     >
-      <text class="toggle-text">{{ showAdvanced ? '收起详细需求 ▲' : '填写更多需求（可选） ▼' }}</text>
+      <text class="toggle-text">{{ showAdvanced ? '收起详细需求' : '填写更多需求（可选）' }}</text>
     </view>
 
     <!-- 细分需求（按服务类型） -->
