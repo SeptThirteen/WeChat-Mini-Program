@@ -404,7 +404,22 @@ onLoad((query) => {
   }
   // 根据默认段初始化时间
   selectedTime.value = slotConfigs[selectedSlot.value].def;
-  
+
+  // v1.3 语音下单预填：日期键 / 时段 / 地址 / 备注
+  if (['today', 'tomorrow', 'aftertomorrow'].includes(query?.date)) {
+    selectedDate.value = query.date;
+  }
+  if (['morning', 'noon', 'afternoon'].includes(query?.slot)) {
+    selectedSlot.value = query.slot;
+    selectedTime.value = slotConfigs[query.slot].def;
+  }
+  if (query?.address) {
+    address.value = decodeURIComponent(query.address);
+  }
+  if (query?.remark) {
+    remark.value = decodeURIComponent(query.remark);
+  }
+
   // 加载用户地址预填
   loadUserAddress();
 });
@@ -416,7 +431,10 @@ const loadUserAddress = async () => {
     const res = await getUserProfile(userId);
     if (res.data && res.data.address) {
       commonAddress.value = res.data.address;
-      address.value = res.data.address; // 预填地址
+      // 语音下单已带地址时不覆盖
+      if (!address.value) {
+        address.value = res.data.address;
+      }
     }
   } catch (e) {
     // 静默失败，用户可手动输入
