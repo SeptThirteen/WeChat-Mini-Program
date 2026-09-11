@@ -99,26 +99,22 @@
 **工作量**：1-2 天  
 **风险**：中（依赖大模型输出稳定性）  
 **影响范围**：AI 模块 + 下单流程  
+**状态**：✅ 后端+前端已完成（v1.3，2026-09-12）；LLM/ASR 真实调用需在 application-dev.yml 配置有效 AI Key，真机流程待验证
 
 **实施清单**：
-- [ ] 后端：新增 `AiController.parseOrderIntent(audioFile)` 接口
-  - [ ] System Prompt 设计：限定返回 JSON Schema
-  - [ ] JSON 结构：`{serviceKey, date, timeSlot, address, remark, error?}`
-  - [ ] 调用腾讯混元 API，约束 response_format（如支持）
-  - [ ] 异常处理：返回 `{error: "无法理解"}`
-- [ ] 前端：
-  - [ ] `didi.vue` 或 `index.vue` 增加"语音下单"大按钮入口
-  - [ ] 新建 `pages/order/voice-create.vue` 页面：
-    - [ ] 长按录音组件（复用 ai-chat.vue 逻辑）
-    - [ ] 提交音频到 `/api/ai/parseOrderIntent`
-    - [ ] 解析返回 JSON，自动填充 `create.vue` 表单
-    - [ ] 展示识别结果供用户确认："我听到您说：明天上午修水龙头"
-    - [ ] 确认后跳转 `create.vue`（带预填参数）
-    - [ ] 识别失败显示友好提示 + 重试按钮
-- [ ] 测试：
-  - [ ] 准备 10 条测试语音文本
-  - [ ] 验证 JSON 输出格式稳定性
-  - [ ] 兜底逻辑覆盖率测试
+- [x] 后端：`POST /api/ai/parse-order-intent`（音频可选 + text 调试参数）
+  - [x] System Prompt 设计：限定返回 JSON Schema，动态注入服务目录与当前日期
+  - [x] JSON 结构：`{serviceKey, date, timeSlot, address, remark, error?}`
+  - [x] 走 IAiProvider 抽象（百度文心/腾讯混元均可，前端默认 BAIDU）
+  - [x] 异常处理：provider 降级文案识别；JSON 解析失败/服务未识别 → `{error}` + queryText 兜底；过去日期/非法时段置 null
+- [x] 前端：
+  - [x] `didi.vue` 头部增加"🎤 语音下单"入口按钮
+  - [x] 新建 `pages/order/voice-create.vue`：点击录音(60s上限) → 上传解析 → "我听到您说"结果确认卡（服务/日期/时段/地址/备注，缺项显示"到下一步再选"）→ 确认后跳 `create.vue`（带 serviceId/serviceName/servicePrice/date/slot/address/remark 预填）→ 失败显示友好提示 + 重试/手动选服务
+  - [x] `create.vue` onLoad 支持 date/slot/address/remark 预填参数；语音带地址时不被用户档案地址覆盖
+- [x] 测试：
+  - [x] Mock LLM 单元测试 10 项全通过（`AiServiceImplTest`：围栏JSON提取/模糊服务匹配/中文时段映射/过去日期兜底/非法JSON/降级文案/ASR失败）
+  - [x] 接口实测：文本模式、TTS合成语音模式、参数校验 400、无Key降级路径
+  - [ ] 真实 AI Key 下的 10 条口语用例回归（待用户配置有效 Key 后执行）
 
 ---
 
@@ -157,4 +153,4 @@
 | v1.1 | 服务名称润色 + 下单流程简化 | ✅ 已完成 |
 | v1.2 | 接单人员类别 + 长期订单 | ✅ 已完成 |
 | v1.2.x | 全站UI改版（银龄馨家青绿主题）+ 安全治理（BCrypt/短信验证码/FAQ音频/账单明细化） | ✅ 2026-09-12 |
-| v1.3 | 语音下单（大模型） | 未来规划 |
+| v1.3 | 语音下单（大模型意图解析，后端+前端完成，LLM真实调用待配置有效Key） | ✅ 2026-09-12 |

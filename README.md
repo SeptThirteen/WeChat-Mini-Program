@@ -146,6 +146,7 @@ npm run dev:h5          # H5 浏览器调试
 | `/api/ai/text-query` | POST | ✅ | 文本 AI 问答（`userId/provider/intent/text`） |
 | `/api/ai/voice-query` | POST | ✅ | 语音 AI 问答（multipart 音频 + 参数） |
 | `/api/ai/history` | GET | ✅ | 查询历史记录（`?userId=&limit=`） |
+| `/api/ai/parse-order-intent` | POST | ✅ | 语音/文本下单意图解析（multipart `audio` 可选 + `text` 调试参数；返回规范化 JSON 意图） |
 | `/api/worker/register` | POST | ❌ | 工人注册（姓名/手机号/密码/人员类别） |
 | `/api/worker/login` | POST | ❌ | 工人登录（BCrypt 校验，历史明文自动升级） |
 | `/api/worker/orders/pending` | GET | ✅ | 待抢单列表（按工人类别智能排序） |
@@ -227,7 +228,8 @@ $btn-height:    64px;     // 按钮最小高度
 ## 已知限制
 
 - 账单查询（`/api/bill/query`）为明细化模拟数据：按"用户+户号+账单月"生成确定性明细（同一输入结果可复现），前端已标注"演示项目：账单为模拟数据"；接入真实公用事业数据需替换 `BillQueryServiceImpl`
-- AI 问答已接入双引擎策略（百度文心 / 腾讯混元），需在 `application-dev.yml` 中填入真实 API Key 方可使用（从 `.example` 模板复制，详见 `md/AI-API配置教程.md`）
+- AI 问答已接入双引擎策略（百度文心 / 腾讯混元），需在 `application-dev.yml` 中填入真实 API Key 方可使用（从 `.example` 模板复制，详见 `md/AI-API配置教程.md`）；2026-09-12 联调发现当前配置的百度 Key 已失效（`invalid_client`）、腾讯 Key 未配置，语音问答与 v1.3 语音下单的 ASR/LLM 真实调用需先更新有效 Key
+- 语音下单（v1.3）链路：录音 → ASR → LLM 意图抽取（JSON）→ 确认页预填下单；意图解析逻辑已由单元测试覆盖（`AiServiceImplTest` 10 项），配置有效 Key 后即可端到端使用
 - 短信验证码为内存版实现（未接短信网关）：验证码打印到后端日志，开发联调模式下接口回显 `devCode`；重启后验证码失效；生产环境需替换为真实短信服务并将 `sms.code.return-in-response` 置为 `false`
 - Worker 密码已使用 BCrypt 加密存储；历史明文账号（旧库/种子数据）登录时自动比对并升级为哈希
 - FAQ 语音播报音频已预生成（Windows SAPI 中文 TTS，WAV 格式，`static/audio/faq-001.wav` ~ `faq-006.wav`），可运行仓库根目录 `generate_faq_audio.ps1` 修改文案后重新生成
