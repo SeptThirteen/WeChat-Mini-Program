@@ -21,6 +21,16 @@ public interface AiService {
     Map<String, Object> queryByVoice(Long userId, String provider, String intent, byte[] audioData);
 
     /**
+     * 语音/文本下单意图解析（ASR → LLM抽取JSON → 规范化）
+     *
+     * @param text      直接传入文本（调试/降级用），可为 null
+     * @param audioData WAV 音频，text 为空时必传
+     * @return {provider, queryText, intent:{serviceId,serviceName,servicePrice,date,timeSlot,address,remark}}
+     *         解析失败时返回 {provider, queryText, error}
+     */
+    Map<String, Object> parseOrderIntent(Long userId, String provider, String text, byte[] audioData);
+
+    /**
      * 查询 FAQ 列表
      */
     List<Map<String, Object>> getFaqList();
