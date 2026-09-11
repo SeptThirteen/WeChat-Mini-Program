@@ -32,7 +32,39 @@
     <!-- Result -->
     <view class="card result-card" v-if="result">
       <text class="result-title">查询结果</text>
-      <text class="result-content">{{ result }}</text>
+
+      <template v-if="result && typeof result === 'object' && result.amount !== undefined">
+        <view class="amount-row">
+          <text class="amount-label">本期{{ result.typeName }}账单</text>
+          <text class="amount-value">¥{{ result.amount.toFixed(2) }}</text>
+        </view>
+        <view class="meta-row">
+          <text class="meta-label">账单月份</text>
+          <text class="meta-value">{{ result.month }}</text>
+        </view>
+        <view class="meta-row">
+          <text class="meta-label">缴费账户</text>
+          <text class="meta-value">{{ result.accountNo || '—' }}</text>
+        </view>
+        <view class="meta-row">
+          <text class="meta-label">缴费状态</text>
+          <text class="meta-value status-pending">{{ result.status }}</text>
+        </view>
+        <view class="meta-row">
+          <text class="meta-label">缴费截止</text>
+          <text class="meta-value">{{ result.dueDate }}</text>
+        </view>
+
+        <view class="divider"></view>
+        <text class="section-label">账单明细</text>
+        <view class="item-row" v-for="(it, i) in result.items" :key="i">
+          <text class="item-name">{{ it.name }}</text>
+          <text class="item-amount">¥{{ it.amount.toFixed(2) }}</text>
+        </view>
+        <text class="sim-note">* 演示项目：账单为模拟明细数据，非真实账单</text>
+      </template>
+
+      <text v-else class="result-content">{{ result }}</text>
     </view>
 
     <!-- Error -->
@@ -69,7 +101,7 @@ const types = [
 const queryType = ref('ELECTRICITY');
 const queryParams = ref('');
 const submitting = ref(false);
-const result = ref('');
+const result = ref(null);
 const errorMsg = ref('');
 const history = ref([]);
 
@@ -96,11 +128,19 @@ const handleQuery = async () => {
       queryParams: queryParams.value.trim(),
       userId: userStore.userId || undefined
     });
-    const snapshot = res.data?.resultSnapshot || res.data || '查询成功，暂无账单数据';
-    result.value = typeof snapshot === 'string' ? snapshot : JSON.stringify(snapshot);
+    const data = res.data;
+    let displayText;
+    if (data && typeof data === 'object' && data.amount !== undefined) {
+      result.value = data;
+      displayText = `${data.month} ${data.typeName} ¥${Number(data.amount).toFixed(2)}（${data.status}）`;
+    } else {
+      const snapshot = data?.resultSnapshot || data || '查询成功，暂无账单数据';
+      result.value = typeof snapshot === 'string' ? snapshot : JSON.stringify(snapshot);
+      displayText = result.value;
+    }
 
     const typeLabel = types.find((t) => t.value === queryType.value)?.label || queryType.value;
-    history.value.unshift({ label: typeLabel, params: queryParams.value.trim(), result: result.value });
+    history.value.unshift({ label: typeLabel, params: queryParams.value.trim(), result: displayText });
     if (history.value.length > 5) history.value.pop();
   } catch (e) {
     errorMsg.value = e.message || '查询失败，请检查户号后重试';
@@ -222,6 +262,80 @@ const handleQuery = async () => {
   font-size: 24px;
   color: $color-text;
   line-height: 1.6;
+}
+
+.amount-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.amount-label {
+  font-size: 20px;
+  color: $color-muted;
+}
+
+.amount-value {
+  font-size: 40px;
+  font-weight: 700;
+  color: $color-primary;
+}
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+.meta-label {
+  font-size: 18px;
+  color: $color-muted;
+}
+
+.meta-value {
+  font-size: 20px;
+  color: $color-text;
+  font-weight: 600;
+}
+
+.status-pending {
+  color: #e65100;
+  font-weight: 700;
+}
+
+.divider {
+  height: 1px;
+  background: $color-border;
+  margin: 12px 0;
+}
+
+.item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.item-name {
+  font-size: 18px;
+  color: $color-text;
+  flex: 1;
+  line-height: 1.5;
+}
+
+.item-amount {
+  font-size: 20px;
+  color: $color-text;
+  font-weight: 700;
+  margin-left: 12px;
+}
+
+.sim-note {
+  display: block;
+  font-size: 14px;
+  color: $color-muted;
+  margin-top: 10px;
 }
 
 .result-error {
