@@ -128,7 +128,8 @@ npm run dev:h5          # H5 浏览器调试
 
 | 接口 | 方法 | 需要 Token | 说明 |
 |------|------|-----------|------|
-| `/api/auth/login` | POST | ❌ | 手机号+验证码登录（测试：任意6位数字） |
+| `/api/auth/sms-code` | POST | ❌ | 获取短信验证码（演示模式响应携带 `devCode`，生产环境关闭） |
+| `/api/auth/login` | POST | ❌ | 手机号+短信验证码登录（验证码5分钟有效、60秒重发冷却） |
 | `/api/health` | GET | ❌ | 健康检查 |
 | `/api/service/list` | GET | ❌ | 获取服务列表 |
 | `/api/service/{id}` | GET | ❌ | 获取服务详情 |
@@ -182,15 +183,15 @@ npm run dev:h5          # H5 浏览器调试
 所有 UI 样式变量定义于 `styles/theme.scss`：
 
 ```scss
-$fontSize-title: 34px;  // 页面大标题
-$fontSize-lg:    24px;  // 卡片标题
-$fontSize-md:    20px;  // 按钮/导航文字
-$fontSize-base:  18px;  // 正文基础字号
-$fontSize-sm:    16px;  // 说明文字
+$fontSize-title: 36px;  // 页面大标题
+$fontSize-lg:    26px;  // 卡片标题
+$fontSize-md:    22px;  // 按钮/导航文字
+$fontSize-base:  20px;  // 正文基础字号
+$fontSize-sm:    18px;  // 说明文字
 
-$color-primary: #e76f51;  // 主色（橙红）
-$color-bg:      #fff7f3;  // 页面背景（暖白）
-$btn-height:    56px;     // 按钮最小高度
+$color-primary: #1FA8A4;  // 主色（品牌青绿）
+$color-bg:      #EAF7F6;  // 页面背景（轻浅青底）
+$btn-height:    64px;     // 按钮最小高度
 ```
 
 ---
@@ -202,6 +203,7 @@ $btn-height:    56px;     // 按钮最小高度
 - 业务异常使用 `throw new BusinessException(code, "中文消息")`，由 `GlobalExceptionHandler` 统一处理
 - 新增接口需同时更新 controller / service / mapper 三层
 - JWT claims 包含 `userId` 和 `phone`，通过 `JwtUtil` 生成和解析
+- 密码等敏感字段使用 `PasswordEncoder`（BCrypt）加密存储，禁止明文落库
 
 ### 前端
 - 所有接口调用必须通过 `api/request.js` 中的 `request()` 函数，不得使用裸 `uni.request`
@@ -212,8 +214,8 @@ $btn-height:    56px;     // 按钮最小高度
 
 ## 已知限制
 
-- 账单查询（`/api/bill/query`）返回模拟金额（¥128.50），不是真实账单数据
+- 账单查询（`/api/bill/query`）为明细化模拟数据：按"用户+户号+账单月"生成确定性明细（同一输入结果可复现），前端已标注"演示项目：账单为模拟数据"；接入真实公用事业数据需替换 `BillQueryServiceImpl`
 - AI 问答已接入双引擎策略（百度文心 / 腾讯混元），需在 `application-dev.yml` 中填入真实 API Key 方可使用（从 `.example` 模板复制，详见 `md/AI-API配置教程.md`）
-- FAQ 语音播报需在 `src/main/resources/static/audio/` 放置 `faq-001.mp3` ~ `faq-006.mp3` 文件
-- 验证码登录跳过实际校验，测试时输入任意 6 位数字即可
-- Worker 密码为明文存储（测试项目简化）
+- 短信验证码为内存版实现（未接短信网关）：验证码打印到后端日志，开发联调模式下接口回显 `devCode`；重启后验证码失效；生产环境需替换为真实短信服务并将 `sms.code.return-in-response` 置为 `false`
+- Worker 密码已使用 BCrypt 加密存储；历史明文账号（旧库/种子数据）登录时自动比对并升级为哈希
+- FAQ 语音播报音频已预生成（Windows SAPI 中文 TTS，WAV 格式，`static/audio/faq-001.wav` ~ `faq-006.wav`），可运行仓库根目录 `generate_faq_audio.ps1` 修改文案后重新生成
