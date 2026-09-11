@@ -12,13 +12,22 @@
         maxlength="11"
         placeholder="请输入11位手机号"
       />
-      <input
-        class="input"
-        v-model="code"
-        type="number"
-        maxlength="6"
-        placeholder="请输入验证码（任意6位）"
-      />
+      <view class="code-row">
+        <input
+          class="input code-input"
+          v-model="code"
+          type="number"
+          maxlength="6"
+          placeholder="请输入短信验证码"
+        />
+        <view
+          class="send-btn"
+          :class="{ disabled: countdown > 0 || sending }"
+          @click="handleSendCode"
+        >
+          {{ countdown > 0 ? countdown + 's' : (sending ? '发送中…' : '获取验证码') }}
+        </view>
+      </view>
       <view class="btn" :class="{ disabled: loading }" @click="handleLogin">
         {{ loading ? '登录中…' : '登录' }}
       </view>
@@ -28,13 +37,55 @@
 
 <script setup>
 import { ref } from 'vue';
-import { login } from '../../api/auth';
+import { login, sendSmsCode } from '../../api/auth';
 import { useUserStore } from '../../store/user';
 
 const phone = ref('');
 const code = ref('');
 const loading = ref(false);
+const sending = ref(false);
+const countdown = ref(0);
 const userStore = useUserStore();
+
+let countdownTimer = null;
+
+const startCountdown = () => {
+  countdown.value = 60;
+  countdownTimer = setInterval(() => {
+    countdown.value--;
+    if (countdown.value <= 0) clearInterval(countdownTimer);
+  }, 1000);
+};
+
+const handleSendCode = async () => {
+  if (sending.value || countdown.value > 0) return;
+  const trimmedPhone = phone.value.trim();
+  if (!/^1\d{10}$/.test(trimmedPhone)) {
+    uni.showToast({ title: '请先输入正确的11位手机号', icon: 'none' });
+    return;
+  }
+
+  sending.value = true;
+  try {
+    const res = await sendSmsCode(trimmedPhone);
+    startCountdown();
+    const devCode = res?.data?.devCode;
+    if (devCode) {
+      uni.showModal({
+        title: '验证码已发送（演示模式）',
+        content: `验证码：${devCode}\n（未接短信网关，验证码在此展示）`,
+        showCancel: false,
+        confirmText: '知道了'
+      });
+    } else {
+      uni.showToast({ title: '验证码已发送，请查收短信', icon: 'none', duration: 2500 });
+    }
+  } catch (e) {
+    uni.showToast({ title: e.message || '验证码发送失败，请重试', icon: 'none' });
+  } finally {
+    sending.value = false;
+  }
+};
 
 const handleLogin = async () => {
   if (loading.value) return;
@@ -119,6 +170,38 @@ const handleLogin = async () => {
 
 .input:focus {
   border-color: $color-primary;
+}
+
+.code-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.code-input {
+  flex: 1;
+  margin-bottom: 16px;
+}
+
+.send-btn {
+  flex-shrink: 0;
+  width: 190px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $color-card;
+  border: 2px solid $color-primary;
+  color: $color-primary;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+}
+
+.send-btn.disabled {
+  opacity: 0.55;
 }
 
 .btn {
