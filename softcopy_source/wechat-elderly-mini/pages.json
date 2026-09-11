@@ -29,6 +29,10 @@
       "style": { "navigationBarTitleText": "服务下单", "navigationBarBackgroundColor": "#ECFEFF", "navigationBarTextStyle": "black" }
     },
     {
+      "path": "pages/order/voice-create",
+      "style": { "navigationBarTitleText": "语音下单", "navigationBarBackgroundColor": "#ECFEFF", "navigationBarTextStyle": "black" }
+    },
+    {
       "path": "pages/order/confirm",
       "style": { "navigationBarTitleText": "确认订单", "navigationBarBackgroundColor": "#ECFEFF", "navigationBarTextStyle": "black" }
     },

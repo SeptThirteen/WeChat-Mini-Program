@@ -24,6 +24,7 @@ import java.util.Map;
  * <ul>
  * <li>POST /api/ai/text-query   — 文本问答</li>
  * <li>POST /api/ai/voice-query  — 语音问答（上传音频文件）</li>
+ * <li>POST /api/ai/parse-order-intent — 语音/文本下单意图解析（v1.3）</li>
  * <li>GET  /api/ai/faq-list     — 获取FAQ列表</li>
  * <li>GET  /api/ai/faq-audio/{id} — 获取FAQ预录音频（公开）</li>
  * <li>GET  /api/ai/history       — 查询历史记录</li>
@@ -71,6 +72,32 @@ public class AiController {
             log.info("收到语音问答请求 - user:{}, size:{}bytes, provider:{}, intent:{}",
                     userId, audioData.length, provider, intent);
             Map<String, Object> result = aiService.queryByVoice(userId, provider, intent, audioData);
+            return ApiResponse.success(result);
+        } catch (IOException e) {
+            log.error("读取音频文件失败", e);
+            return ApiResponse.error(500, "音频文件读取失败");
+        }
+    }
+
+    /**
+     * 语音/文本下单意图解析：音频(可选)或文本 → ASR → LLM抽取JSON → 规范化
+     * text 参数用于调试与文本降级；生产走 audio
+     */
+    @PostMapping("/parse-order-intent")
+    public ApiResponse<Map<String, Object>> parseOrderIntent(
+            @RequestParam(value = "audio", required = false) MultipartFile audio,
+            @RequestParam(value = "text", required = false) String text,
+            @RequestParam(value = "provider", required = false) String provider,
+            @RequestParam("userId") Long userId) {
+        boolean hasAudio = audio != null && !audio.isEmpty();
+        boolean hasText = text != null && !text.trim().isEmpty();
+        if (!hasAudio && !hasText) {
+            return ApiResponse.error(400, "请上传音频或输入文字");
+        }
+        try {
+            byte[] audioData = hasAudio ? audio.getBytes() : null;
+            log.info("收到下单意图解析请求 - user:{}, audio:{}, text:{}", userId, hasAudio, text);
+            Map<String, Object> result = aiService.parseOrderIntent(userId, provider, hasText ? text : null, audioData);
             return ApiResponse.success(result);
         } catch (IOException e) {
             log.error("读取音频文件失败", e);

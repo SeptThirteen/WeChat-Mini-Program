@@ -2,6 +2,9 @@
   <view class="page">
     <view class="page-header didi-header">
       <text class="header-title">🟤 一呼馨家</text>
+      <view class="voice-order-btn" @click="goVoiceOrder">
+        <text class="voice-order-text">🎤 语音下单</text>
+      </view>
     </view>
     <view class="back-row" @click="goBack">
       <text class="back-text">← 返回首页</text>
@@ -68,6 +71,7 @@ const handleTap = (svc) => {
 
 const goBack = () => uni.navigateBack();
 const goOrders = () => uni.navigateTo({ url: '/pages/order/list' });
+const goVoiceOrder = () => uni.navigateTo({ url: '/pages/order/voice-create' });
 
 onMounted(loadServices);
 </script>
@@ -85,12 +89,28 @@ onMounted(loadServices);
 
 .didi-header {
   background: $gradient-brand;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .header-title {
   color: #fff;
   font-size: 24px;
   font-weight: 700;
+}
+
+.voice-order-btn {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 999px;
+  padding: 10px 20px;
+  box-shadow: 0 4px 10px rgba(22, 78, 99, 0.18);
+}
+
+.voice-order-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: $color-primary;
 }
 
 .back-row {
