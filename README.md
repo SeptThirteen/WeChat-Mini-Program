@@ -146,6 +146,17 @@ npm run dev:h5          # H5 浏览器调试
 | `/api/ai/text-query` | POST | ✅ | 文本 AI 问答（`userId/provider/intent/text`） |
 | `/api/ai/voice-query` | POST | ✅ | 语音 AI 问答（multipart 音频 + 参数） |
 | `/api/ai/history` | GET | ✅ | 查询历史记录（`?userId=&limit=`） |
+| `/api/worker/register` | POST | ❌ | 工人注册（姓名/手机号/密码/人员类别） |
+| `/api/worker/login` | POST | ❌ | 工人登录（BCrypt 校验，历史明文自动升级） |
+| `/api/worker/orders/pending` | GET | ✅ | 待抢单列表（按工人类别智能排序） |
+| `/api/worker/orders/mine` | GET | ✅ | 我的接单列表 |
+| `/api/worker/orders/{id}/accept` | POST | ✅ | 接单 |
+| `/api/worker/orders/{id}/complete` | POST | ✅ | 完成订单 |
+| `/api/contact/list` | GET | ✅ | 紧急联系人列表（`?userId=`） |
+| `/api/contact/save` | POST | ✅ | 保存紧急联系人 |
+| `/api/contact/{id}` | DELETE | ✅ | 删除紧急联系人 |
+| `/api/gov/submit` | POST | ✅ | 提交政务代办申请 |
+| `/api/gov/list` | GET | ✅ | 政务代办进度列表（`?userId=`） |
 
 > **注意**：`/api/user/update` 是更新接口的实际路径（非 `/api/user/profile`）。
 

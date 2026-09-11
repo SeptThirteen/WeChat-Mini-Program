@@ -20,8 +20,8 @@ source wechat-elderly-service/src/main/resources/db/migration-2026-03-06-add-dis
 ```
 
 ### 验证点
-- [ ] services 表增加 display_name 字段
-- [ ] 所有 7 条服务数据的 display_name 已更新：
+- [x] services 表增加 display_name 字段（2026-09-12 联调时查库确认）
+- [x] 所有 7 条服务数据的 display_name 已更新（2026-09-12 经 /api/service/list 确认）：
   - 家务帮助 → 洁净到家
   - 基础陪护 → 就医陪护
   - 健康测量 → 健康小站
@@ -41,10 +41,10 @@ mvn spring-boot:run
 ```
 
 ### 验证点
-- [ ] 后端启动无报错
-- [ ] Swagger UI 可访问：http://localhost:8080/swagger-ui.html
-- [ ] GET /api/service/list 返回服务列表，每条数据包含 `displayName` 字段
-- [ ] POST /api/order/create 创建订单后，`serviceName` 字段格式为 `{displayName} - {description}`
+- [x] 后端启动无报错（2026-09-12 实测）
+- [x] Swagger UI 可访问：http://localhost:8080/swagger-ui.html（2026-09-12 返回 200）
+- [x] GET /api/service/list 返回服务列表，每条数据包含 `displayName` 字段（2026-09-12;此前被旧库兼容白名单过滤,已修复）
+- [x] POST /api/order/create 创建订单后，`serviceName` 字段格式为 `{displayName} - {description}`（2026-09-12 实测"洁净到家 - 上门打扫、整理房间"）
 
 ---
 

@@ -1,7 +1,8 @@
 # v1.2 测试清单 — 工人类别 + 长期订单
 
 ## 前置条件
-- [ ] 执行 `migration-v1.2-worker-category-recurring.sql`（或重新跑 init.sql）
+- [x] 执行 `migration-v1.2-worker-category-recurring.sql`（2026-09-12 已在本地库补齐 workers.category 与 orders 长期订单列;原脚本 IF NOT EXISTS 为 MariaDB 语法,已重写为 MySQL 8.0 幂等版）
+> 后端接口层的长期订单字段已实测通过（见 TESTING-v1.2.x.md）;以下 UI 用例待微信开发者工具/真机执行。
 - [ ] 后端启动成功（`mvn spring-boot:run`）
 - [ ] 前端启动成功（`npm run dev:h5` 或 `dev:mp-weixin`）
 
