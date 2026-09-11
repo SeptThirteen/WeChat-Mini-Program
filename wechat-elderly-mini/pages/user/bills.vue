@@ -36,7 +36,7 @@
         </view>
         <view class="record-body">
           <text class="record-amount">¥{{ r.amount }}</text>
-          <view class="record-status"><text>已缴费 ✅</text></view>
+          <view class="record-status"><text>已缴费</text></view>
         </view>
       </view>
     </view>

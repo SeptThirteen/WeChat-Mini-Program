@@ -18,7 +18,7 @@
           v-model="code"
           type="number"
           maxlength="6"
-          placeholder="请输入短信验证码"
+          placeholder="验证码"
         />
         <view
           class="send-btn"
@@ -185,7 +185,7 @@ const handleLogin = async () => {
 
 .send-btn {
   flex-shrink: 0;
-  width: 190px;
+  width: 150px;
   height: 56px;
   display: flex;
   align-items: center;

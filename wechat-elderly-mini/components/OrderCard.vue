@@ -5,7 +5,7 @@
       <text class="status" :class="statusClass">{{ statusLabel }}</text>
     </view>
     <text class="desc">服务：{{ serviceName || ('服务ID：' + serviceId) }}</text>
-    <text class="desc recurring-badge" v-if="orderType === 'RECURRING'">🔁 长期预约 · {{ recurrenceRule }}</text>
+    <text class="desc recurring-badge" v-if="orderType === 'RECURRING'">长期预约 · {{ recurrenceRule }}</text>
     <text class="desc" v-if="createdTime">下单时间：{{ createdTime }}</text>
 
     <view class="actions" v-if="status === 'CREATED' || status === 'COMPLETED'">

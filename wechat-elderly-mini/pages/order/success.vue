@@ -1,7 +1,6 @@
 <template>
   <view class="page">
     <view class="success-header">
-      <text class="success-icon">🎉</text>
       <text class="success-title">下单成功</text>
     </view>
 
@@ -11,7 +10,7 @@
         <text class="order-label">订单号</text>
         <text class="order-id">DY{{ String(orderId).padStart(11, '0') }}</text>
       </view>
-      <text class="tip-text">社区将在 5 分钟内响应，请保持手机畅通 📱</text>
+      <text class="tip-text">社区将在 5 分钟内响应，请保持手机畅通</text>
     </view>
 
     <view class="btn-list">

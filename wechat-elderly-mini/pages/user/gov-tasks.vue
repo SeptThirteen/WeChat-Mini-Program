@@ -10,7 +10,7 @@
       <view class="form-row">
         <text class="form-label">申办类型</text>
         <picker :range="taskTypes" @change="onTypePick">
-          <view class="picker-value">{{ form.taskType || '请选择' }} ▼</view>
+          <view class="picker-value">{{ form.taskType || '请选择' }}</view>
         </picker>
       </view>
       <view class="form-row">

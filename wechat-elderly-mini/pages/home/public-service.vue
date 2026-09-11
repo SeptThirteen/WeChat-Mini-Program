@@ -1,22 +1,26 @@
 <template>
   <view class="page">
     <view class="page-header public-header">
-      <text class="header-title">🟡 公共服务</text>
+      <text class="header-title">公共服务</text>
     </view>
     <view class="back-row" @click="goBack">
       <text class="back-text">← 返回一级菜单</text>
     </view>
 
-    <view class="grid">
+    <view class="row-list">
       <view
-        v-for="svc in services"
+        v-for="(svc, idx) in services"
         :key="svc.key"
-        class="grid-item"
+        class="func-row"
+        :class="{ 'func-row-last': idx === services.length - 1 }"
+        hover-class="row-pressed"
         @click="svc.action()"
       >
-        <text class="grid-icon">{{ svc.icon }}</text>
-        <text class="grid-name">{{ svc.name }}</text>
-        <text class="grid-tag" :class="svc.tag === 'bill' ? 'tag-bill' : 'tag-gov'">{{ svc.tag === 'bill' ? '缴费查询' : '政务代办' }}</text>
+        <view class="row-main">
+          <text class="row-title">{{ svc.name }}</text>
+          <text class="row-desc">{{ svc.tag === 'bill' ? '便民缴费查询' : '政务事项办理' }}</text>
+        </view>
+        <text class="row-tag" :class="svc.tag === 'bill' ? 'tag-bill' : 'tag-gov'">{{ svc.tag === 'bill' ? '缴费查询' : '政务代办' }}</text>
       </view>
     </view>
   </view>
@@ -32,7 +36,7 @@ const openMini = (shortLink) => {
       uni.showToast({ title: '即将跳转', icon: 'none' });
     },
     fail: () => {
-      uni.showToast({ title: '跳转失败，请重试', icon: 'none' });
+      uni.showToast({ title: '跳转失败，请重试', icon: 'none' })
     }
   });
 };
@@ -40,12 +44,12 @@ const openMini = (shortLink) => {
 const toQuery = (type) => uni.navigateTo({ url: `/pages/query/index?type=${type}` });
 
 const services = [
-  { key: 'shebao',  name: '社保查询',     icon: '🏛',  tag: 'gov',  action: () => openMini('#小程序://我的社保卡/A8fzVgm5OGPNYRp') },
-  { key: 'yanglao', name: '养老补贴申请',  icon: '👴',  tag: 'gov',  action: () => openMini('#小程序://民政通/KcvVG5Ky8iqicDv') },
-  { key: 'yibao',   name: '医保备案',     icon: '🏥',  tag: 'gov',  action: () => openMini('#小程序://国家医保/tdL3MZpbCQz2SZl') },
-  { key: 'dianfei', name: '电费缴纳',     icon: '💡',  tag: 'bill', action: () => toQuery('ELECTRICITY') },
-  { key: 'shuifei', name: '水费缴纳',     icon: '💧',  tag: 'bill', action: () => toQuery('WATER') },
-  { key: 'ranqi',   name: '燃气/有线电视', icon: '📺',  tag: 'bill', action: () => toQuery('TV') },
+  { key: 'shebao',  name: '社保查询',      tag: 'gov',  action: () => openMini('#小程序://我的社保卡/A8fzVgm5OGPNYRp') },
+  { key: 'yanglao', name: '养老补贴申请',   tag: 'gov',  action: () => openMini('#小程序://民政通/KcvVG5Ky8iqicDv') },
+  { key: 'yibao',   name: '医保备案',      tag: 'gov',  action: () => openMini('#小程序://国家医保/tdL3MZpbCQz2SZl') },
+  { key: 'dianfei', name: '电费缴纳',      tag: 'bill', action: () => toQuery('ELECTRICITY') },
+  { key: 'shuifei', name: '水费缴纳',      tag: 'bill', action: () => toQuery('WATER') },
+  { key: 'ranqi',   name: '燃气/有线电视',  tag: 'bill', action: () => toQuery('TV') },
 ];
 </script>
 
@@ -81,39 +85,55 @@ const services = [
   color: $color-primary;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  padding: 20px 16px;
+/* 竖排服务列表:名称+分类标签,纯文字 */
+.row-list {
+  margin: 16px;
+  background: $color-card;
+  border: 1px solid $color-border;
+  border-radius: 14px;
+  overflow: hidden;
 }
 
-.grid-item {
-  background: $color-card;
-  border-radius: 14px;
-  border: 1px solid $color-border;
-  padding: 24px 12px;
+.func-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid $color-border;
+}
+
+.func-row-last {
+  border-bottom: none;
+}
+
+.row-pressed {
+  background: $color-bg;
+}
+
+.row-main {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0 8px 16px $color-shadow;
+  gap: 4px;
+  min-width: 0;
 }
 
-.grid-icon {
-  font-size: 40px;
-}
-
-.grid-name {
-  font-size: $fontSize-base;
+.row-title {
+  font-size: 22px;
   color: $color-text;
-  font-weight: 600;
-  text-align: center;
+  font-weight: 700;
 }
 
-.grid-tag {
-  font-size: 12px;
-  padding: 3px 8px;
+.row-desc {
+  font-size: 16px;
+  color: $color-muted;
+}
+
+.row-tag {
+  flex-shrink: 0;
+  font-size: 14px;
+  padding: 4px 10px;
   border-radius: 10px;
   border: 1px solid transparent;
 }

@@ -11,7 +11,7 @@
       :key="c.contactId || i"
     >
       <view class="contact-badge" :style="{ background: i === 0 ? '#ef5350' : '#FFA726' }">
-        <text class="badge-text">{{ i === 0 ? '🔴 紧急联系人1' : '🟡 紧急联系人2' }}</text>
+        <text class="badge-text">{{ i === 0 ? '紧急联系人1' : '紧急联系人2' }}</text>
       </view>
       <view class="contact-row">
         <text class="contact-label">姓名</text>
@@ -23,11 +23,11 @@
       </view>
       <view class="contact-row" @click="call(c.phone)">
         <text class="contact-label">电话</text>
-        <text class="contact-value phone-value">{{ c.phone }} 📞</text>
+        <text class="contact-value phone-value">{{ c.phone }}</text>
       </view>
       <view class="card-actions">
-        <view class="card-action-btn" @click="openEdit(c)">✏️ 修改</view>
-        <view class="card-action-btn delete" @click="handleDelete(c)">🗑️ 删除</view>
+        <view class="card-action-btn" @click="openEdit(c)">修改</view>
+        <view class="card-action-btn delete" @click="handleDelete(c)">删除</view>
       </view>
     </view>
 
@@ -38,12 +38,11 @@
 
     <!-- 新增按钮 -->
     <view class="edit-btn" @click="openEdit(null)" v-if="contacts.length < 2">
-      <text class="edit-icon">➕</text>
       <text class="edit-text">添加紧急联系人</text>
     </view>
 
     <view class="tip-card">
-      <text class="tip-text">💡 紧急联系人将在您使用一键呼叫时优先通知。建议设置子女或社区居委会为联系人。</text>
+      <text class="tip-text">紧急联系人将在您使用一键呼叫时优先通知。建议设置子女或社区居委会为联系人。</text>
     </view>
 
     <!-- 编辑弹窗 -->

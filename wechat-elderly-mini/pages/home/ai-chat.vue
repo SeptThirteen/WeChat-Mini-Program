@@ -1,7 +1,7 @@
 <template>
   <view class="page">
     <view class="page-header ai-header">
-      <text class="header-title">🟠 AI问答</text>
+      <text class="header-title">AI 问答</text>
       <!-- AI引擎选择 -->
       <view class="provider-switch">
         <view
@@ -28,12 +28,10 @@
         class="ai-btn"
         @click="handleItemClick(item)"
       >
-        <text class="ai-icon">{{ item.icon }}</text>
         <view class="ai-text">
           <text class="ai-name">{{ item.name }}</text>
           <text class="ai-desc">{{ item.desc }}</text>
         </view>
-        <text class="ai-arrow">▶</text>
       </view>
     </view>
 
@@ -41,10 +39,8 @@
     <view class="record-overlay" v-if="showRecordPanel" @click.self="cancelRecord">
       <view class="record-panel">
         <text class="record-title">{{ recordTitle }}</text>
-        <view class="record-wave" :class="{ active: recording }">
-          <text class="wave-icon">{{ recording ? '🔴' : '🎤' }}</text>
-        </view>
-        <text class="record-hint">{{ recording ? '正在录音…松开停止' : '点击开始录音' }}</text>
+        <view class="record-wave" :class="{ active: recording }"></view>
+        <text class="record-hint">{{ recording ? '正在录音…点击停止' : '点击开始录音' }}</text>
         <view class="record-timer" v-if="recording">
           <text class="timer-text">{{ recordSeconds }}s / 60s</text>
         </view>
@@ -65,7 +61,7 @@
     <!-- FAQ 选择列表 -->
     <view class="faq-overlay" v-if="showFaqPanel" @click.self="showFaqPanel = false">
       <view class="faq-panel">
-        <text class="faq-title">📢 常见问题语音播报</text>
+        <text class="faq-title">常见问题语音播报</text>
         <text class="faq-subtitle">点击收听预录语音解答</text>
         <view class="faq-list">
           <view
@@ -74,11 +70,11 @@
             class="faq-item"
             @click="playFaq(faq)"
           >
-            <text class="faq-icon">{{ playingFaqId === faq.id ? '⏹️' : '▶️' }}</text>
             <view class="faq-info">
               <text class="faq-name">{{ faq.title }}</text>
               <text class="faq-desc">{{ faq.desc }}</text>
             </view>
+            <text class="faq-action">{{ playingFaqId === faq.id ? '停止' : '播放' }}</text>
           </view>
         </view>
         <view class="faq-close" @click="showFaqPanel = false">
@@ -90,7 +86,7 @@
     <!-- 对话结果区域 -->
     <view class="chat-section" v-if="chatMessages.length > 0">
       <view class="chat-header-row">
-        <text class="chat-header">💬 对话记录</text>
+        <text class="chat-header">对话记录</text>
         <text class="chat-clear" @click="chatMessages = []">清空</text>
       </view>
       <scroll-view class="chat-scroll" scroll-y :scroll-into-view="scrollToId">
@@ -101,7 +97,7 @@
           class="chat-bubble"
           :class="msg.role"
         >
-          <text class="bubble-label">{{ msg.role === 'user' ? '🙋 我的问题' : '🤖 AI回答' }}</text>
+          <text class="bubble-label">{{ msg.role === 'user' ? '我的问题' : 'AI 回答' }}</text>
           <text class="bubble-provider" v-if="msg.provider">{{ msg.provider === 'BAIDU' ? '百度文心' : '腾讯混元' }}</text>
           <text class="bubble-text">{{ msg.text }}</text>
         </view>
@@ -127,8 +123,7 @@
     <!-- Loading 遮罩 -->
     <view class="loading-overlay" v-if="sending">
       <view class="loading-box">
-        <text class="loading-emoji">🤔</text>
-        <text class="loading-text">AI正在思考中…</text>
+        <text class="loading-text">AI 正在思考中…</text>
       </view>
     </view>
   </view>
@@ -171,11 +166,11 @@ const sending = ref(false);
 
 // 功能按钮配置
 const items = [
-  { key: 'shengbao', name: '语音问社保/政务',   desc: '社保、医保、政务咨询',  icon: '🎤', type: 'voice', intent: 'shengbao' },
-  { key: 'health',   name: '语音问健康',        desc: '慢病管理、用药咨询',    icon: '🎤', type: 'voice', intent: 'health' },
-  { key: 'bangfu',   name: '语音问帮扶服务',    desc: '代购、维修、陪护问询',  icon: '🎤', type: 'voice', intent: 'bangfu' },
-  { key: 'faq',      name: '常见问题语音播报',  desc: '点击收听常见解答',      icon: '📢', type: 'faq' },
-  { key: 'free',     name: '直接语音输入提问',  desc: '全屏语音自由提问',      icon: '🎤', type: 'voice', intent: 'free' },
+  { key: 'shengbao', name: '语音问社保/政务',   desc: '社保、医保、政务咨询', type: 'voice', intent: 'shengbao' },
+  { key: 'health',   name: '语音问健康',        desc: '慢病管理、用药咨询', type: 'voice', intent: 'health' },
+  { key: 'bangfu',   name: '语音问帮扶服务',    desc: '代购、维修、陪护问询', type: 'voice', intent: 'bangfu' },
+  { key: 'faq',      name: '常见问题语音播报',  desc: '点击收听常见解答', type: 'faq' },
+  { key: 'free',     name: '直接语音输入提问',  desc: '全屏语音自由提问', type: 'voice', intent: 'free' },
 ];
 
 const goBack = () => uni.navigateBack();
@@ -268,7 +263,7 @@ const handleVoiceResult = async (filePath) => {
   sending.value = true;
   chatMessages.value.push({
     role: 'user',
-    text: '🎤 [语音输入中…]',
+    text: '[语音输入中…]',
     provider: provider.value
   });
   scrollToBottom();
@@ -491,11 +486,9 @@ onUnmounted(() => {
   box-shadow: 0 8px 16px $color-shadow;
 }
 
-.ai-icon { font-size: 30px; flex-shrink: 0; }
 .ai-text { flex: 1; display: flex; flex-direction: column; gap: 4px; }
 .ai-name { font-size: 24px; color: $color-text; font-weight: 700; }
 .ai-desc { font-size: 18px; color: $color-muted; }
-.ai-arrow { font-size: 18px; color: $color-muted; flex-shrink: 0; }
 
 /* ========== 录音浮层 ========== */
 .record-overlay {
@@ -525,27 +518,6 @@ onUnmounted(() => {
   font-size: 24px;
   font-weight: 700;
   color: $color-text;
-}
-
-.record-wave {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background: $color-bg;
-  border: 2px solid $color-border;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s;
-}
-
-.record-wave.active {
-  background: #fdd;
-  border: 2px solid #dc2626;
-}
-
-.wave-icon {
-  font-size: 42px;
 }
 
 .record-hint {
@@ -651,7 +623,7 @@ onUnmounted(() => {
   border: 2px solid $color-border;
 }
 
-.faq-icon { font-size: 24px; flex-shrink: 0; }
+.faq-action { flex-shrink: 0; font-size: 16px; color: $color-primary; font-weight: 700; }
 .faq-info { flex: 1; display: flex; flex-direction: column; gap: 2px; }
 .faq-name { font-size: 24px; color: $color-text; font-weight: 700; }
 .faq-desc { font-size: 18px; color: $color-muted; }
@@ -827,6 +799,5 @@ onUnmounted(() => {
   gap: 12px;
 }
 
-.loading-emoji { font-size: 40px; }
 .loading-text { font-size: 24px; color: $color-text; font-weight: 700; }
 </style>
