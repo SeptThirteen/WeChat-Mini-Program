@@ -27,13 +27,13 @@ Get-Content $manifest | ForEach-Object {
     $target = Join-Path $destRoot $rel
     if ((Get-Item $src).PSIsContainer) {
         Write-Host "拷贝目录： $rel"
-        # 使用 robocopy 保持目录结构并排除常见构建产物
+        # 使用 robocopy 保持目录结构并排除常见构建产物与本地密钥配置
         $excludeDirs = "dist","unpackage","target","node_modules"
         $excludeDirsArgs = $excludeDirs -join ' '
-        # robocopy 参数：/E 递归包括子目录，/NFL /NDL 减少日志
+        # robocopy 参数：/E 递归包括子目录，/NFL /NDL 减少日志；/XF 排除密钥文件（防止 gitignore 的本地密钥被打进 tracked 目录）
         $robocopyDest = Split-Path $target -Parent
         if (-not (Test-Path $robocopyDest)) { New-Item -ItemType Directory -Path $robocopyDest -Force | Out-Null }
-        robocopy $src $target /E /XD dist unpackage target node_modules /NFL /NDL /NJH /NJS | Out-Null
+        robocopy $src $target /E /XD dist unpackage target node_modules /XF application-dev.yml /NFL /NDL /NJH /NJS | Out-Null
     }
     else {
         Write-Host "拷贝文件： $rel"

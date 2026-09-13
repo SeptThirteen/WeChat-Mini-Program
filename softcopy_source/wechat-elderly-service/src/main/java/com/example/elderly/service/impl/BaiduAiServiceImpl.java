@@ -33,6 +33,8 @@ public class BaiduAiServiceImpl implements IAiProvider {
 
     private static final String TOKEN_URL = "https://aip.baidubce.com/oauth/2.0/token";
     private static final String CHAT_URL = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-speed-128k";
+    /** 千帆 V2 对话接口(新账号唯一可用,需 bce-v3 API 密钥) */
+    private static final String CHAT_V2_URL = "https://qianfan.baidubce.com/v2/chat/completions";
     private static final String ASR_URL = "https://vop.baidu.com/server_api";
 
     @PostConstruct
@@ -128,6 +130,60 @@ public class BaiduAiServiceImpl implements IAiProvider {
 
     @Override
     public String chat(String systemPrompt, String userMessage) {
+        String chatApiKey = aiProperties.getBaidu().getChatApiKey();
+        if (chatApiKey != null && !chatApiKey.trim().isEmpty() && !chatApiKey.startsWith("YOUR_")) {
+            return chatViaV2(chatApiKey.trim(), systemPrompt, userMessage);
+        }
+        return chatViaLegacy(systemPrompt, userMessage);
+    }
+
+    /**
+     * 千帆 V2 对话接口(OpenAI 兼容格式,Bearer bce-v3 密钥)。
+     * 新注册账号仅在 V2 开放推理,旧版接口报 No permission。
+     */
+    private String chatViaV2(String apiKey, String systemPrompt, String userMessage) {
+        try {
+            java.util.List<java.util.Map<String, Object>> messages = new java.util.ArrayList<>();
+            if (systemPrompt != null && !systemPrompt.trim().isEmpty()) {
+                java.util.Map<String, Object> sys = new java.util.LinkedHashMap<>();
+                sys.put("role", "system");
+                sys.put("content", systemPrompt);
+                messages.add(sys);
+            }
+            java.util.Map<String, Object> user = new java.util.LinkedHashMap<>();
+            user.put("role", "user");
+            user.put("content", userMessage);
+            messages.add(user);
+
+            java.util.Map<String, Object> body = new java.util.LinkedHashMap<>();
+            body.put("model", aiProperties.getBaidu().getChatModel());
+            body.put("messages", messages);
+            String jsonBody = objectMapper.writeValueAsString(body);
+
+            Request request = new Request.Builder()
+                    .url(CHAT_V2_URL)
+                    .header("Authorization", "Bearer " + apiKey)
+                    .post(RequestBody.create(jsonBody, MediaType.parse("application/json")))
+                    .build();
+
+            try (Response response = httpClient.newCall(request).execute()) {
+                String respBody = response.body().string();
+                JsonNode node = objectMapper.readTree(respBody);
+                JsonNode content = node.path("choices").path(0).path("message").path("content");
+                if (!content.isMissingNode() && !content.asText().isEmpty()) {
+                    return content.asText();
+                }
+                log.warn("百度千帆V2对话失败: {}", respBody);
+                return "抱歉，AI暂时无法回答，请稍后再试。";
+            }
+        } catch (Exception e) {
+            log.error("百度千帆V2对话异常", e);
+            return "抱歉，AI服务暂时不可用，请稍后再试。";
+        }
+    }
+
+    /** 旧版 OAuth 对话接口(存量账号可用,保留兼容) */
+    private String chatViaLegacy(String systemPrompt, String userMessage) {
         try {
             String token = getAccessToken();
             String url = CHAT_URL + "?access_token=" + token;

@@ -20,19 +20,21 @@
       <text class="back-text">← 返回一级菜单</text>
     </view>
 
-    <!-- 功能按钮列表 -->
-    <view class="btn-list">
+    <!-- 快捷话题胶囊(有对话输出后收起) -->
+    <scroll-view class="quick-chips" scroll-x v-if="chatMessages.length === 0">
       <view
         v-for="item in items"
         :key="item.key"
-        class="ai-btn"
+        class="chip-pill"
         @click="handleItemClick(item)"
-      >
-        <view class="ai-text">
-          <text class="ai-name">{{ item.name }}</text>
-          <text class="ai-desc">{{ item.desc }}</text>
-        </view>
-      </view>
+      >{{ item.name }}</view>
+    </scroll-view>
+
+    <!-- 空状态引导 -->
+    <view class="empty-hint" v-if="chatMessages.length === 0">
+      <view class="empty-mic">说</view>
+      <text class="empty-title">点击上方话题快速提问</text>
+      <text class="empty-sub">或在下方输入文字 / 点语音按钮直接说</text>
     </view>
 
     <!-- 录音浮层 -->
@@ -104,19 +106,20 @@
       </scroll-view>
     </view>
 
-    <!-- 文本输入区（备用） -->
-    <view class="text-input-section">
-      <view class="input-row">
-        <input
-          class="text-input"
-          v-model="textInput"
-          placeholder="也可以打字提问…"
-          confirm-type="send"
-          @confirm="handleTextSend"
-        />
-        <view class="send-btn" :class="{ disabled: sending }" @click="handleTextSend">
-          <text class="send-text">{{ sending ? '…' : '发送' }}</text>
-        </view>
+    <!-- 底部输入栏:语音 + 文字 -->
+    <view class="input-bar">
+      <view class="mic-btn" @click="handleMicTap">
+        <text class="mic-btn-text">语音</text>
+      </view>
+      <input
+        class="text-input"
+        v-model="textInput"
+        placeholder="输入问题…"
+        confirm-type="send"
+        @confirm="handleTextSend"
+      />
+      <view class="send-btn" :class="{ disabled: sending }" @click="handleTextSend">
+        <text class="send-text">{{ sending ? '…' : '发送' }}</text>
       </view>
     </view>
 
@@ -176,6 +179,14 @@ const items = [
 const goBack = () => uni.navigateBack();
 
 // ========== 按钮点击路由 ==========
+const handleMicTap = () => {
+  if (!userStore.userId) {
+    promptLogin();
+    return;
+  }
+  openRecordPanel({ name: '语音提问', intent: 'free' });
+};
+
 const handleItemClick = (item) => {
   if (!userStore.userId) {
     promptLogin();
@@ -398,9 +409,66 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .page {
-  min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   background: $color-bg;
-  padding-bottom: 80px;
+}
+
+/* 快捷话题胶囊行 */
+.quick-chips {
+  white-space: nowrap;
+  padding: 12px 16px 4px;
+  flex-shrink: 0;
+}
+
+.chip-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 22px;
+  margin-right: 10px;
+  background: $color-card;
+  border: 2px solid $color-primary;
+  border-radius: 999px;
+  font-size: 17px;
+  font-weight: 700;
+  color: $color-primary;
+}
+
+/* 空状态引导 */
+.empty-hint {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px 20px;
+}
+
+.empty-mic {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: $gradient-brand;
+  color: #fff;
+  font-size: 28px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: $color-text;
+}
+
+.empty-sub {
+  font-size: 16px;
+  color: $color-muted;
 }
 
 .page-header {
@@ -459,27 +527,6 @@ onUnmounted(() => {
   font-weight: 700;
 }
 
-.btn-list {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.ai-btn {
-  background: $color-card;
-  border-radius: 14px;
-  border: 1px solid $color-border;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  box-shadow: 0 8px 16px $color-shadow;
-}
-
-.ai-text { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-.ai-name { font-size: 24px; color: $color-text; font-weight: 700; }
-.ai-desc { font-size: 18px; color: $color-muted; }
 
 /* ========== 录音浮层 ========== */
 .record-overlay {
@@ -639,7 +686,11 @@ onUnmounted(() => {
 
 /* ========== 对话区域 ========== */
 .chat-section {
-  padding: 0 16px 16px;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0 16px 8px;
 }
 
 .chat-header-row {
@@ -663,7 +714,8 @@ onUnmounted(() => {
 }
 
 .chat-scroll {
-  max-height: 400px;
+  flex: 1;
+  min-height: 0;
   border-radius: 12px;
   border: 2px solid $color-border;
   background: $color-card;
@@ -716,31 +768,43 @@ onUnmounted(() => {
 }
 
 /* ========== 文本输入区 ========== */
-.text-input-section {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+.input-bar {
+  flex-shrink: 0;
+  margin: 8px 16px 16px;
   background: $color-card;
-  padding: 12px 16px;
-  border-top: 2px solid $color-border;
-  z-index: 100;
+  border: 2px solid $color-border;
+  border-radius: 999px;
+  padding: 8px 8px 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 6px 16px $color-shadow;
 }
 
-.input-row {
+.mic-btn {
+  flex-shrink: 0;
+  width: 76px;
+  height: 48px;
+  border-radius: 999px;
+  background: $gradient-brand;
   display: flex;
-  gap: 10px;
   align-items: center;
+  justify-content: center;
+}
+
+.mic-btn-text {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
 }
 
 .text-input {
   flex: 1;
-  background: $color-card;
-  border: 2px solid $color-border;
-  border-radius: 12px;
-  height: 56px;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  height: 48px;
   box-sizing: border-box;
-  padding: 0 14px;
   font-size: 18px;
   color: $color-text;
 }
@@ -748,8 +812,8 @@ onUnmounted(() => {
 .send-btn {
   background: $color-primary;
   border: 2px solid $color-primary;
-  border-radius: 12px;
-  height: 56px;
+  border-radius: 999px;
+  height: 48px;
   box-sizing: border-box;
   padding: 0 20px;
   flex-shrink: 0;
