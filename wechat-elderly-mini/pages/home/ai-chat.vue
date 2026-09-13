@@ -20,21 +20,11 @@
       <text class="back-text">← 返回一级菜单</text>
     </view>
 
-    <!-- 快捷话题胶囊(有对话输出后收起) -->
-    <scroll-view class="quick-chips" scroll-x v-if="chatMessages.length === 0">
-      <view
-        v-for="item in items"
-        :key="item.key"
-        class="chip-pill"
-        @click="handleItemClick(item)"
-      >{{ item.name }}</view>
-    </scroll-view>
-
     <!-- 空状态引导 -->
     <view class="empty-hint" v-if="chatMessages.length === 0">
       <view class="empty-mic">说</view>
-      <text class="empty-title">点击上方话题快速提问</text>
-      <text class="empty-sub">或在下方输入文字 / 点语音按钮直接说</text>
+      <text class="empty-title">点击下方话题快速提问</text>
+      <text class="empty-sub">或直接输入文字 / 点语音按钮直接说</text>
     </view>
 
     <!-- 录音浮层 -->
@@ -105,6 +95,16 @@
         </view>
       </scroll-view>
     </view>
+
+    <!-- 快捷话题胶囊(有对话输出后收起) -->
+    <scroll-view class="quick-chips" scroll-x v-if="chatMessages.length === 0">
+      <view
+        v-for="item in items"
+        :key="item.key"
+        class="chip-pill"
+        @click="handleItemClick(item)"
+      >{{ item.name }}</view>
+    </scroll-view>
 
     <!-- 底部输入栏:语音 + 文字 -->
     <view class="input-bar">
@@ -419,7 +419,7 @@ onUnmounted(() => {
 /* 快捷话题胶囊行 */
 .quick-chips {
   white-space: nowrap;
-  padding: 12px 16px 4px;
+  padding: 8px 16px;
   flex-shrink: 0;
 }
 
