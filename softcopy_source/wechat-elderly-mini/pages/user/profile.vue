@@ -95,7 +95,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { getUserProfile, updateUserProfile } from '../../api/user';
 import { useUserStore } from '../../store/user';
 import VoiceActionSheet from '../../components/VoiceActionSheet.vue';
@@ -202,14 +202,20 @@ const loadProfile = async () => {
   }
 };
 
+let clockTimer = null;
+
 onMounted(() => {
   // 等待 Pinia 从持久化存储恢复状态后再渲染，避免同时显示两套视图
   nextTick(() => {
     isReady.value = true;
     updateTime();
-    setInterval(updateTime, 30000);
+    clockTimer = setInterval(updateTime, 30000);
     loadProfile();
   });
+});
+
+onUnmounted(() => {
+  if (clockTimer) clearInterval(clockTimer);
 });
 </script>
 

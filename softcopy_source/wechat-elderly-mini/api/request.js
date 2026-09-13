@@ -21,6 +21,7 @@ export function request({ url, method = 'GET', data = {}, header = {} }) {
       url: `${BASE_URL}${url}`,
       method,
       data,
+      timeout: 15000,
       header: {
         'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -43,11 +44,20 @@ export function request({ url, method = 'GET', data = {}, header = {} }) {
           } else {
             resolve(payload);
           }
+        } else if (res.statusCode >= 500) {
+          reject({ message: '服务器开小差了，请稍后再试' });
         } else {
           reject(res.data || res);
         }
       },
-      fail: (err) => reject(err)
+      fail: (err) => {
+        const msg = (err && err.errMsg) || '';
+        if (msg.includes('timeout')) {
+          reject({ message: '请求超时，请检查网络后重试' });
+        } else {
+          reject({ message: '网络连接失败，请检查网络后重试' });
+        }
+      }
     });
   });
 }
