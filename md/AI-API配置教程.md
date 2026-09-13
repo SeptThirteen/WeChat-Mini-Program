@@ -61,6 +61,19 @@ Secret Key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 ---
 
+### ⚠️ 新账号必读：千帆 V2 API 密钥(对话接口)
+
+2024 年后注册的百度账号,对话模型只在**千帆 V2** 开放推理(旧版接口报 `No permission to access data`),
+需要在千帆控制台单独创建一个 **API 密钥**:
+
+1. 千帆大模型平台 → 左侧「**API 密钥**」(安全认证)→ 创建 API 密钥
+2. 拿到 `bce-v3/ALTAK-xxxx/...` 格式的密钥
+3. 填入 `application-dev.yml` 的 `ai.baidu.chat-api-key`(服务器部署填 `.env` 的 `AI_BAIDU_CHAT_API_KEY`)
+4. 传统应用的 API Key/Secret Key 仍然需要——**语音识别(ASR)走它**;V2 密钥只管对话
+
+> 实测结论(2026-09-13):应用 API Key 换 access_token 正常、ASR 正常;
+> V1 对话接口 ernie-speed-128k/lite/tiny 均 `No permission`,V2 接口开通 ERNIE-Speed 后即可用。
+
 ## 腾讯混元 API 配置
 
 ### 第一步：注册腾讯云
