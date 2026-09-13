@@ -9,6 +9,10 @@
       "style": { "navigationBarTitleText": "我的", "navigationBarBackgroundColor": "#ECFEFF", "navigationBarTextStyle": "black" }
     },
     {
+      "path": "pages/user/profile-edit",
+      "style": { "navigationBarTitleText": "编辑资料", "navigationBarBackgroundColor": "#ECFEFF", "navigationBarTextStyle": "black" }
+    },
+    {
       "path": "pages/login/login",
       "style": { "navigationBarTitleText": "登录", "navigationBarBackgroundColor": "#ECFEFF", "navigationBarTextStyle": "black" }
     },

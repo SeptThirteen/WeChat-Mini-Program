@@ -29,6 +29,9 @@
           <text class="profile-meta">手机：{{ phone || '未绑定' }}</text>
           <text class="profile-meta">绑定社区：{{ profile.community || '未绑定社区' }}</text>
         </view>
+        <view class="edit-profile-btn" @click="goEditProfile">
+          <text class="edit-profile-text">编辑资料</text>
+        </view>
       </view>
     </view>
 
@@ -96,6 +99,7 @@
 
 <script setup>
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
+import { onShow } from '@dcloudio/uni-app';
 import { getUserProfile, updateUserProfile } from '../../api/user';
 import { useUserStore } from '../../store/user';
 import VoiceActionSheet from '../../components/VoiceActionSheet.vue';
@@ -118,6 +122,12 @@ const updateTime = () => {
 };
 
 const go = (url) => uni.navigateTo({ url });
+const goEditProfile = () => uni.navigateTo({ url: '/pages/user/profile-edit' });
+
+// 从编辑资料页返回时自动刷新展示
+onShow(() => {
+  if (isReady.value && userStore.userId) loadProfile();
+});
 const goLogin = () => uni.navigateTo({ url: '/pages/login/login' });
 
 const handleVoiceResult = async (filePath) => {
@@ -304,6 +314,21 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 20px;
+}
+
+.edit-profile-btn {
+  margin-left: auto;
+  flex-shrink: 0;
+  background: $color-card;
+  border: 2px solid $color-primary;
+  border-radius: 999px;
+  padding: 10px 18px;
+}
+
+.edit-profile-text {
+  font-size: 16px;
+  font-weight: 700;
+  color: $color-primary;
 }
 
 .avatar {
