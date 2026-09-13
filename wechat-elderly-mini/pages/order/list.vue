@@ -70,7 +70,8 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
+import { onShow } from '@dcloudio/uni-app';
 import { getOrderList, cancelOrder, rateOrder } from '../../api/order';
 import { useUserStore } from '../../store/user';
 import OrderCard from '../../components/OrderCard.vue';
@@ -162,7 +163,8 @@ const handleRate = (item) => {
   });
 };
 
-onMounted(load);
+// onShow 兼顾首次进入与从详情/下单返回时的自动刷新
+onShow(load);
 </script>
 
 <style lang="scss" scoped>

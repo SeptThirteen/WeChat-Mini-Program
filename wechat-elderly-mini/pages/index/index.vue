@@ -51,7 +51,7 @@
 </template>
 
 <script setup>
-import { nextTick, ref, onMounted } from 'vue';
+import { nextTick, ref, onMounted, onUnmounted } from 'vue';
 import VoiceActionSheet from '../../components/VoiceActionSheet.vue';
 import { voiceQuery, textQuery } from '../../api/ai';
 import { useUserStore } from '../../store/user';
@@ -108,12 +108,18 @@ const handleQuickSelect = async ({ intent, text }) => {
   }
 };
 
+let clockTimer = null;
+
 onMounted(() => {
   nextTick(() => {
     isReady.value = true;
     updateTime();
-    setInterval(updateTime, 30000);
+    clockTimer = setInterval(updateTime, 30000);
   });
+});
+
+onUnmounted(() => {
+  if (clockTimer) clearInterval(clockTimer);
 });
 </script>
 

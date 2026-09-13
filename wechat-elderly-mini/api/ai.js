@@ -32,6 +32,7 @@ export function voiceQuery(filePath, userId, provider, intent) {
         provider: provider || 'BAIDU',
         intent: intent || 'free'
       },
+      timeout: 30000,
       header: {
         ...(token ? { Authorization: `Bearer ${token}` } : {})
       },
@@ -55,7 +56,10 @@ export function voiceQuery(filePath, userId, provider, intent) {
           reject({ message: '解析响应失败' });
         }
       },
-      fail: (err) => reject(err)
+      fail: (err) => {
+        const msg = (err && err.errMsg) || '';
+        reject({ message: msg.includes('timeout') ? '请求超时，请重试' : '网络连接失败，请检查网络后重试' });
+      }
     });
   });
 }
@@ -77,6 +81,7 @@ export function parseOrderIntent(filePath, userId, provider) {
         userId: String(userId),
         provider: provider || 'BAIDU'
       },
+      timeout: 30000,
       header: {
         ...(token ? { Authorization: `Bearer ${token}` } : {})
       },
@@ -100,7 +105,10 @@ export function parseOrderIntent(filePath, userId, provider) {
           reject({ message: '解析响应失败' });
         }
       },
-      fail: (err) => reject(err)
+      fail: (err) => {
+        const msg = (err && err.errMsg) || '';
+        reject({ message: msg.includes('timeout') ? '请求超时，请重试' : '网络连接失败，请检查网络后重试' });
+      }
     });
   });
 }
