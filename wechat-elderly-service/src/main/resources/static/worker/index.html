@@ -6,26 +6,26 @@
 <title>社区服务人员工作台</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif; background: #f5f7fa; color: #333; min-height: 100vh; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif; background: #ECFEFF; color: #333; min-height: 100vh; }
 
 /* ===== Header ===== */
-.header { background: linear-gradient(135deg, #2b5876, #4e4376); color: #fff; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
-.header h1 { font-size: 20px; font-weight: 600; }
-.header .user-info { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+.header { background: linear-gradient(135deg, #0891B2, #0E7490); color: #fff; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(22, 78, 99, .18); }
+.header h1 { font-size: 22px; font-weight: 600; }
+.header .user-info { display: flex; align-items: center; gap: 12px; font-size: 16px; }
 .header .user-info span { opacity: .9; }
-.btn-logout { background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.4); color: #fff; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: background .2s; }
+.btn-logout { background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.4); color: #fff; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 15px; transition: background .2s; }
 .btn-logout:hover { background: rgba(255,255,255,.35); }
 
 /* ===== Login ===== */
 .login-wrapper { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
 .login-card { background: #fff; border-radius: 16px; padding: 40px 36px; width: 380px; max-width: 100%; box-shadow: 0 8px 32px rgba(0,0,0,.08); }
-.login-card h2 { text-align: center; margin-bottom: 8px; color: #2b5876; font-size: 24px; }
+.login-card h2 { text-align: center; margin-bottom: 8px; color: #0E7490; font-size: 26px; }
 .login-card .subtitle { text-align: center; color: #999; margin-bottom: 28px; font-size: 14px; }
 .form-group { margin-bottom: 18px; }
-.form-group label { display: block; margin-bottom: 6px; font-size: 14px; color: #555; font-weight: 500; }
-.form-group input { width: 100%; padding: 12px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; transition: border-color .2s; outline: none; }
-.form-group input:focus { border-color: #4e4376; }
-.btn-login { width: 100%; padding: 14px; background: linear-gradient(135deg, #2b5876, #4e4376); color: #fff; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity .2s; margin-top: 6px; }
+.form-group label { display: block; margin-bottom: 6px; font-size: 15px; color: #555; font-weight: 500; }
+.form-group input { width: 100%; padding: 12px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; transition: border-color .2s; outline: none; }
+.form-group input:focus { border-color: #0891B2; }
+.btn-login { width: 100%; padding: 14px; background: linear-gradient(135deg, #0891B2, #0E7490); color: #fff; border: none; border-radius: 8px; font-size: 17px; font-weight: 600; cursor: pointer; transition: opacity .2s; margin-top: 6px; }
 .btn-login:hover { opacity: .9; }
 .btn-login:disabled { opacity: .5; cursor: not-allowed; }
 .login-error { color: #e74c3c; font-size: 13px; margin-top: 10px; text-align: center; }
@@ -33,32 +33,32 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft Ya
 
 /* ===== Tabs ===== */
 .tabs { display: flex; background: #fff; border-bottom: 2px solid #eee; }
-.link { color: #4e4376; cursor: pointer; }
-.tab { flex: 1; text-align: center; padding: 14px 0; font-size: 15px; font-weight: 500; color: #666; cursor: pointer; border-bottom: 3px solid transparent; transition: all .2s; position: relative; }
-.tab:hover { color: #4e4376; }
-.tab.active { color: #4e4376; border-bottom-color: #4e4376; font-weight: 600; }
+.link { color: #0891B2; cursor: pointer; }
+.tab { flex: 1; text-align: center; padding: 14px 0; font-size: 17px; font-weight: 500; color: #666; cursor: pointer; border-bottom: 3px solid transparent; transition: all .2s; position: relative; }
+.tab:hover { color: #0891B2; }
+.tab.active { color: #0891B2; border-bottom-color: #0891B2; font-weight: 600; }
 .tab .badge { position: absolute; top: 8px; right: calc(50% - 36px); background: #e74c3c; color: #fff; font-size: 11px; padding: 1px 6px; border-radius: 10px; font-weight: 600; }
 
 /* ===== Content ===== */
 .content { max-width: 800px; margin: 0 auto; padding: 20px 16px; }
-.empty { text-align: center; padding: 60px 20px; color: #aaa; font-size: 15px; }
-.empty::before { content: '📋'; display: block; font-size: 48px; margin-bottom: 12px; }
+.empty { text-align: center; padding: 60px 20px; color: #aaa; font-size: 16px; }
+.empty::before { content: ''; display: none; }
 
 /* ===== Order Cards ===== */
 .order-card { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.04); border: 1px solid #f0f0f0; transition: box-shadow .2s; }
 .order-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.08); }
 .order-card .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .order-card .order-id { font-size: 12px; color: #aaa; }
-.order-card .service-name { font-size: 17px; font-weight: 600; color: #2b5876; }
+.order-card .service-name { font-size: 18px; font-weight: 700; color: #164E63; }
 .order-card .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; margin-bottom: 14px; }
-.order-card .info-item { font-size: 13px; color: #666; }
+.order-card .info-item { font-size: 14px; color: #666; }
 .order-card .info-item .label { color: #999; margin-right: 4px; }
 .order-card .info-item .value { color: #333; }
-.order-card .remark { font-size: 13px; color: #888; background: #f9f9f9; padding: 8px 12px; border-radius: 6px; margin-bottom: 14px; }
+.order-card .remark { font-size: 14px; color: #888; background: #f9f9f9; padding: 8px 12px; border-radius: 6px; margin-bottom: 14px; }
 .order-card .card-footer { display: flex; justify-content: space-between; align-items: center; }
 
 /* ===== Status Badge ===== */
-.status-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+.status-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; }
 .status-CREATED { background: #fff3e0; color: #e65100; }
 .status-ASSIGNED { background: #e3f2fd; color: #1565c0; }
 .status-COMPLETED { background: #e8f5e9; color: #2e7d32; }
@@ -66,20 +66,20 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft Ya
 .status-CANCELLED { background: #fafafa; color: #999; }
 
 /* ===== Action Buttons ===== */
-.btn-action { padding: 8px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: all .2s; }
-.btn-accept { background: #4e4376; color: #fff; }
-.btn-accept:hover { background: #3a3260; }
+.btn-action { padding: 10px 22px; border-radius: 8px; font-size: 15px; font-weight: 600; border: none; cursor: pointer; transition: all .2s; }
+.btn-accept { background: #0891B2; color: #fff; }
+.btn-accept:hover { background: #0E7490; }
 .btn-complete { background: #2e7d32; color: #fff; }
 .btn-complete:hover { background: #1b5e20; }
 .btn-action:disabled { opacity: .5; cursor: not-allowed; }
 
 /* ===== Loading ===== */
 .loading { text-align: center; padding: 40px; color: #999; }
-.loading::after { content: ''; display: inline-block; width: 20px; height: 20px; border: 2px solid #ddd; border-top-color: #4e4376; border-radius: 50%; animation: spin .8s linear infinite; margin-left: 8px; vertical-align: middle; }
+.loading::after { content: ''; display: inline-block; width: 20px; height: 20px; border: 2px solid #ddd; border-top-color: #0891B2; border-radius: 50%; animation: spin .8s linear infinite; margin-left: 8px; vertical-align: middle; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ===== Toast ===== */
-.toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 8px; color: #fff; font-size: 14px; z-index: 9999; opacity: 0; transition: opacity .3s; pointer-events: none; }
+.toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 8px; color: #fff; font-size: 15px; z-index: 9999; opacity: 0; transition: opacity .3s; pointer-events: none; }
 .toast.show { opacity: 1; }
 .toast.success { background: #2e7d32; }
 .toast.error { background: #e74c3c; }
@@ -100,7 +100,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft Ya
 <!-- Login View -->
 <div id="loginView" class="login-wrapper">
   <div class="login-card">
-    <h2>🔧 服务人员工作台</h2>
+    <h2>服务人员工作台</h2>
     <p class="subtitle">社区适老化服务 · 服务人员端</p>
     <div class="form-group">
       <label>手机号</label>
@@ -120,7 +120,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft Ya
 <!-- Register View -->
 <div id="registerView" class="login-wrapper" style="display:none;">
   <div class="login-card">
-    <h2>👷 服务人员注册</h2>
+    <h2>服务人员注册</h2>
     <p class="subtitle">输入姓名、手机号、密码完成注册</p>
     <div class="form-group">
       <label>姓名</label>
@@ -153,7 +153,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft Ya
 <!-- Main View (hidden by default) -->
 <div id="mainView" style="display:none;">
   <div class="header">
-    <h1>🔧 服务人员工作台</h1>
+    <h1>服务人员工作台</h1>
     <div class="user-info">
       <span id="workerName"></span>
       <button class="btn-logout" onclick="handleLogout()">退出</button>
@@ -341,7 +341,7 @@ function showMain() {
   document.getElementById('loginView').style.display = 'none';
   document.getElementById('registerView').style.display = 'none';
   document.getElementById('mainView').style.display = 'block';
-  document.getElementById('workerName').textContent = '👷 ' + workerName + (workerCategory ? ' · ' + workerCategory : '');
+  document.getElementById('workerName').textContent = workerName + (workerCategory ? ' · ' + workerCategory : '');
 }
 
 // ============ Tab Switch ============
@@ -432,8 +432,8 @@ function renderCard(o) {
     + '  <div class="info-item"><span class="label">服务地址：</span><span class="value">' + esc(o.address || o.userAddress || '-') + '</span></div>'
     + '  <div class="info-item"><span class="label">下单时间：</span><span class="value">' + formatTime(o.createdTime) + '</span></div>'
     + '</div>'
-    + (o.orderType === 'RECURRING' ? '<div class="remark" style="color:#e65100;font-weight:600;">🔁 长期预约 · ' + esc(o.recurrenceRule || '') + '（' + esc(o.dateStart || '') + ' 至 ' + esc(o.dateEnd || '') + '）</div>' : '')
-    + (o.remark ? '<div class="remark">📝 ' + esc(o.remark) + '</div>' : '')
+    + (o.orderType === 'RECURRING' ? '<div class="remark" style="color:#e65100;font-weight:600;">长期预约 · ' + esc(o.recurrenceRule || '') + '（' + esc(o.dateStart || '') + ' 至 ' + esc(o.dateEnd || '') + '）</div>' : '')
+    + (o.remark ? '<div class="remark">' + esc(o.remark) + '</div>' : '')
     + '<div class="card-footer">'
     + '  <span class="order-id">订单 #' + o.orderId + ' ' + ratingHtml + '</span>'
     + '  ' + actionHtml
