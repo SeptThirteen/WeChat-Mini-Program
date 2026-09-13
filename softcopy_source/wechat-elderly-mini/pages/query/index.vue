@@ -4,7 +4,29 @@
       <text class="title">便民查询</text>
     </view>
 
-    <!-- Bill type selector -->
+    <!-- 官方渠道引导(真实账单) -->
+    <view class="card official-card">
+      <view class="official-head">
+        <text class="official-title">查真实账单请用官方渠道</text>
+        <text class="official-tag">推荐</text>
+      </view>
+      <view class="official-row" @click="showWechatPayGuide">
+        <view class="official-info">
+          <text class="official-name">微信 · 生活缴费</text>
+          <text class="official-desc">电费 / 水费 / 燃气,全国城市通用</text>
+        </view>
+        <text class="official-action">查看步骤</text>
+      </view>
+      <view class="official-row official-row-last" @click="openSgcc">
+        <view class="official-info">
+          <text class="official-name">网上国网(国家电网官方)</text>
+          <text class="official-desc">电费查询与缴纳,覆盖国家电网区域</text>
+        </view>
+        <text class="official-action">{{ sgccAppId ? '立即打开' : '去微信搜索' }}</text>
+      </view>
+    </view>
+
+    <!-- Bill type selector (演示) -->
     <view class="card">
       <text class="section-label">查询类型</text>
       <view class="type-row">
@@ -92,6 +114,56 @@ import { useUserStore } from '../../store/user';
 
 const userStore = useUserStore();
 
+// ============ 官方渠道引导 ============
+// 拿到"网上国网"官方 appId 后填入即可启用一键跳转:
+// 微信打开"网上国网"小程序 → 右上角"…" → 关于 → 更多资料 里可查 appId;
+// 同时需在小程序管理后台配置跳转白名单(navigateToMiniProgramAppIdList)。
+const SGCC_APPID = '';
+
+const showWechatPayGuide = () => {
+  const steps = [
+    '1. 打开微信,点右上角"+"号',
+    '2. 点"收付款"下方的"服务"',
+    '3. 找到"生活缴费"点进去',
+    '4. 选择城市和缴费类型(电费/水费/燃气)',
+    '5. 输入户号即可查询和缴费'
+  ];
+  uni.showModal({
+    title: '微信生活缴费 · 使用步骤',
+    content: steps.join('\n'),
+    confirmText: '知道了',
+    showCancel: false
+  });
+};
+
+const openSgcc = () => {
+  if (SGCC_APPID) {
+    uni.navigateToMiniProgram({
+      appId: SGCC_APPID,
+      success: () => {},
+      fail: () => uni.showToast({ title: '打开失败,可微信搜索"网上国网"', icon: 'none', duration: 3000 })
+    });
+    return;
+  }
+  uni.setClipboardData({
+    data: '网上国网',
+    success: () => {
+      const steps = [
+        '1. 退出本小程序回到微信首页',
+        '2. 从上往下滑出搜索框',
+        '3. 粘贴"网上国网"并搜索',
+        '4. 认准官方主体:国家电网有限公司客户服务中心'
+      ];
+      uni.showModal({
+        title: '已为你复制小程序名',
+        content: steps.join('\n'),
+        confirmText: '知道了',
+        showCancel: false
+      });
+    }
+  });
+};
+
 const types = [
   { label: '电费', value: 'ELECTRICITY' },
   { label: '水费', value: 'WATER' },
@@ -151,6 +223,77 @@ const handleQuery = async () => {
 </script>
 
 <style lang="scss" scoped>
+/* 官方渠道引导卡 */
+.official-card {
+  border: 2px solid $color-primary;
+}
+
+.official-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.official-title {
+  flex: 1;
+  font-size: 20px;
+  font-weight: 700;
+  color: $color-text;
+}
+
+.official-tag {
+  flex-shrink: 0;
+  background: $color-primary;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.official-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid $color-border;
+}
+
+.official-row-last {
+  border-bottom: none;
+  padding-bottom: 4px;
+}
+
+.official-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.official-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: $color-text;
+}
+
+.official-desc {
+  font-size: 15px;
+  color: $color-muted;
+}
+
+.official-action {
+  flex-shrink: 0;
+  background: $color-primary;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 999px;
+}
+
 .page {
   padding: 16px;
   background: $color-bg;
