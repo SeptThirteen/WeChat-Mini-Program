@@ -19,19 +19,32 @@
 
     <!-- 已登录：头像 + 信息 -->
     <view class="profile-card" v-else>
-      <view class="avatar-row">
+      <view class="profile-top">
         <view class="avatar">
           <text class="avatar-text">{{ profile.name ? profile.name.charAt(0) : '用' }}</text>
         </view>
-        <view class="profile-info">
+        <view class="profile-name-wrap">
           <text class="profile-name">{{ profile.name || '未设置姓名' }}</text>
-          <text class="profile-meta" v-if="profile.age">{{ profile.age }}岁{{ profile.address ? ' · ' + profile.address : '' }}</text>
-          <text class="profile-meta">手机：{{ phone || '未绑定' }}</text>
-          <text class="profile-meta">绑定社区：{{ profile.community || '未绑定社区' }}</text>
+          <text class="profile-sub">{{ profile.age ? profile.age + '岁' : '完善资料有助服务派单' }}</text>
         </view>
         <view class="edit-profile-btn" @click="goEditProfile">
           <text class="edit-profile-text">编辑资料</text>
         </view>
+      </view>
+
+      <view class="divider"></view>
+
+      <view class="info-line">
+        <text class="info-label">手机</text>
+        <text class="info-value">{{ phone || '未绑定' }}</text>
+      </view>
+      <view class="info-line" v-if="profile.address">
+        <text class="info-label">地址</text>
+        <text class="info-value">{{ profile.address }}</text>
+      </view>
+      <view class="info-line" v-if="profile.community">
+        <text class="info-label">社区</text>
+        <text class="info-value">{{ profile.community }}</text>
       </view>
     </view>
 
@@ -310,10 +323,54 @@ onUnmounted(() => {
   box-shadow: 0 8px 16px $color-shadow;
 }
 
-.avatar-row {
+.profile-top {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
+}
+
+.profile-name-wrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-sub {
+  font-size: 16px;
+  color: $color-muted;
+}
+
+.divider {
+  height: 1px;
+  background: $color-border;
+  margin: 16px 0 4px;
+}
+
+.info-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+}
+
+.info-label {
+  flex-shrink: 0;
+  width: 72px;
+  font-size: 16px;
+  color: $color-muted;
+  padding-top: 2px;
+}
+
+.info-value {
+  flex: 1;
+  min-width: 0;
+  font-size: 18px;
+  color: $color-text;
+  font-weight: 600;
+  line-height: 1.5;
+  word-break: break-all;
 }
 
 .edit-profile-btn {
@@ -322,11 +379,11 @@ onUnmounted(() => {
   background: $color-card;
   border: 2px solid $color-primary;
   border-radius: 999px;
-  padding: 10px 18px;
+  padding: 8px 16px;
 }
 
 .edit-profile-text {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   color: $color-primary;
 }
@@ -346,12 +403,6 @@ onUnmounted(() => {
   color: #fff;
   font-size: 28px;
   font-weight: 700;
-}
-
-.profile-info {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
 }
 
 .profile-name {
