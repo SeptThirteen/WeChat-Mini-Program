@@ -63,7 +63,7 @@ const goBack = () => uni.navigateBack();
 const handleConfirm = async () => {
   if (loading.value) return;
   if (!userStore.userId) {
-    uni.showToast({ title: '请先登录', icon: 'none' });
+    promptLogin();
     uni.navigateTo({ url: '/pages/login/login' });
     return;
   }

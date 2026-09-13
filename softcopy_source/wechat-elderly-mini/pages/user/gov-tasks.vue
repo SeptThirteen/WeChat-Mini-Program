@@ -89,7 +89,7 @@ const handleSubmit = async () => {
     return;
   }
   if (!userStore.userId) {
-    uni.showToast({ title: '请先登录', icon: 'none' });
+    promptLogin();
     return;
   }
   submitting.value = true;

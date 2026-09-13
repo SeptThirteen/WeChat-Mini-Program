@@ -94,7 +94,7 @@ const toggleRecord = () => {
     return;
   }
   if (!userStore.userId) {
-    uni.showToast({ title: '请先登录', icon: 'none' });
+    promptLogin();
     return;
   }
   queryText.value = '';

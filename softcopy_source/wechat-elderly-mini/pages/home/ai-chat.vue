@@ -178,16 +178,7 @@ const goBack = () => uni.navigateBack();
 // ========== 按钮点击路由 ==========
 const handleItemClick = (item) => {
   if (!userStore.userId) {
-    uni.showModal({
-      title: '请先登录',
-      content: '使用AI问答功能需要先登录',
-      confirmText: '去登录',
-      success: (res) => {
-        if (res.confirm) {
-          uni.navigateTo({ url: '/pages/login/login' });
-        }
-      }
-    });
+    promptLogin();
     return;
   }
 
@@ -300,7 +291,7 @@ const handleTextSend = async () => {
   if (!text || sending.value) return;
 
   if (!userStore.userId) {
-    uni.showToast({ title: '请先登录', icon: 'none' });
+    promptLogin();
     return;
   }
 

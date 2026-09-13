@@ -10,7 +10,12 @@
       <text class="back-text">← 返回首页</text>
     </view>
 
-    <view class="row-list" v-if="!loading">
+    <view class="state-box" v-if="loadError">
+      <text class="state-text">服务加载失败，请检查网络</text>
+      <view class="retry-btn" @click="loadServices">重新加载</view>
+    </view>
+
+    <view class="row-list" v-else-if="!loading">
       <view
         v-for="(svc, idx) in didiServices"
         :key="svc.type"
@@ -39,6 +44,7 @@ import { ref, onMounted } from 'vue';
 import { getServiceList } from '../../api/service';
 
 const loading = ref(false);
+const loadError = ref(false);
 const serviceMap = ref({});
 
 const didiServices = [
@@ -50,6 +56,7 @@ const didiServices = [
 
 const loadServices = async () => {
   loading.value = true;
+  loadError.value = false;
   try {
     const res = await getServiceList();
     const list = res.data || [];
@@ -57,7 +64,7 @@ const loadServices = async () => {
       serviceMap.value[item.category] = item;
     });
   } catch (e) {
-    // 静默失败，下单时再提示
+    loadError.value = true;
   } finally {
     loading.value = false;
   }
@@ -179,6 +186,35 @@ onMounted(loadServices);
   font-size: $fontSize-md;
   font-weight: 700;
   color: $color-primary;
+}
+
+.state-box {
+  margin: 16px;
+  background: $color-card;
+  border: 1px solid $color-border;
+  border-radius: 14px;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.state-text {
+  font-size: 18px;
+  color: $color-muted;
+}
+
+.retry-btn {
+  background: $color-primary;
+  border: 1px solid $color-primary;
+  color: #fff;
+  border-radius: 12px;
+  padding: 0 32px;
+  height: 56px;
+  line-height: 56px;
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .loading-box {
