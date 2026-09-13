@@ -106,6 +106,31 @@ public class AiController {
     }
 
     /**
+     * 语音合成(公开接口:InnerAudioContext 播放无法携带 Authorization header)
+     * GET /api/ai/tts?text=xxx → mp3 音频流
+     */
+    @org.springframework.web.bind.annotation.GetMapping("/tts")
+    public org.springframework.http.ResponseEntity<byte[]> tts(
+            @org.springframework.web.bind.annotation.RequestParam("text") String text) {
+        if (text == null || text.trim().isEmpty()) {
+            return org.springframework.http.ResponseEntity.badRequest().build();
+        }
+        if (text.length() > 500) {
+            text = text.substring(0, 500);
+        }
+        try {
+            byte[] audio = aiService.synthesizeSpeech(text);
+            return org.springframework.http.ResponseEntity.ok()
+                    .header(org.springframework.http.HttpHeaders.CACHE_CONTROL, "max-age=3600")
+                    .contentType(org.springframework.http.MediaType.parseMediaType("audio/mpeg"))
+                    .body(audio);
+        } catch (Exception e) {
+            log.error("TTS合成失败", e);
+            return org.springframework.http.ResponseEntity.internalServerError().build();
+        }
+    }
+
+    /**
      * FAQ 列表
      */
     @GetMapping("/faq-list")
