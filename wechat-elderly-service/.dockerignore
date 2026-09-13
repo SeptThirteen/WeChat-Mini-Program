@@ -1,0 +1,6 @@
+target/
+.git/
+.idea/
+*.iml
+src/main/resources/application-dev.yml
+src/main/resources/static/audio/README.md

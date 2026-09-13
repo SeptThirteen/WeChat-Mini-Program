@@ -26,3 +26,7 @@ Thumbs.db
 
 # Mimosa security scan state
 .mimosa/
+
+# Docker 部署密钥(严禁提交)
+wechat-elderly-service/.env
+.env

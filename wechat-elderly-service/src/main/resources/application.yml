@@ -10,7 +10,15 @@ spring:
   application:
     name: wechat-elderly-service
   profiles:
-    active: dev
+    # 本地开发默认 dev(application-dev.yml 提供数据源与AI密钥);
+    # Docker 容器内由环境变量 SPRING_PROFILES_ACTIVE=prod 覆盖,配置全部来自环境变量
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  datasource:
+    # 容器部署时由 SPRING_DATASOURCE_* 环境变量注入;本地默认值与 application-dev.yml 一致
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/wechat_elderly?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&useUnicode=true}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:123456}
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jackson:
     time-zone: Asia/Shanghai
   servlet:
@@ -19,7 +27,8 @@ spring:
       max-request-size: 10MB
 
 jwt:
-  secret: "change-this-secret-key-please-32chars-min"
+  # 生产环境通过 JWT_SECRET 环境变量注入强随机密钥(见 .env.example)
+  secret: ${JWT_SECRET:change-this-secret-key-please-32chars-min}
   expire-hours: 168
 
 # 短信验证码（内存版演示实现，未接真实短信网关）
@@ -28,7 +37,7 @@ sms:
     expire-seconds: 300            # 验证码有效期
     resend-cooldown-seconds: 60    # 重发冷却
     # true 时 /api/auth/sms-code 响应回显 devCode（仅限开发联调，生产环境必须为 false）
-    return-in-response: true
+    return-in-response: ${SMS_CODE_RETURN_IN_RESPONSE:true}
 
 springdoc:
   api-docs:

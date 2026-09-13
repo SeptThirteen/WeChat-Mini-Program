@@ -55,6 +55,9 @@ WeChat-Mini-Program/
 
 ## 快速启动
 
+> 生产/答辩部署(Docker Compose 一键部署 + 真机体验版)见 **[docs/DEPLOY.md](docs/DEPLOY.md)**,
+> 现场演示动线与预案见 **[docs/答辩演示checklist.md](docs/答辩演示checklist.md)**。
+
 ### 前置条件
 
 - JDK 17+、Maven 3.6+
