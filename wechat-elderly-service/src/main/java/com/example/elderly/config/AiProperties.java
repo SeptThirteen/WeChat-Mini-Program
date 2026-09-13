@@ -23,6 +23,8 @@ public class AiProperties {
         private String secretKey;
         /** 千帆 V2 API 密钥(bce-v3/ 开头,新账号对话接口必须);为空时对话走旧版 OAuth 接口 */
         private String chatApiKey;
+        /** 千帆 V2 对话模型名,默认 ernie-4.5-turbo-128k(V2 实测可用) */
+        private String chatModel = "ernie-4.5-turbo-128k";
     }
 
     @Data

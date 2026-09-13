@@ -35,7 +35,6 @@ public class BaiduAiServiceImpl implements IAiProvider {
     private static final String CHAT_URL = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-speed-128k";
     /** 千帆 V2 对话接口(新账号唯一可用,需 bce-v3 API 密钥) */
     private static final String CHAT_V2_URL = "https://qianfan.baidubce.com/v2/chat/completions";
-    private static final String CHAT_V2_MODEL = "ernie-speed-128k";
     private static final String ASR_URL = "https://vop.baidu.com/server_api";
 
     @PostConstruct
@@ -157,7 +156,7 @@ public class BaiduAiServiceImpl implements IAiProvider {
             messages.add(user);
 
             java.util.Map<String, Object> body = new java.util.LinkedHashMap<>();
-            body.put("model", CHAT_V2_MODEL);
+            body.put("model", aiProperties.getBaidu().getChatModel());
             body.put("messages", messages);
             String jsonBody = objectMapper.writeValueAsString(body);
 
