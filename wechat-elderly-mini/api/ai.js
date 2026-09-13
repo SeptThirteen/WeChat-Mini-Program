@@ -121,6 +121,14 @@ export function getFaqList() {
 }
 
 /**
+ * 获取 TTS 语音播报 URL(公开接口)
+ * @param {String} text 待合成文本
+ */
+export function getTtsUrl(text) {
+  return `${BASE_URL}/api/ai/tts?text=${encodeURIComponent(text)}`;
+}
+
+/**
  * 获取 FAQ 音频 URL
  * @param {String} id FAQ编号，如 '001'
  */

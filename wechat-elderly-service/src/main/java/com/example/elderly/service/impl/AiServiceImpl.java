@@ -391,6 +391,20 @@ public class AiServiceImpl implements AiService {
     }
 
     @Override
+    public byte[] synthesizeSpeech(String text) {
+        // 优先默认引擎,不支持 TTS 时自动降级到其他引擎(如腾讯未实现则回退百度)
+        List<IAiProvider> providers = providersWithFallback(null);
+        for (IAiProvider p : providers) {
+            try {
+                return p.synthesize(text);
+            } catch (UnsupportedOperationException e) {
+                log.info("引擎 {} 不支持TTS,尝试下一个", p.getName());
+            }
+        }
+        throw new BusinessException(503, "语音合成服务不可用");
+    }
+
+    @Override
     public List<Map<String, Object>> getFaqList() {
         // 预定义 FAQ 列表
         List<Map<String, Object>> faqs = new ArrayList<>();

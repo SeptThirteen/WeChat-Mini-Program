@@ -89,8 +89,15 @@
           class="chat-bubble"
           :class="msg.role"
         >
-          <text class="bubble-label">{{ msg.role === 'user' ? '我的问题' : 'AI 回答' }}</text>
-          <text class="bubble-provider" v-if="msg.provider">{{ msg.provider === 'BAIDU' ? '百度文心' : '腾讯混元' }}</text>
+          <view class="bubble-head">
+            <text class="bubble-label">{{ msg.role === 'user' ? '我的问题' : 'AI 回答' }}</text>
+            <text class="bubble-provider" v-if="msg.provider">{{ msg.provider === 'BAIDU' ? '百度文心' : '腾讯混元' }}</text>
+            <text
+              v-if="msg.role === 'ai'"
+              class="bubble-listen"
+              @click="toggleTts(msg)"
+            >{{ ttsPlayingIdx === idx ? '停止' : '听回答' }}</text>
+          </view>
           <text class="bubble-text">{{ msg.text }}</text>
         </view>
       </scroll-view>
@@ -136,7 +143,7 @@
 import { ref, onMounted, onUnmounted, nextTick } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { useUserStore } from '../../store/user';
-import { textQuery, voiceQuery, getFaqList, getFaqAudioUrl } from '../../api/ai';
+import { textQuery, voiceQuery, getFaqList, getFaqAudioUrl, getTtsUrl } from '../../api/ai';
 import { startRecord, stopRecord, onRecordEnd, onRecordError } from '../../utils/voiceRecorder';
 import { playAudio, stopAudio, destroyAudio } from '../../utils/audioPlayer';
 
@@ -179,6 +186,23 @@ const items = [
 const goBack = () => uni.navigateBack();
 
 // ========== 按钮点击路由 ==========
+// ============ TTS 语音播报 ============
+const ttsPlayingIdx = ref(-1);
+
+const toggleTts = (msg) => {
+  const idx = chatMessages.value.indexOf(msg);
+  if (ttsPlayingIdx.value === idx) {
+    stopAudio();
+    ttsPlayingIdx.value = -1;
+    return;
+  }
+  stopAudio();
+  ttsPlayingIdx.value = idx;
+  playAudio(getTtsUrl(msg.text), () => {
+    ttsPlayingIdx.value = -1;
+  });
+};
+
 const handleMicTap = () => {
   if (!userStore.userId) {
     promptLogin();
@@ -740,12 +764,17 @@ onUnmounted(() => {
   margin-right: 32px;
 }
 
+.bubble-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
 .bubble-label {
-  display: block;
-  font-size: 14px;
-  font-weight: 700;
-  margin-bottom: 4px;
+  font-size: 15px;
   color: $color-muted;
+  font-weight: 600;
 }
 
 .bubble-provider {
@@ -757,6 +786,17 @@ onUnmounted(() => {
   color: #fff;
   margin-bottom: 6px;
   font-weight: 700;
+}
+
+.bubble-listen {
+  margin-left: auto;
+  flex-shrink: 0;
+  background: $color-primary;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 999px;
 }
 
 .bubble-text {

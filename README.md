@@ -150,6 +150,7 @@ npm run dev:h5          # H5 浏览器调试
 | `/api/ai/voice-query` | POST | ✅ | 语音 AI 问答（multipart 音频 + 参数） |
 | `/api/ai/history` | GET | ✅ | 查询历史记录（`?userId=&limit=`） |
 | `/api/ai/parse-order-intent` | POST | ✅ | 语音/文本下单意图解析（multipart `audio` 可选 + `text` 调试参数；返回规范化 JSON 意图） |
+| `/api/ai/tts` | GET | ❌ | 语音合成（`?text=`，返回 mp3 音频流，供 AI 回答语音播报；500 字上限） |
 | `/api/worker/register` | POST | ❌ | 工人注册（姓名/手机号/密码/人员类别） |
 | `/api/worker/login` | POST | ❌ | 工人登录（BCrypt 校验，历史明文自动升级） |
 | `/api/worker/orders/pending` | GET | ✅ | 待抢单列表（按工人类别智能排序） |

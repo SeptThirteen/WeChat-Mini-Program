@@ -36,6 +36,7 @@ public class BaiduAiServiceImpl implements IAiProvider {
     /** 千帆 V2 对话接口(新账号唯一可用,需 bce-v3 API 密钥) */
     private static final String CHAT_V2_URL = "https://qianfan.baidubce.com/v2/chat/completions";
     private static final String ASR_URL = "https://vop.baidu.com/server_api";
+    private static final String TTS_URL = "https://tsn.baidu.com/text2audio";
 
     @PostConstruct
     public void init() {
@@ -179,6 +180,38 @@ public class BaiduAiServiceImpl implements IAiProvider {
         } catch (Exception e) {
             log.error("百度千帆V2对话异常", e);
             return "抱歉，AI服务暂时不可用，请稍后再试。";
+        }
+    }
+
+    /**
+     * 百度语音合成(与 ASR 共用同一对 OAuth 凭据)
+     * 适老化参数:语速稍慢(spd=4)、音调略高(pit=7)、标准女声(per=0)
+     */
+    @Override
+    public byte[] synthesize(String text) {
+        try {
+            String token = getAccessToken();
+            String encoded = java.net.URLEncoder.encode(text, java.nio.charset.StandardCharsets.UTF_8);
+            String url = TTS_URL
+                    + "?tok=" + token
+                    + "&tex=" + encoded
+                    + "&cuid=wechat-elderly-service&ctp=1&lan=zh"
+                    + "&spd=4&pit=7&vol=9&per=0&aue=3";
+
+            Request request = new Request.Builder().url(url).get().build();
+            try (Response response = httpClient.newCall(request).execute()) {
+                String contentType = response.header("Content-Type", "");
+                byte[] bytes = response.body().bytes();
+                if (contentType.contains("audio")) {
+                    return bytes;
+                }
+                // 非 audio 即错误 JSON
+                log.warn("百度 TTS 合成失败: {}", new String(bytes, java.nio.charset.StandardCharsets.UTF_8));
+                throw new RuntimeException("百度TTS合成失败");
+            }
+        } catch (java.io.IOException e) {
+            log.error("百度 TTS 请求异常", e);
+            throw new RuntimeException("百度TTS请求异常", e);
         }
     }
 

@@ -31,6 +31,12 @@ public interface AiService {
     Map<String, Object> parseOrderIntent(Long userId, String provider, String text, byte[] audioData);
 
     /**
+     * 语音合成(TTS):按引擎优先级尝试,全不支持时抛 BusinessException
+     * @return mp3 音频字节流
+     */
+    byte[] synthesizeSpeech(String text);
+
+    /**
      * 查询 FAQ 列表
      */
     List<Map<String, Object>> getFaqList();
