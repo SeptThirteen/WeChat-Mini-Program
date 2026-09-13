@@ -85,19 +85,86 @@ public class AiServiceImpl implements AiService {
         return provider;
     }
 
+    /**
+     * 主引擎 + 备用引擎的有序列表（备用仅一个时即另一家）
+     */
+    private List<IAiProvider> providersWithFallback(String preferred) {
+        IAiProvider primary = getProvider(preferred);
+        List<IAiProvider> order = new ArrayList<>();
+        order.add(primary);
+        providerMap.values().stream()
+                .filter(p -> !p.getName().equals(primary.getName()))
+                .forEach(order::add);
+        return order;
+    }
+
+    /** 判断 ASR 结果是否失败（空/引擎异常标记） */
+    private boolean isAsrFailed(String text) {
+        return text == null || text.trim().isEmpty() || text.trim().startsWith("[");
+    }
+
+    /**
+     * 依次尝试可用引擎做 ASR；成功返回 引擎+识别文本，全部失败返回 null
+     */
+    private Map.Entry<IAiProvider, String> asrWithFallback(List<IAiProvider> providers, byte[] audioData) {
+        for (IAiProvider p : providers) {
+            try {
+                String text = p.speechToText(audioData);
+                if (!isAsrFailed(text)) {
+                    if (!p.getName().equals(providers.get(0).getName())) {
+                        log.info("ASR主引擎失败,已切换备用引擎: {}", p.getName());
+                    }
+                    return new AbstractMap.SimpleEntry<>(p, text);
+                }
+                log.warn("ASR引擎 {} 未识别出内容", p.getName());
+            } catch (Exception e) {
+                log.warn("ASR引擎 {} 调用异常: {}", p.getName(), e.getMessage());
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 依次尝试可用引擎做对话；成功返回 引擎+回复，全部降级/异常时返回 null
+     */
+    private Map.Entry<IAiProvider, String> chatWithFallback(List<IAiProvider> providers, String systemPrompt, String userMessage) {
+        for (IAiProvider p : providers) {
+            try {
+                String response = p.chat(systemPrompt, userMessage);
+                if (!isProviderDegraded(response)) {
+                    if (!p.getName().equals(providers.get(0).getName())) {
+                        log.info("Chat主引擎降级,已切换备用引擎: {}", p.getName());
+                    }
+                    return new AbstractMap.SimpleEntry<>(p, response);
+                }
+                log.warn("Chat引擎 {} 返回降级文案", p.getName());
+            } catch (Exception e) {
+                log.warn("Chat引擎 {} 调用异常: {}", p.getName(), e.getMessage());
+            }
+        }
+        return null;
+    }
+
     @Override
     public Map<String, Object> queryByText(Long userId, String providerName, String intent, String text) {
-        IAiProvider provider = getProvider(providerName);
+        List<IAiProvider> providers = providersWithFallback(providerName);
         String systemPrompt = buildSystemPrompt(intent);
 
-        log.info("AI文本问答 - user:{}, provider:{}, intent:{}, text:{}", userId, provider.getName(), intent, text);
-        String response = provider.chat(systemPrompt, text);
+        log.info("AI文本问答 - user:{}, intent:{}, text:{}", userId, intent, text);
+        Map.Entry<IAiProvider, String> chat = chatWithFallback(providers, systemPrompt, text);
+        if (chat == null) {
+            Map<String, Object> result = new LinkedHashMap<>();
+            result.put("provider", providers.get(0).getName());
+            result.put("queryText", text);
+            result.put("responseText", "AI服务暂时不可用，请检查AI密钥配置或稍后再试。");
+            return result;
+        }
 
-        // 保存日志
-        saveLog(userId, provider.getName(), intent, text, response);
+        String response = chat.getValue();
+        saveLog(userId, chat.getKey().getName(), intent, text, response);
 
         Map<String, Object> result = new LinkedHashMap<>();
-        result.put("provider", provider.getName());
+        result.put("provider", chat.getKey().getName());
         result.put("queryText", text);
         result.put("responseText", response);
         return result;
@@ -105,29 +172,42 @@ public class AiServiceImpl implements AiService {
 
     @Override
     public Map<String, Object> queryByVoice(Long userId, String providerName, String intent, byte[] audioData) {
-        IAiProvider provider = getProvider(providerName);
+        List<IAiProvider> providers = providersWithFallback(providerName);
 
-        // Step 1: ASR 语音转文字
-        log.info("AI语音问答 - user:{}, provider:{}, intent:{}, audioSize:{}bytes", userId, provider.getName(), intent, audioData.length);
-        String recognizedText = provider.speechToText(audioData);
-
-        if (recognizedText == null || recognizedText.trim().isEmpty() || recognizedText.startsWith("[")) {
+        // Step 1: ASR 语音转文字（主引擎失败自动切备用）
+        log.info("AI语音问答 - user:{}, intent:{}, audioSize:{}bytes", userId, intent, audioData.length);
+        Map.Entry<IAiProvider, String> asr = asrWithFallback(providers, audioData);
+        if (asr == null) {
             Map<String, Object> result = new LinkedHashMap<>();
-            result.put("provider", provider.getName());
-            result.put("queryText", recognizedText != null ? recognizedText : "");
+            result.put("provider", providers.get(0).getName());
+            result.put("queryText", "");
             result.put("responseText", "语音识别未成功，请靠近麦克风重新说一遍。");
             return result;
         }
+        IAiProvider asrProvider = asr.getKey();
+        String recognizedText = asr.getValue();
 
-        // Step 2: AI 对话
+        // Step 2: AI 对话（优先用识别成功的引擎，降级时切备用）
         String systemPrompt = buildSystemPrompt(intent);
-        String response = provider.chat(systemPrompt, recognizedText);
+        List<IAiProvider> chatOrder = new ArrayList<>();
+        chatOrder.add(asrProvider);
+        providers.stream()
+                .filter(p -> !p.getName().equals(asrProvider.getName()))
+                .forEach(chatOrder::add);
+        Map.Entry<IAiProvider, String> chat = chatWithFallback(chatOrder, systemPrompt, recognizedText);
+        if (chat == null) {
+            Map<String, Object> result = new LinkedHashMap<>();
+            result.put("provider", asrProvider.getName());
+            result.put("queryText", recognizedText);
+            result.put("responseText", "AI服务暂时不可用，请检查AI密钥配置或稍后再试。");
+            return result;
+        }
 
-        // 保存日志
-        saveLog(userId, provider.getName(), intent, recognizedText, response);
+        String response = chat.getValue();
+        saveLog(userId, chat.getKey().getName(), intent, recognizedText, response);
 
         Map<String, Object> result = new LinkedHashMap<>();
-        result.put("provider", provider.getName());
+        result.put("provider", chat.getKey().getName());
         result.put("queryText", recognizedText);
         result.put("responseText", response);
         return result;
@@ -135,45 +215,41 @@ public class AiServiceImpl implements AiService {
 
     @Override
     public Map<String, Object> parseOrderIntent(Long userId, String providerName, String text, byte[] audioData) {
-        IAiProvider provider = getProvider(providerName);
+        List<IAiProvider> providers = providersWithFallback(providerName);
 
-        // Step 1: 获取文本 —— 优先直接文本（调试/降级），否则 ASR
+        // Step 1: 获取文本 —— 优先直接文本（调试/降级），否则 ASR（主引擎失败自动切备用）
         String recognizedText = (text != null && !text.trim().isEmpty()) ? text.trim() : null;
         if (recognizedText == null && audioData != null && audioData.length > 0) {
-            log.info("语音下单 - user:{}, provider:{}, audioSize:{}bytes", userId, provider.getName(), audioData.length);
-            recognizedText = provider.speechToText(audioData);
+            log.info("语音下单 - user:{}, audioSize:{}bytes", userId, audioData.length);
+            Map.Entry<IAiProvider, String> asr = asrWithFallback(providers, audioData);
+            recognizedText = asr != null ? asr.getValue() : null;
         }
-        if (recognizedText == null || recognizedText.trim().isEmpty() || recognizedText.startsWith("[")) {
+        if (isAsrFailed(recognizedText)) {
             Map<String, Object> result = new LinkedHashMap<>();
-            result.put("provider", provider.getName());
+            result.put("provider", providers.get(0).getName());
             result.put("queryText", recognizedText != null ? recognizedText : "");
             result.put("error", "没听清您说的话，请靠近麦克风再试一次");
             return result;
         }
 
-        // Step 2: LLM 抽取下单意图 JSON
-        String response;
-        try {
-            response = provider.chat(buildOrderIntentPrompt(), recognizedText);
-        } catch (Exception e) {
-            log.error("下单意图LLM调用失败", e);
-            return failResult(provider.getName(), recognizedText, "AI服务暂时不可用，请稍后再试或手动选择服务下单");
-        }
-        if (isProviderDegraded(response)) {
-            return failResult(provider.getName(), recognizedText, "AI服务暂时不可用，请检查AI密钥配置或稍后再试");
+        // Step 2: LLM 抽取下单意图 JSON（主引擎降级自动切备用）
+        Map.Entry<IAiProvider, String> chat = chatWithFallback(providers, buildOrderIntentPrompt(), recognizedText);
+        if (chat == null) {
+            return failResult(providers.get(0).getName(), recognizedText, "AI服务暂时不可用，请检查AI密钥配置或稍后再试");
         }
 
         // Step 3: 解析 + 规范化
+        String response = chat.getValue();
         Map<String, Object> raw = extractJson(response);
         if (raw == null) {
             log.warn("下单意图JSON解析失败 - response: {}", response);
-            return failResult(provider.getName(), recognizedText, "没听懂您的需求，请试着说“明天上午帮我修水龙头”");
+            return failResult(chat.getKey().getName(), recognizedText, "没听懂您的需求，请试着说“明天上午帮我修水龙头”");
         }
 
         String serviceKey = strOrNull(raw.get("serviceKey"));
         Map<String, Object> matched = matchService(serviceKey);
         if (matched == null) {
-            return failResult(provider.getName(), recognizedText, "没认出您要的服务，可以说：跑腿帮买、上门维修、暖心陪伴、贴心出行、洁净到家、就医陪护、健康小站");
+            return failResult(chat.getKey().getName(), recognizedText, "没认出您要的服务，可以说：跑腿帮买、上门维修、暖心陪伴、贴心出行、洁净到家、就医陪护、健康小站");
         }
 
         Map<String, Object> intent = new LinkedHashMap<>();
@@ -185,10 +261,10 @@ public class AiServiceImpl implements AiService {
         intent.put("address", strOrNull(raw.get("address")));
         intent.put("remark", strOrNull(raw.get("remark")));
 
-        saveLog(userId, provider.getName(), "order", recognizedText, response);
+        saveLog(userId, chat.getKey().getName(), "order", recognizedText, response);
 
         Map<String, Object> result = new LinkedHashMap<>();
-        result.put("provider", provider.getName());
+        result.put("provider", chat.getKey().getName());
         result.put("queryText", recognizedText);
         result.put("intent", intent);
         return result;
