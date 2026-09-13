@@ -71,7 +71,7 @@ const go = (url) => uni.navigateTo({ url });
 // 语音录音结果：上传并跳转AI问答页
  const handleVoiceResult = async (filePath) => {
   if (!userStore.userId) {
-    uni.showToast({ title: '请先登录', icon: 'none' });
+    promptLogin();
     return;
   }
   uni.showLoading({ title: 'AI思考中…' });
@@ -91,7 +91,7 @@ const go = (url) => uni.navigateTo({ url });
 // 快捷问题点击：发送文本并跳转
 const handleQuickSelect = async ({ intent, text }) => {
   if (!userStore.userId) {
-    uni.showToast({ title: '请先登录', icon: 'none' });
+    promptLogin();
     return;
   }
   uni.showLoading({ title: 'AI思考中…' });

@@ -122,7 +122,7 @@ const goLogin = () => uni.navigateTo({ url: '/pages/login/login' });
 
 const handleVoiceResult = async (filePath) => {
   if (!userStore.userId) {
-    uni.showToast({ title: '请先登录', icon: 'none' });
+    promptLogin();
     return;
   }
   uni.showLoading({ title: 'AI思考中…' });
@@ -140,7 +140,7 @@ const handleVoiceResult = async (filePath) => {
 
 const handleQuickSelect = async ({ intent, text }) => {
   if (!userStore.userId) {
-    uni.showToast({ title: '请先登录', icon: 'none' });
+    promptLogin();
     return;
   }
   uni.showLoading({ title: 'AI思考中…' });

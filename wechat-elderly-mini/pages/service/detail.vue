@@ -50,7 +50,7 @@ const load = async () => {
 
 const handleCreateOrder = async () => {
   if (!userStore.userId) {
-    uni.showToast({ title: '请先登录', icon: 'none' });
+    promptLogin();
     uni.navigateTo({ url: '/pages/login/login' });
     return;
   }

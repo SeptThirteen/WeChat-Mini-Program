@@ -12,7 +12,7 @@
     <!-- 预约时间 -->
     <view class="section-card">
       <text class="section-label">预约日期</text>
-      <view class="chip-row">
+      <view class="chip-row date-row">
         <view
           v-for="d in dateOptions"
           :key="d.key"
@@ -230,7 +230,7 @@ const today = new Date();
 const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
 const afterTomorrow = new Date(today); afterTomorrow.setDate(today.getDate() + 2);
 
-const fmt = (d) => `${d.getMonth() + 1}月${d.getDate()}日`;
+const fmt = (d) => `${d.getMonth() + 1}/${d.getDate()}`;
 
 const dateOptions = [
   { key: 'today',        label: `今天 ${fmt(today)}` },
@@ -543,11 +543,14 @@ const loadUserAddress = async () => {
   font-weight: 700;
 }
 
+.date-row .chip {
+  min-width: 0;
+  padding: 8px 6px;
+}
+
 .slot-row .chip {
-  white-space: normal;
-  line-height: 1.4;
-  min-width: 44%;
-  flex: 1 1 44%;
+  flex: 1 1 100%;
+  white-space: nowrap;
 }
 
 .time-picker-row {
@@ -559,11 +562,16 @@ const loadUserAddress = async () => {
 }
 
 .time-tip {
+  flex: 1;
+  min-width: 0;
   font-size: 18px;
   color: $color-muted;
+  line-height: 1.4;
 }
 
 .time-btn {
+  flex-shrink: 0;
+  white-space: nowrap;
   background: $color-card;
   color: $color-primary;
   padding: 0 14px;
